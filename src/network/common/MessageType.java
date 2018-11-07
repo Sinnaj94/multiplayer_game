@@ -1,9 +1,9 @@
 package network.common;
 
 public enum MessageType {
-    CHAT((byte)0);
+    CHAT((byte)0), MOVE((byte)1);
     byte b;
-    MessageType(byte i) {
+    MessageType(byte b) {
         this.b = b;
     }
 
