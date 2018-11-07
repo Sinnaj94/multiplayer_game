@@ -40,7 +40,7 @@ public class Server {
                 ma.register(MessageType.CHAT, c);
                 //managers.add(ma);
                 Thread managerThread = new Thread(ma);
-                managerThread.run();
+                managerThread.start();
 
             } catch (IOException e) {
                 e.printStackTrace();

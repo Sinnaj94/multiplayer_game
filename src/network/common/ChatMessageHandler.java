@@ -44,18 +44,15 @@ public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
 
     @Override
     public void handle(ChatMessage n) {
-        synchronized (T) {
-            System.out.println("ChatMessage");
-            // Chat Thread delivers Message to all the Clients... Otherwise print it out!
-            if(dataOutputStreams.size() > 0) {
-                for(DataOutputStream d:dataOutputStreams) {
-                    sendMessage(n, d);
-                    notifyAll();
-                }
-            } else {
-                System.out.println(n.toString());
-                notifyAll();
+        // Chat Thread delivers Message to all the Clients... Otherwise print it out!
+        if(dataOutputStreams.size() > 0) {
+            for(DataOutputStream d:dataOutputStreams) {
+                sendMessage(n, d);
+                //notifyAll();
             }
+        } else {
+            System.out.println(n.toString());
+            //notifyAll();
         }
     }
 }
