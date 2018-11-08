@@ -17,4 +17,9 @@ public class MoveMessage implements NetworkMessage {
     public Vector2 getDirection() {
         return direction;
     }
+
+    @Override
+    public String toString() {
+        return "X: " + direction.getX() + ", Y:" + direction.getY();
+    }
 }

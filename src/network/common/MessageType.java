@@ -12,9 +12,12 @@ public enum MessageType {
     }
 
     public static MessageType getMessageTypeByByte(byte b) {
+        // TODO: Automate: Values()?
         switch(b) {
             case (byte)0:
                 return CHAT;
+            case (byte)1:
+                return MOVE;
         }
         return null;
     }

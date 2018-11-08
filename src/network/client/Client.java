@@ -1,5 +1,6 @@
 package network.client;
 
+import helper.Vector2;
 import network.common.*;
 
 import java.io.DataInputStream;
@@ -18,6 +19,7 @@ public class Client {
             socket = new Socket("localhost", port);
             m = new Manager(socket.getInputStream(), socket.getOutputStream());
             m.register(MessageType.CHAT, new ChatMessageHandler());
+            m.register(MessageType.MOVE, new MoveMessageHandler());
             // Receive the ChatMessages
             Thread t = new Thread(m);
             t.start();
@@ -32,7 +34,9 @@ public class Client {
         while(true) {
             String msg = s.nextLine();
             NetworkMessage c = new ChatMessage(msg);
+            MoveMessage _m = new MoveMessage(new Vector2(1,1));
             m.send(c);
+            m.send(_m);
         }
     }
 

@@ -1,5 +1,6 @@
 package network.common;
 
+import game.GameManager;
 import helper.Vector2;
 
 import java.io.DataInputStream;
@@ -7,13 +8,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage>  {
+    GameManager gameManager;
     @Override
     public void sendMessage(NetworkMessage networkMessage, DataOutputStream dos) {
-        MoveMessage m = (MoveMessage)networkMessage;
         try {
+            MoveMessage m = (MoveMessage)networkMessage;
             dos.write(m.getMessageType().getByte());
             dos.writeFloat(m.getDirection().getX());
             dos.writeFloat(m.getDirection().getY());
+            dos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -31,8 +34,12 @@ public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage>  {
         return null;
     }
 
+    public void registerGameManager(GameManager gameManager) {
+        this.gameManager = gameManager;
+    }
+
     @Override
     public void handle(MoveMessage networkMessage) {
-
+        System.out.println(networkMessage.toString());
     }
 }

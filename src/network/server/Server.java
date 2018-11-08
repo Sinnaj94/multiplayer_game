@@ -1,9 +1,6 @@
 package network.server;
 
-import network.common.ChatMessageHandler;
-import network.common.Manager;
-import network.common.MessageType;
-import network.common.NetworkMessage;
+import network.common.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -31,17 +28,18 @@ public class Server {
 
     private void serverLoop() {
         ChatMessageHandler c = new ChatMessageHandler();
+        MoveMessageHandler m = new MoveMessageHandler();
         while(true) {
             try {
                 Socket t = serverSocket.accept();
                 Manager ma = new Manager(t.getInputStream(), t.getOutputStream());
                 c.addOutputStream(t.getOutputStream());
-                // Register the existing ChatMessageHandler
+                // Register the existing ChatMessageHandler and MoveManager
                 ma.register(MessageType.CHAT, c);
+                ma.register(MessageType.MOVE, m);
                 //managers.add(ma);
                 Thread managerThread = new Thread(ma);
                 managerThread.start();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
