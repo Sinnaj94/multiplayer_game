@@ -1,11 +1,11 @@
 package network.common;
 
-import helper.Vector2;
+import helper.Vector2F;
 
 public class MoveMessage implements NetworkMessage {
-    private Vector2 direction;
+    private Vector2F direction;
 
-    public MoveMessage(Vector2 direction) {
+    public MoveMessage(Vector2F direction) {
         this.direction = direction;
     }
 
@@ -14,7 +14,7 @@ public class MoveMessage implements NetworkMessage {
         return MessageType.MOVE;
     }
 
-    public Vector2 getDirection() {
+    public Vector2F getDirection() {
         return direction;
     }
 

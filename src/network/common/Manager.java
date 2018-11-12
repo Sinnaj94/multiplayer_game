@@ -23,10 +23,6 @@ public class Manager implements Runnable {
         map.put(messageType, handler);
     }
 
-    /*private void register(NetworkMessageHandler<NetworkMessage> n) {
-        map.put(MessageType.CHAT, n);
-    }*/
-
     public void send(NetworkMessage n) {
         map.get(n.getMessageType()).sendMessage(n, dos);
     }

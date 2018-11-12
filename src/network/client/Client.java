@@ -1,9 +1,8 @@
 package network.client;
 
-import helper.Vector2;
+import helper.Vector2F;
 import network.common.*;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
@@ -34,9 +33,7 @@ public class Client {
         while(true) {
             String msg = s.nextLine();
             NetworkMessage c = new ChatMessage(msg);
-            MoveMessage _m = new MoveMessage(new Vector2(1,1));
             m.send(c);
-            m.send(_m);
         }
     }
 
