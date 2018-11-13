@@ -1,5 +1,6 @@
 package network.client;
 
+import game.Renderer;
 import helper.Vector2F;
 import network.common.*;
 

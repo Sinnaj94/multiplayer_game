@@ -1,0 +1,18 @@
+{
+  "src": "res/tilesets/forest_tiles.png",
+  "floor":
+  [
+    {
+      "x": 0,
+      "y": 0,
+      "width": 16,
+      "height": 16
+    },
+    {
+      "x": 16,
+      "y": 16,
+      "width": 16,
+      "height": 16
+    }
+  ]
+}

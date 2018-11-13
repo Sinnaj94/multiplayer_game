@@ -1,6 +1,7 @@
 package network.common;
 
 import game.GameLogic;
+import game.Player;
 import helper.Vector2F;
 
 import java.io.DataInputStream;
@@ -8,7 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage>  {
-    GameLogic gameLogic;
+    private Player p;
     @Override
     public void sendMessage(NetworkMessage networkMessage, DataOutputStream dos) {
         try {
@@ -34,8 +35,8 @@ public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage>  {
         return null;
     }
 
-    public void registerGameManager(GameLogic gameManager) {
-        this.gameLogic = gameManager;
+    public void registerPlayer(Player p) {
+        this.p = p;
     }
 
     @Override

@@ -1,5 +1,9 @@
 package network.server;
 
+import game.Player;
+import game.Renderer;
+import game.World;
+import helper.Vector2I;
 import network.common.*;
 
 import java.io.IOException;
@@ -15,9 +19,14 @@ public class Server {
     private Map<Integer, Socket> clients;
     private BlockingQueue<NetworkMessage> messages;
     private List<Manager> managers;
-
+    private World w;
+    private Renderer r;
     public Server(int port) {
         try {
+            w = new World(new Vector2I(100, 100));
+            r = new Renderer(w);
+            Thread renderThread = new Thread(r);
+            renderThread.start();
             serverSocket = new ServerSocket(port);
             // ChatMessageHandler
             serverLoop();
@@ -28,13 +37,15 @@ public class Server {
 
     private void serverLoop() {
         ChatMessageHandler c = new ChatMessageHandler();
-        MoveMessageHandler m = new MoveMessageHandler();
+        //MoveMessageHandler m = new MoveMessageHandler();
         while(true) {
             try {
                 Socket t = serverSocket.accept();
                 Manager ma = new Manager(t.getInputStream(), t.getOutputStream());
                 c.addOutputStream(t.getOutputStream());
                 // Register the existing ChatMessageHandler and MoveManager
+                MoveMessageHandler m = new MoveMessageHandler();
+                m.registerPlayer(w.addPlayer());
                 ma.register(MessageType.CHAT, c);
                 ma.register(MessageType.MOVE, m);
                 //managers.add(ma);

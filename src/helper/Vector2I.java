@@ -38,4 +38,9 @@ public class Vector2I implements Vector2<Integer, Vector2I> {
         this.x *= v.getX();
         this.y *= v.getY();
     }
+
+    @Override
+    public String toString() {
+        return "X: " + x + ", Y: " + y;
+    }
 }

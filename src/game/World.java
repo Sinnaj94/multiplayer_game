@@ -1,51 +1,65 @@
 package game;
 
+import game.generics.Renderable;
 import helper.Vector2I;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class World implements Runnable {
     private List<Player> players;
     private Vector2I size;
-    JFrame canvas;
+
+    private Level level;
+    private Stack<Renderable> renderables;
+    /**
+     *
+     * @param size The number of tiles in the world...
+     */
     public World(Vector2I size) {
         players = new ArrayList<>();
-        players.add(new Player(1));
+        renderables = new Stack<>();
+        // TODO: Players.add should be made by
         this.size = size;
+        level = new Level("test.png");
         buildWorld();
-        canvas = new JFrame("Game");
-        canvas.setSize(size.getX(), size.getY());
-        canvas.add(players.get(0));
-        canvas.setVisible(true);
-
     }
 
     private void buildWorld() {
-
-    }
-
-    public void addPlayer(Player p) {
-
-    }
-
-    public void paint(Graphics g) {
-        Graphics2D g2 = (Graphics2D)g;
-        for(Player player:players) {
-            player.paint(g);
-        }
+        level.buildLevel();
     }
 
     @Override
     public void run() {
-        canvas.repaint();
+        while(true) {
+            update();
+        }
     }
 
-    public static void main(String[] args) {
-        World w = new World(new Vector2I(100, 100));
-        Thread worldThread = new Thread();
-        worldThread.start();
+    /**
+     * TODO: Calculates the new State of the world...
+     */
+    private void update() {
+        for(Player p:players) {
+            //p.move();
+        }
+    }
+
+    public Player addPlayer() {
+        Player t = new Player();
+        players.add(t);
+        // T: Referenz
+        return t;
+    }
+
+    public Vector2I getSize() {
+        return size;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 }

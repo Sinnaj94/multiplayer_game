@@ -29,6 +29,7 @@ public class Manager implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("New Manager Thread with ID " + clientID);
         while(true) {
             try {
                 byte b = dis.readByte();
@@ -40,5 +41,10 @@ public class Manager implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Manager " + this.clientID;
     }
 }
