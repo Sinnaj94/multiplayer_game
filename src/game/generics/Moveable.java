@@ -1,8 +1,6 @@
 package game.generics;
 
-import helper.Vector2;
 import helper.Vector2F;
-import helper.Vector2I;
 
 public abstract class Moveable {
     private float delta;

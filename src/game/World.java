@@ -3,8 +3,6 @@ package game;
 import game.generics.Renderable;
 import helper.Vector2I;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -15,8 +13,8 @@ public class World implements Runnable {
 
     private Level level;
     private Stack<Renderable> renderables;
+
     /**
-     *
      * @param size The number of tiles in the world...
      */
     public World(Vector2I size) {
@@ -34,7 +32,7 @@ public class World implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             update();
         }
     }
@@ -43,7 +41,7 @@ public class World implements Runnable {
      * TODO: Calculates the new State of the world...
      */
     private void update() {
-        for(Player p:players) {
+        for (Player p : players) {
             //p.move();
         }
     }

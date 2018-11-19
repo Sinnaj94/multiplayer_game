@@ -1,6 +1,5 @@
 package network.server;
 
-import game.Player;
 import game.Renderer;
 import game.World;
 import helper.Vector2I;
@@ -21,6 +20,7 @@ public class Server {
     private List<Manager> managers;
     private World w;
     private Renderer r;
+
     public Server(int port) {
         try {
             w = new World(new Vector2I(100, 100));
@@ -35,10 +35,14 @@ public class Server {
         }
     }
 
+    public static void main(String[] args) {
+        Server s = new Server(6060);
+    }
+
     private void serverLoop() {
         ChatMessageHandler c = new ChatMessageHandler();
         //MoveMessageHandler m = new MoveMessageHandler();
-        while(true) {
+        while (true) {
             try {
                 Socket t = serverSocket.accept();
                 Manager ma = new Manager(t.getInputStream(), t.getOutputStream());
@@ -55,9 +59,5 @@ public class Server {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static void main(String[] args) {
-        Server s = new Server(6060);
     }
 }

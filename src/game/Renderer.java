@@ -1,19 +1,18 @@
 package game;
 
-import game.generics.Renderable;
-import game.tiles.Tileset;
+import game.tiles.TilesetFactory;
 import helper.Vector2I;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Renderer extends JPanel implements Runnable  {
+public class Renderer extends JPanel implements Runnable {
     private World w;
     private Vector2I size;
     private JFrame canvas;
 
     public Renderer(World w) {
-        Tileset t = new Tileset("res/tilesets/forest_tiles.json");
+        TilesetFactory t = new TilesetFactory("res/tilesets/forest_tiles.json");
         this.w = w;
         this.size = w.getSize();
         canvas = new JFrame("Game");
@@ -25,21 +24,21 @@ public class Renderer extends JPanel implements Runnable  {
         // Flush the frame - everything may be changed by now
         canvas.removeAll();
         // Add the players
-        for(Player p:w.getPlayers()) {
+        for (Player p : w.getPlayers()) {
             canvas.add(p);
         }
     }
 
     @Override
     public void paint(Graphics g) {
-        for(Player p:w.getPlayers()) {
+        for (Player p : w.getPlayers()) {
             p.paint(g);
         }
     }
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             build();
             paint(canvas.getGraphics());
             repaint();

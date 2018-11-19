@@ -1,7 +1,5 @@
 package network.client;
 
-import game.Renderer;
-import helper.Vector2F;
 import network.common.*;
 
 import java.io.IOException;
@@ -13,6 +11,7 @@ public class Client {
     Manager m;
     Manager m2;
     Scanner s;
+
     public Client(int port) {
         try {
             s = new Scanner(System.in);
@@ -31,7 +30,7 @@ public class Client {
     }
 
     public void clientLoop() {
-        while(true) {
+        while (true) {
             String msg = s.nextLine();
             NetworkMessage c = new ChatMessage(msg);
             m.send(c);

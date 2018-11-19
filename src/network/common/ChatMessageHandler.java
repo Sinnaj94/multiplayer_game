@@ -1,7 +1,5 @@
 package network.common;
 
-import com.sun.tools.internal.ws.wsdl.document.Output;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,6 +10,7 @@ import java.util.List;
 public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
     private List<DataOutputStream> dataOutputStreams;
     public static Object T = new Object();
+
     public ChatMessageHandler() {
         dataOutputStreams = new ArrayList<>();
     }
@@ -19,7 +18,7 @@ public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
     @Override
     public void sendMessage(NetworkMessage networkMessage, DataOutputStream dos) {
         try {
-            ChatMessage c = (ChatMessage)networkMessage;
+            ChatMessage c = (ChatMessage) networkMessage;
             dos.write(c.getMessageType().getByte());
             dos.writeUTF(c.toString());
             dos.flush();
@@ -45,8 +44,8 @@ public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
     @Override
     public void handle(ChatMessage n) {
         // Chat Thread delivers Message to all the Clients... Otherwise print it out!
-        if(dataOutputStreams.size() > 0) {
-            for(DataOutputStream d:dataOutputStreams) {
+        if (dataOutputStreams.size() > 0) {
+            for (DataOutputStream d : dataOutputStreams) {
                 sendMessage(n, d);
                 //notifyAll();
             }

@@ -10,6 +10,7 @@ public class Manager implements Runnable {
     Map<MessageType, NetworkMessageHandler<? extends NetworkMessage>> map;
     private static int MANAGER_ID = 0;
     private int clientID;
+
     public Manager(InputStream is, OutputStream os) {
         System.out.println("Manager created.");
         map = new HashMap<>();
@@ -30,7 +31,7 @@ public class Manager implements Runnable {
     @Override
     public void run() {
         System.out.println("New Manager Thread with ID " + clientID);
-        while(true) {
+        while (true) {
             try {
                 byte b = dis.readByte();
                 MessageType current = MessageType.getMessageTypeByByte(b);
