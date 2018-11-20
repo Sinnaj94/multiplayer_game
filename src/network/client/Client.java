@@ -11,9 +11,10 @@ public class Client {
     Manager m;
     Manager m2;
     Scanner s;
-
+    public volatile boolean running;
     public Client(int port) {
         try {
+            running = true;
             s = new Scanner(System.in);
             socket = new Socket("localhost", port);
             m = new Manager(socket.getInputStream(), socket.getOutputStream());
@@ -30,7 +31,7 @@ public class Client {
     }
 
     public void clientLoop() {
-        while (true) {
+        while (running) {
             String msg = s.nextLine();
             NetworkMessage c = new ChatMessage(msg);
             m.send(c);

@@ -1,10 +1,13 @@
 package game;
 
 import game.tiles.TilesetFactory;
+import helper.Vector2F;
 import helper.Vector2I;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.image.BufferStrategy;
 
@@ -18,8 +21,10 @@ public class Renderer implements Runnable {
     final Vector2I SIZE = new Vector2I(600, 400);
     final long D_FPS = 60;
     final long D_DELTA_LOOP = (1000 * 1000 * 1000)/D_FPS;
+    private Vector2F direction;
     public Renderer(World w) {
         this.running = true;
+        direction = new Vector2F(0, 0, true);
         TilesetFactory t = new TilesetFactory("res/tilesets/forest_tiles.json");
         this.w = w;
         /*canvas = new JFrame("Game");
@@ -38,6 +43,41 @@ public class Renderer implements Runnable {
         panel.add(canvas);
 
         canvas.addMouseListener(new MouseControl());
+        // TODO
+        canvas.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                switch(e.getKeyChar()) {
+                    case 'w':
+                        direction.addY(-1);
+                    case 's':
+                        direction.addY(1);
+                    case 'a':
+                        direction.addX(-1);
+                    case 'd':
+                        direction.addX(1);
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                switch(e.getKeyChar()) {
+                    case 'w':
+                        direction.addY(1);
+                    case 's':
+                        direction.addY(-1);
+                    case 'a':
+                        direction.addX(1);
+                    case 'd':
+                        direction.addX(-1);
+                }
+            }
+        });
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.pack();
         jFrame.setResizable(false);
@@ -48,9 +88,12 @@ public class Renderer implements Runnable {
         canvas.requestFocus();
     }
 
+    // TODO: Remove in the end
+
     private class MouseControl extends MouseAdapter {
 
     }
+
 
     @Override
     public void run() {
@@ -84,7 +127,7 @@ public class Renderer implements Runnable {
     // Game logic! TODO: export
     protected void update(int deltaTime) {
         for(Player p:w.getPlayers()) {
-            p.move();
+            p.move(direction);
         }
     }
 

@@ -45,8 +45,17 @@ public class Vector2F implements Vector2<Float, Vector2F> {
 
     @Override
     public void add(Vector2F v) {
-        setX(getX() + v.getX());
-        setY(getY() + v.getY());
+        addX(v.getX());
+        addY(v.getY());
+    }
+
+    public void addX(float delta) {
+        setX(getX() + delta);
+    }
+
+    public void addY(float delta) {
+        setY(getY() + delta);
+
     }
 
     @Override

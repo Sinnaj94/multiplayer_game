@@ -1,6 +1,7 @@
 package game;
 
 import game.generics.Renderable;
+import helper.Vector2F;
 import helper.Vector2I;
 
 import javax.swing.*;
@@ -26,14 +27,9 @@ public class Player extends JPanel implements Renderable {
         size = new Vector2I(10, 10);
     }
 
-    public void move() {
-        if(this.position.getX() > 600 - size.getX() || this.position.getX() < 0) {
-            this.directionVector.multiply(new Vector2I(-1,1));
-        }
-        if(Math.abs(this.position.getY()) > 400 - size.getY() || this.position.getY() < 0) {
-            this.directionVector.multiply(new Vector2I(1,-1));
-        }
-        this.position.add(directionVector);
+    public void move(Vector2F direction) {
+        Vector2I d = new Vector2I(Math.round(direction.getX()), Math.round(direction.getY()));
+        this.position.add(d);
     }
 
     @Override
