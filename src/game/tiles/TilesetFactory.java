@@ -18,6 +18,8 @@ public class TilesetFactory {
     private WallTile[] wallTiles;
     private JSONObject jobj;
 
+
+    private int tileSize;
     /**
      * TilesetFactory constructor. Returns several Images from a given JSON-Sourcefile
      *
@@ -34,13 +36,31 @@ public class TilesetFactory {
             // Read the TilesetFactory Image
             image = ImageIO.read(new File((String) jobj.get("src")));
 
+            // Set tilesize
+            tileSize = (int)(long)jobj.get("tilesize");
             // Build the different Tiles
-            floorTiles = (FloorTile[]) buildTiles("floor");
-            wallTiles = (WallTile[]) buildTiles("walls");
+            // TODO: Simplify (this is the same function actually!)
+            // (https://stackoverflow.com/questions/49589023/factory-pattern-for-superclass-and-its-subclasses)
+            JSONArray floor = (JSONArray) jobj.get("floor");
+            floorTiles = new FloorTile[floor.size()];
+            for (int i = 0; i < floor.size(); i++) {
+                floorTiles[i] = new FloorTile(image, (JSONObject) floor.get(i));
+            }
+
+            /*JSONArray walls = (JSONArray) jobj.get("walls");
+            wallTiles = new WallTile[floor.size()];
+            for (int i = 0; i < walls.size(); i++) {
+                wallTiles[i] = new WallTile(image, (JSONObject) floor.get(i));
+            }*/
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
     }
+
+    public int getTileSize() {
+        return tileSize;
+    }
+
 
     public FloorTile[] getFloorTiles() {
         return floorTiles;
@@ -48,14 +68,5 @@ public class TilesetFactory {
 
     public WallTile[] getWallTiles() {
         return wallTiles;
-    }
-
-    private Tile[] buildTiles(String jsonArrayKey) {
-        JSONArray jsonArray = (JSONArray) jobj.get(jsonArrayKey);
-        Tile[] tiles = new WallTile[jsonArray.size()];
-        for (int i = 0; i < jsonArray.size(); i++) {
-            tiles[i] = new WallTile(image, (JSONObject) jsonArray.get(i));
-        }
-        return tiles;
     }
 }

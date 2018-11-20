@@ -13,10 +13,11 @@ public class Player extends JPanel implements Renderable {
     private Vector2I position;
     private Vector2I size;
     private float speed;
-
+    private Vector2I directionVector;
     private BufferedImage bufferedImage;
 
     public Player() {
+        directionVector = new Vector2I(1, 1);
         //super();
         //this.id = id;
         this.speed = 0.1f;
@@ -26,7 +27,13 @@ public class Player extends JPanel implements Renderable {
     }
 
     public void move() {
-        this.position.add(new Vector2I(1, 1));
+        if(this.position.getX() > 600 - size.getX() || this.position.getX() < 0) {
+            this.directionVector.multiply(new Vector2I(-1,1));
+        }
+        if(Math.abs(this.position.getY()) > 400 - size.getY() || this.position.getY() < 0) {
+            this.directionVector.multiply(new Vector2I(1,-1));
+        }
+        this.position.add(directionVector);
     }
 
     @Override
