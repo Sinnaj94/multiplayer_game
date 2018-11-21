@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 
 public class TilesetFactory {
     // Floor tiles
@@ -17,7 +18,7 @@ public class TilesetFactory {
     private FloorTile[] floorTiles;
     private WallTile[] wallTiles;
     private JSONObject jobj;
-
+    private Random r;
 
     private int tileSize;
     /**
@@ -32,7 +33,7 @@ public class TilesetFactory {
             // Parse the file
             Object obj = jsonParser.parse(new FileReader(path));
             jobj = (JSONObject) obj;
-
+            r = new Random();
             // Read the TilesetFactory Image
             image = ImageIO.read(new File((String) jobj.get("src")));
 
@@ -61,6 +62,9 @@ public class TilesetFactory {
         return tileSize;
     }
 
+    public FloorTile getRandomFloorTile() {
+        return floorTiles[r.nextInt(floorTiles.length)];
+    }
 
     public FloorTile[] getFloorTiles() {
         return floorTiles;

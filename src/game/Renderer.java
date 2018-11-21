@@ -1,31 +1,35 @@
 package game;
 
+import game.gameobjects.Player;
+import game.tiles.FloorTile;
 import game.tiles.TilesetFactory;
-import helper.Vector2F;
-import helper.Vector2I;
+import helper.Vector2f;
+import helper.Vector2i;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.image.BufferStrategy;
+import java.util.Random;
 
 public class Renderer implements Runnable {
     private World w;
-    private Vector2I size;
+    private Vector2i size;
     private JFrame jFrame;
     private Canvas canvas;
     private volatile boolean running;
     BufferStrategy bufferStrategy;
-    final Vector2I SIZE = new Vector2I(600, 400);
+    final Vector2i SIZE = new Vector2i(600, 400);
     final long D_FPS = 60;
     final long D_DELTA_LOOP = (1000 * 1000 * 1000)/D_FPS;
-    private Vector2F direction;
+    private Vector2i direction;
+    FloorTile[] a;
+    private int tileSize;
     public Renderer(World w) {
         this.running = true;
-        direction = new Vector2F(0, 0, true);
-        TilesetFactory t = new TilesetFactory("res/tilesets/forest_tiles.json");
+        direction = new Vector2i(0, 0);
         this.w = w;
         /*canvas = new JFrame("Game");
         canvas.setSize(size.getX(), size.getY());
@@ -42,42 +46,8 @@ public class Renderer implements Runnable {
 
         panel.add(canvas);
 
-        canvas.addMouseListener(new MouseControl());
         // TODO
-        canvas.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                switch(e.getKeyChar()) {
-                    case 'w':
-                        direction.addY(-1);
-                    case 's':
-                        direction.addY(1);
-                    case 'a':
-                        direction.addX(-1);
-                    case 'd':
-                        direction.addX(1);
-                }
-            }
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                switch(e.getKeyChar()) {
-                    case 'w':
-                        direction.addY(1);
-                    case 's':
-                        direction.addY(-1);
-                    case 'a':
-                        direction.addX(1);
-                    case 'd':
-                        direction.addX(-1);
-                }
-            }
-        });
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.pack();
         jFrame.setResizable(false);
@@ -85,7 +55,24 @@ public class Renderer implements Runnable {
 
         canvas.createBufferStrategy(2);
         bufferStrategy = canvas.getBufferStrategy();
+        canvas.setFocusable(true);
         canvas.requestFocus();
+        canvas.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                System.out.println(e);
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                System.out.println(e);
+            }
+        });
     }
 
     // TODO: Remove in the end
@@ -108,8 +95,6 @@ public class Renderer implements Runnable {
 
             lastUpdateTime = currentUpdateTime;
             currentUpdateTime = System.nanoTime();
-            update((int)(currentUpdateTime - lastUpdateTime)/(1000*1000));
-
             endLoopTime = System.nanoTime();
             deltaLoop = endLoopTime - beginLoopTime;
             if(deltaLoop > D_DELTA_LOOP) {
@@ -124,13 +109,6 @@ public class Renderer implements Runnable {
         }
     }
 
-    // Game logic! TODO: export
-    protected void update(int deltaTime) {
-        for(Player p:w.getPlayers()) {
-            p.move(direction);
-        }
-    }
-
     private void render() {
         Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
         g.clearRect(0, 0, SIZE.getX(), SIZE.getY());
@@ -139,7 +117,10 @@ public class Renderer implements Runnable {
         bufferStrategy.show();
     }
 
-    protected void render(Graphics g) {
+    private void render(Graphics g) {
+        // Render the world.
+        w.getLevel().paint(g);
+        // After that render the players.
         for(Player p:w.getPlayers()) {
             p.paint(g);
         }

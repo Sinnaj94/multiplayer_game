@@ -1,0 +1,29 @@
+package helper;
+
+/**
+ * Vector2 Integer implementation
+ */
+public class Vector2i extends Vector2<Integer, Vector2i> {
+
+    public Vector2i(Integer x, Integer y) {
+        super(x, y);
+    }
+
+    @Override
+    public void add(Vector2i v) {
+        setX(getX() + v.getX());
+        setY(getY() + v.getY());
+    }
+
+    @Override
+    public void multiply(Vector2i v) {
+        setX(getX() * v.getX());
+        setY(getY() * v.getY());
+    }
+
+    @Override
+    public void setVector(Vector2i v) {
+        setX(v.getX());
+        setY(v.getY());
+    }
+}

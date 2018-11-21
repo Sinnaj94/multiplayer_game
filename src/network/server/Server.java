@@ -2,7 +2,7 @@ package network.server;
 
 import game.Renderer;
 import game.World;
-import helper.Vector2I;
+import helper.Vector2i;
 import network.common.*;
 
 import java.io.IOException;
@@ -23,10 +23,13 @@ public class Server {
 
     public Server(int port) {
         try {
-            w = new World(new Vector2I(100, 100));
+            w = new World(new Vector2i(100, 100));
+            w.addPlayer();
             r = new Renderer(w);
             Thread renderThread = new Thread(r);
             renderThread.start();
+            Thread worldThread = new Thread(w);
+            worldThread.start();
             serverSocket = new ServerSocket(port);
             // ChatMessageHandler
             serverLoop();

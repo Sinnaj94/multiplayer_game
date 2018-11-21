@@ -1,7 +1,9 @@
 package game;
 
+import game.gameobjects.Player;
 import game.generics.Renderable;
-import helper.Vector2I;
+import helper.Vector2f;
+import helper.Vector2i;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +11,9 @@ import java.util.Stack;
 
 public class World implements Runnable {
     private List<Player> players;
-    private Vector2I size;
+    private Vector2i size;
+
+
 
     private Level level;
     private Stack<Renderable> renderables;
@@ -17,12 +21,12 @@ public class World implements Runnable {
     /**
      * @param size The number of tiles in the world...
      */
-    public World(Vector2I size) {
+    public World(Vector2i size) {
         players = new ArrayList<>();
         renderables = new Stack<>();
         // TODO: Players.add should be made by
         this.size = size;
-        level = new Level("test.png");
+        level = new Level("test.png", "res/tilesets/forest_tiles.json");
         buildWorld();
     }
 
@@ -37,12 +41,13 @@ public class World implements Runnable {
         }
     }
 
+
     /**
-     * TODO: Calculates the new State of the world...
+     * This is where the calculations happen.
      */
     private void update() {
-        for (Player p : players) {
-            //p.move();
+        for(Player p:getPlayers()) {
+            p.move(new Vector2f(0.00001f, 0f));
         }
     }
 
@@ -53,7 +58,11 @@ public class World implements Runnable {
         return t;
     }
 
-    public Vector2I getSize() {
+    public Level getLevel() {
+        return level;
+    }
+
+    public Vector2i getSize() {
         return size;
     }
 

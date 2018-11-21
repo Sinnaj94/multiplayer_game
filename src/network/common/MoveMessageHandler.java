@@ -1,7 +1,7 @@
 package network.common;
 
-import game.Player;
-import helper.Vector2F;
+import game.gameobjects.Player;
+import helper.Vector2f;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -28,7 +28,7 @@ public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage> {
         try {
             float x = dis.readFloat();
             float y = dis.readFloat();
-            return new MoveMessage(new Vector2F(x, y));
+            return new MoveMessage(new Vector2f(x, y));
         } catch (IOException e) {
             e.printStackTrace();
         }

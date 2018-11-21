@@ -1,6 +1,6 @@
 package game.collectable;
 
-import game.Player;
+import game.gameobjects.Player;
 
 public interface Collectable {
     void give(Player p);
