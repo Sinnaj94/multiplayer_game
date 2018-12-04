@@ -1,5 +1,6 @@
 package game;
 
+import game.Input.MoveCommand;
 import game.gameobjects.Player;
 import game.tiles.FloorTile;
 import game.tiles.TilesetFactory;
@@ -31,6 +32,7 @@ public class Renderer implements Runnable {
         this.running = true;
         direction = new Vector2i(0, 0);
         this.w = w;
+        MoveCommand c = new MoveCommand();
         /*canvas = new JFrame("Game");
         canvas.setSize(size.getX(), size.getY());
         canvas.setVisible(true);
@@ -65,25 +67,49 @@ public class Renderer implements Runnable {
 
             @Override
             public void keyPressed(KeyEvent e) {
+                switch(e.getKeyCode()) {
+                    case 65: // a
+                        c.setStrength(new Vector2f(-1f, 0f));
+                        break;
+                    case 87: // w
+                        c.setStrength(new Vector2f(0f, -1f));
+                        break;
+                    case 68: // d
+                        c.setStrength(new Vector2f(1f, 0f));
+                        break;
+                    case 83: // s
+                        c.setStrength(new Vector2f(0f, 1f));
+                        break;
+                }
                 System.out.println(e);
+                w.addCommand(c);
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
+                switch(e.getKeyCode()) {
+                    case 65: // a
+                        c.setStrength(new Vector2f(1f, 0f));
+                        break;
+                    case 87: // w
+                        c.setStrength(new Vector2f(0f, 1f));
+                        break;
+                    case 68: // d
+                        c.setStrength(new Vector2f(-1f, 0f));
+                        break;
+                    case 83: // s
+                        c.setStrength(new Vector2f(0f, -1f));
+                        break;
+                }
                 System.out.println(e);
+                w.addCommand(c);
             }
         });
     }
 
-    // TODO: Remove in the end
-
-    private class MouseControl extends MouseAdapter {
-
-    }
-
 
     @Override
-    public void run() {
+    public synchronized void run() {
         long beginLoopTime;
         long lastUpdateTime;
         long currentUpdateTime = System.nanoTime();

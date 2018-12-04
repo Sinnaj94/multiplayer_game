@@ -18,13 +18,12 @@ public class Player extends GameObject {
     private float speed;
     private BufferedImage bufferedImage;
     public Player() {
-        this.speed = 0.1f;
         // TODO: Set size and position...
         size = new Vector2i(10, 10);
     }
 
     @Override
     public void paint(Graphics g) {
-        g.drawOval(Math.round(getPosition().getX()), Math.round(getPosition().getY()), size.getX(), size.getY());
+        g.drawRect(Math.round(getPosition().getX()), Math.round(getPosition().getY()), size.getX(), size.getY());
     }
 }

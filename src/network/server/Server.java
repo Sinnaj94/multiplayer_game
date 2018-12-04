@@ -27,9 +27,16 @@ public class Server {
             w.addPlayer();
             r = new Renderer(w);
             Thread renderThread = new Thread(r);
-            renderThread.start();
             Thread worldThread = new Thread(w);
             worldThread.start();
+            renderThread.start();
+
+            try {
+                worldThread.join();
+                renderThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             serverSocket = new ServerSocket(port);
             // ChatMessageHandler
             serverLoop();
