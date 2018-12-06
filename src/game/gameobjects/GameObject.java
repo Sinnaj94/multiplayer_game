@@ -1,6 +1,8 @@
-package game.generics;
+package game.gameobjects;
 
 import com.oracle.tools.packager.Log;
+import game.generics.Movable;
+import game.generics.Renderable;
 import helper.Vector2;
 import helper.Vector2f;
 import helper.Vector2i;
@@ -8,6 +10,7 @@ import helper.Vector2i;
 // TODO: What is better? Vector2i or Vector2f?
 public abstract class GameObject implements Movable<Vector2f>, Renderable {
     private Vector2f position;
+    private Vector2i size;
     // Speed is a variable, which is multiplied with the position
     private float speed;
     private Vector2f delta;
@@ -25,6 +28,16 @@ public abstract class GameObject implements Movable<Vector2f>, Renderable {
     @Override
     public Vector2f getPosition() {
         return position;
+    }
+
+    @Override
+    public void setSize(Vector2i size) {
+        this.size = size;
+    }
+
+    @Override
+    public Vector2i getSize() {
+        return this.size;
     }
 
     @Override

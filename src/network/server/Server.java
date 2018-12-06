@@ -24,19 +24,11 @@ public class Server {
     public Server(int port) {
         try {
             w = new World(new Vector2i(100, 100));
-            w.addPlayer();
-            r = new Renderer(w);
-            Thread renderThread = new Thread(r);
+            Renderer r = new Renderer(w, null);
             Thread worldThread = new Thread(w);
+            Thread renderThread = new Thread(r);
             worldThread.start();
             renderThread.start();
-
-            try {
-                worldThread.join();
-                renderThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             serverSocket = new ServerSocket(port);
             // ChatMessageHandler
             serverLoop();
@@ -60,6 +52,7 @@ public class Server {
                 // Register the existing ChatMessageHandler and MoveManager
                 MoveMessageHandler m = new MoveMessageHandler();
                 m.registerPlayer(w.addPlayer());
+                m.registerWorld(w);
                 ma.register(MessageType.CHAT, c);
                 ma.register(MessageType.MOVE, m);
                 //managers.add(ma);

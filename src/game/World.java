@@ -24,7 +24,7 @@ public class World implements Runnable {
 
     List<Command> requestedCommands;
 
-
+    int commandCount;
     /**
      * @param size The number of tiles in the world...
      */
@@ -36,6 +36,7 @@ public class World implements Runnable {
         this.size = size;
         level = new Level("test.png", "res/tilesets/forest_tiles.json");
         buildWorld();
+        commandCount = 0;
     }
 
     private void buildWorld() {
@@ -43,11 +44,11 @@ public class World implements Runnable {
     }
 
     @Override
-    public synchronized void run() {
+    public void run() {
         while (true) {
             update();
             try {
-                Thread.sleep(1000/60);
+                Thread.sleep(1000/30);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -55,6 +56,7 @@ public class World implements Runnable {
     }
 
     public void addCommand(Command c) {
+        System.out.println(++commandCount);
         requestedCommands.add(c);
     }
 
@@ -65,7 +67,7 @@ public class World implements Runnable {
     private void update() {
         for(Player p:players) {
             for(Command c:requestedCommands) {
-                c.execute(p);
+                c.execute();
             }
             requestedCommands.clear();
             p.update();

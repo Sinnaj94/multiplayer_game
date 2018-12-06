@@ -1,11 +1,10 @@
 package game.Input;
 
-import game.gameobjects.Player;
-import game.generics.GameObject;
+import game.gameobjects.GameObject;
 import helper.Vector2f;
 
 public interface Command {
-    void execute(GameObject p);
+    void execute();
     Vector2f getStrength();
     void setStrength(Vector2f strength);
 }

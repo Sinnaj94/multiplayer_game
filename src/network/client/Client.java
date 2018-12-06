@@ -1,5 +1,8 @@
 package network.client;
 
+import game.Renderer;
+import game.World;
+import helper.Vector2i;
 import network.common.*;
 
 import java.io.IOException;
@@ -23,7 +26,12 @@ public class Client {
             // Receive the ChatMessages
             Thread t = new Thread(m);
             t.start();
-
+            World w = new World(new Vector2i(100, 100));
+            Renderer r = new Renderer(w, m);
+            Thread wThread = new Thread(w);
+            Thread rThread = new Thread(r);
+            wThread.start();
+            rThread.start();
             clientLoop();
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,6 +47,6 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        Client c = new Client(6060);
+        Client a = new Client(6060);
     }
 }

@@ -1,12 +1,10 @@
 package game;
 
-import game.generics.GameObject;
+import game.gameobjects.GameObject;
 import game.generics.Renderable;
 import game.tiles.FloorTile;
-import game.tiles.Tile;
 import game.tiles.TilesetFactory;
 import helper.Vector2f;
-import helper.Vector2i;
 
 import java.awt.*;
 import java.util.ArrayList;

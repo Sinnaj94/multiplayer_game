@@ -1,17 +1,19 @@
 package game;
 
+import game.Input.Command;
 import game.Input.MoveCommand;
 import game.gameobjects.Player;
 import game.tiles.FloorTile;
 import game.tiles.TilesetFactory;
 import helper.Vector2f;
 import helper.Vector2i;
+import network.common.Manager;
+import network.common.MoveMessage;
 
 import javax.swing.*;
+import javax.swing.text.TextAction;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
+import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 import java.util.Random;
 
@@ -28,7 +30,9 @@ public class Renderer implements Runnable {
     private Vector2i direction;
     FloorTile[] a;
     private int tileSize;
-    public Renderer(World w) {
+    private Manager m;
+    public Renderer(World w, Manager m) {
+        this.m = m;
         this.running = true;
         direction = new Vector2i(0, 0);
         this.w = w;
@@ -59,54 +63,71 @@ public class Renderer implements Runnable {
         bufferStrategy = canvas.getBufferStrategy();
         canvas.setFocusable(true);
         canvas.requestFocus();
-        canvas.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
+        InputMap inputMap = panel.getInputMap();
+        ActionMap actionMap = panel.getActionMap();
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, false), "Pressed.up");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, true), "Released.up");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, false), "Pressed.down");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, true), "Released.down");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), "Pressed.left");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, true), "Released.left");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, false), "Pressed.right");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, true), "Released.right");
 
-            }
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch(e.getKeyCode()) {
-                    case 65: // a
-                        c.setStrength(new Vector2f(-1f, 0f));
-                        break;
-                    case 87: // w
-                        c.setStrength(new Vector2f(0f, -1f));
-                        break;
-                    case 68: // d
-                        c.setStrength(new Vector2f(1f, 0f));
-                        break;
-                    case 83: // s
-                        c.setStrength(new Vector2f(0f, 1f));
-                        break;
-                }
-                System.out.println(e);
-                w.addCommand(c);
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                switch(e.getKeyCode()) {
-                    case 65: // a
-                        c.setStrength(new Vector2f(1f, 0f));
-                        break;
-                    case 87: // w
-                        c.setStrength(new Vector2f(0f, 1f));
-                        break;
-                    case 68: // d
-                        c.setStrength(new Vector2f(-1f, 0f));
-                        break;
-                    case 83: // s
-                        c.setStrength(new Vector2f(0f, -1f));
-                        break;
-                }
-                System.out.println(e);
-                w.addCommand(c);
-            }
-        });
+        actionMap.put("Pressed.up", requestUp());
+        actionMap.put("Released.up", requestUpStop());
+        actionMap.put("Pressed.down", requestDown());
+        actionMap.put("Released.down", requestDownStop());
+        actionMap.put("Pressed.left", requestLeft());
+        actionMap.put("Released.left", requestLeftStop());
+        actionMap.put("Pressed.right", requestRight());
+        actionMap.put("Released.right", requestRightStop());
     }
 
+    private Action requestUp() {
+        return new MoveAction(new Vector2f(0f, -1f));
+    }
+
+    private Action requestUpStop() {
+        return new MoveAction(new Vector2f(0f, 1f));
+    }
+
+    private Action requestDown() {
+        return new MoveAction(new Vector2f(0f, 1f));
+    }
+
+    private Action requestDownStop() {
+        return new MoveAction(new Vector2f(0f, -1f));
+    }
+
+    private Action requestLeft() {
+        return new MoveAction(new Vector2f(-1f, 0f));
+    }
+
+    private Action requestLeftStop() {
+        return new MoveAction(new Vector2f(1f, 0f));
+    }
+
+    private Action requestRight() {
+        return new MoveAction(new Vector2f(1f, 0f));
+    }
+
+    private Action requestRightStop() {
+        return new MoveAction(new Vector2f(-1f, 0f));
+    }
+
+    public class MoveAction extends AbstractAction {
+        private Vector2f direction;
+        public MoveAction(Vector2f direction) {
+            this.direction = direction;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            m.send(new MoveMessage(direction));
+        }
+    }
 
     @Override
     public synchronized void run() {
@@ -127,7 +148,7 @@ public class Renderer implements Runnable {
 
             } else {
                 try {
-                    Thread.sleep((D_DELTA_LOOP - deltaLoop)/(1000*1000));
+                    Thread.sleep((D_DELTA_LOOP - deltaLoop)/(600*1000));
                 } catch(InterruptedException e) {
 
                 }

@@ -1,7 +1,7 @@
 package network.common;
 
 public enum MessageType {
-    CHAT((byte) 0), MOVE((byte) 1);
+    CHAT((byte) 0), MOVE((byte) 1), CHANGES((byte) 2);
     byte b;
 
     MessageType(byte b) {
@@ -19,6 +19,8 @@ public enum MessageType {
                 return CHAT;
             case (byte) 1:
                 return MOVE;
+            case (byte) 2:
+                return CHANGES;
         }
         return null;
     }

@@ -1,7 +1,6 @@
 package game.tiles;
 
-import game.generics.GameObject;
-import helper.Vector2f;
+import game.gameobjects.GameObject;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
