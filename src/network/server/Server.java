@@ -20,11 +20,13 @@ public class Server {
     private List<Manager> managers;
     private World w;
     private Renderer r;
-
+    private static Object token = new Object();
     public Server(int port) {
         try {
-            w = new World(new Vector2i(100, 100));
+            w = new World();
+            w.setToken(token);
             Renderer r = new Renderer(w, null);
+            r.setToken(token);
             Thread worldThread = new Thread(w);
             Thread renderThread = new Thread(r);
             worldThread.start();

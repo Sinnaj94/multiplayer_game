@@ -31,6 +31,7 @@ public class Renderer implements Runnable {
     FloorTile[] a;
     private int tileSize;
     private Manager m;
+    private Object token;
     public Renderer(World w, Manager m) {
         this.m = m;
         this.running = true;
@@ -130,7 +131,7 @@ public class Renderer implements Runnable {
     }
 
     @Override
-    public synchronized void run() {
+    public void run() {
         long beginLoopTime;
         long lastUpdateTime;
         long currentUpdateTime = System.nanoTime();
@@ -154,6 +155,12 @@ public class Renderer implements Runnable {
                 }
             }
         }
+
+
+    }
+
+    public void setToken(Object token) {
+        this.token = token;
     }
 
     private void render() {

@@ -25,18 +25,32 @@ public class World implements Runnable {
     List<Command> requestedCommands;
 
     int commandCount;
-    /**
-     * @param size The number of tiles in the world...
-     */
-    public World(Vector2i size) {
+
+    private Object token;
+    public static int UPDATESPERSECOND = 60;
+    private static World instance;
+
+    // Singleton implementation, there is only one world object.
+    public static synchronized World getInstance() {
+        if(World.instance == null) {
+            World.instance = new World();
+        }
+        return World.instance;
+    }
+
+    public World() {
         players = new ArrayList<>();
         renderables = new Stack<>();
         // TODO: Players.add should be made by
         requestedCommands = new ArrayList<>();
-        this.size = size;
+        this.size = new Vector2i(100, 100);
         level = new Level("test.png", "res/tilesets/forest_tiles.json");
         buildWorld();
         commandCount = 0;
+    }
+
+    public void setToken(Object token) {
+        this.token = token;
     }
 
     private void buildWorld() {
@@ -65,11 +79,13 @@ public class World implements Runnable {
      * This is where the calculations happen.
      */
     private void update() {
+        // Execute the Commands
+        for(Command c:requestedCommands) {
+            c.execute();
+        }
+        requestedCommands.clear();
+        // Update the GameObjects
         for(Player p:players) {
-            for(Command c:requestedCommands) {
-                c.execute();
-            }
-            requestedCommands.clear();
             p.update();
         }
     }

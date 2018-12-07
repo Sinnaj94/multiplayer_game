@@ -15,6 +15,7 @@ public class Client {
     Manager m2;
     Scanner s;
     public volatile boolean running;
+    private final static Object token = new Object();
     public Client(int port) {
         try {
             running = true;
@@ -26,8 +27,10 @@ public class Client {
             // Receive the ChatMessages
             Thread t = new Thread(m);
             t.start();
-            World w = new World(new Vector2i(100, 100));
+            World w = new World();
+            w.setToken(token);
             Renderer r = new Renderer(w, m);
+            r.setToken(token);
             Thread wThread = new Thread(w);
             Thread rThread = new Thread(r);
             wThread.start();

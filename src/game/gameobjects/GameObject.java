@@ -15,6 +15,7 @@ public abstract class GameObject implements Movable<Vector2f>, Renderable {
     private float speed;
     private Vector2f delta;
     public GameObject() {
+        this.speed = 1f;
         position = new Vector2f(0f, 0f);
         delta = new Vector2f(0f, 0f);
     }
@@ -42,7 +43,7 @@ public abstract class GameObject implements Movable<Vector2f>, Renderable {
 
     @Override
     public void move(Vector2f delta) {
-        this.delta.add(delta);
+        this.delta.add(new Vector2f(delta.getX() * speed, delta.getY() * speed));
     }
 
     @Override

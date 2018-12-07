@@ -11,7 +11,7 @@ public class Test {
             new Server(6060);
         }).start();
         try {
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.SECONDS.sleep(3);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
