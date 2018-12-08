@@ -32,10 +32,9 @@ public class World {
 
     public void addTestScene() {
         for(int i = 0; i < 20; i++) {
-            Player p = new Player();
-            p.setPosition(new Vector2f(i * 20f, 0f));
-            gameObjects.add(p);
+            Player p = new Player(new Vector2f(i * 20f, 0f));
 
+            gameObjects.add(p);
         }
     }
 

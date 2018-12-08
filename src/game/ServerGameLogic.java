@@ -4,6 +4,7 @@ import game.input.Command;
 import game.gameworld.GameObject;
 import game.gameworld.Player;
 import game.gameworld.World;
+import helper.Vector2f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ public class ServerGameLogic implements Runnable {
 
     public Player addPlayer() {
         // TODO: Referenzen speichern.
-        Player t = new Player();
+        Player t = new Player(new Vector2f(0f, 0f));
         world.addObject(t);
         return t;
     }

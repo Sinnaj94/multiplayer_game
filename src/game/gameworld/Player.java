@@ -8,10 +8,15 @@ import java.awt.image.BufferedImage;
 
 public class Player extends PhysicsObject {
     private BufferedImage bufferedImage;
-    public Player() {
-        super();
+    private Vector2f jumpAcceleration;
+    public Player(Vector2f position) {
+        super(position);
         setSize(new Vector2i(16, 16));
-        this.setPosition(new Vector2f(0f, 0f));
+        jumpAcceleration = new Vector2f(0f, 10f);
+    }
+
+    public void jump() {
+        setConstantForceRequest(jumpAcceleration);
     }
 
     @Override
