@@ -1,5 +1,7 @@
 package game.tiles;
 
+import helper.Vector2;
+import helper.Vector2i;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,7 +18,6 @@ public class TilesetFactory {
     // Floor tiles
     private BufferedImage image;
     private FloorTile[] floorTiles;
-    private WallTile[] wallTiles;
     private JSONObject jobj;
     private Random r;
 
@@ -45,7 +46,10 @@ public class TilesetFactory {
             JSONArray floor = (JSONArray) jobj.get("floor");
             floorTiles = new FloorTile[floor.size()];
             for (int i = 0; i < floor.size(); i++) {
-                floorTiles[i] = new FloorTile(image, (JSONObject) floor.get(i));
+                JSONObject current = (JSONObject)floor.get(i);
+                Vector2i position = new Vector2i((int) (long) current.get("x"), (int) (long) current.get("y"));
+                Vector2i size = new Vector2i((int) (long) current.get("width"), (int) (long) current.get("height"));
+                floorTiles[i] = new FloorTile(image, position, size);
             }
 
             /*JSONArray walls = (JSONArray) jobj.get("walls");
@@ -68,9 +72,5 @@ public class TilesetFactory {
 
     public FloorTile[] getFloorTiles() {
         return floorTiles;
-    }
-
-    public WallTile[] getWallTiles() {
-        return wallTiles;
     }
 }

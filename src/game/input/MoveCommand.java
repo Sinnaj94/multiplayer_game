@@ -1,11 +1,12 @@
-package game.Input;
+package game.input;
 
-import game.gameobjects.GameObject;
+import game.gameworld.GameObject;
 import helper.Vector2f;
 
 public class MoveCommand implements Command {
     private Vector2f strength;
     private GameObject g;
+    private Direction direction;
     public MoveCommand() {
         strength = new Vector2f(0f, 0f);
     }
@@ -21,7 +22,11 @@ public class MoveCommand implements Command {
 
     @Override
     public void execute() {
-        g.move(strength);
+        try {
+            g.move(strength);
+        } catch(NullPointerException e) {
+
+        }
     }
 
     @Override
@@ -31,7 +36,6 @@ public class MoveCommand implements Command {
 
     @Override
     public void setStrength(Vector2f strength) {
-        this.strength.setX(strength.getX());
-        this.strength.setY(strength.getY());
+        this.strength.setVector(strength);
     }
 }

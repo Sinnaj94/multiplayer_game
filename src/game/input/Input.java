@@ -1,4 +1,4 @@
-package game.Input;
+package game.input;
 
 public class Input implements Runnable{
 

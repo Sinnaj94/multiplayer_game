@@ -4,10 +4,11 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Manager implements Runnable {
+public class Manager<T extends NetworkMessage> implements Runnable {
+    // TODO
     DataInputStream dis;
     DataOutputStream dos;
-    Map<MessageType, NetworkMessageHandler<? extends NetworkMessage>> map;
+    Map<MessageType, NetworkMessageHandler<T>> map;
     private static int MANAGER_ID = 0;
     private int clientID;
 
@@ -19,12 +20,12 @@ public class Manager implements Runnable {
         this.clientID = MANAGER_ID++;
     }
 
-    public void register(MessageType messageType, NetworkMessageHandler<? extends NetworkMessage> handler) {
+    public void register(MessageType messageType, NetworkMessageHandler<T> handler) {
         System.out.println("Registering " + messageType.b + ", " + handler.toString());
         map.put(messageType, handler);
     }
 
-    public void send(NetworkMessage n) {
+    public void send(T n) {
         map.get(n.getMessageType()).sendMessage(n, dos);
     }
 

@@ -1,7 +1,8 @@
 package game;
 
-import game.gameobjects.GameObject;
+import game.gameworld.GameObject;
 import game.generics.Renderable;
+import game.input.Collideable;
 import game.tiles.FloorTile;
 import game.tiles.TilesetFactory;
 import helper.Vector2f;
@@ -10,36 +11,39 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Level implements Renderable {
+public class Level implements Renderable, Collideable {
     private String levelPath;
-    private List<GameObject> floor;
+    private Floor floor;
     private TilesetFactory t;
-    private int tileSize;
     public Level(String levelPath, String tilesetImageSrc) {
         // TODO: Get Level from String
-        floor = new ArrayList<>();
-        this.levelPath = levelPath;
         t = new TilesetFactory(tilesetImageSrc);
-        tileSize = t.getTileSize();
-        buildLevel();
+        floor = new Floor(t);
+        this.levelPath = levelPath;
+        build();
     }
 
-    public void buildLevel() {
+    public void build() {
         //TODO: Build from the Charset thing
-        for(int x = 0; x < 20; x++) {
-            for(int y = 0; y < 20; y++) {
-                // Implicitely add a new tile
-                FloorTile c = new FloorTile(t.getRandomFloorTile().getResultImg());
-                c.setPosition(new Vector2f((float)(tileSize * x), (float)(tileSize * y)));
-                floor.add(c);
-            }
-        }
+        floor.build();
+    }
+
+    public void update() {
+
     }
 
     @Override
     public void paint(Graphics g) {
-        for(GameObject ga:floor) {
-            ga.paint(g);
-        }
+        floor.paint(g);
+    }
+
+    @Override
+    public boolean collides(Collideable collideable) {
+        return boundingBox().intersects(collideable.boundingBox());
+    }
+
+    @Override
+    public Rectangle boundingBox() {
+        return floor.boundingBox();
     }
 }

@@ -1,6 +1,5 @@
-package game.Input;
+package game.input;
 
-import game.gameobjects.GameObject;
 import helper.Vector2f;
 
 public interface Command {

@@ -16,11 +16,10 @@ public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
     }
 
     @Override
-    public void sendMessage(NetworkMessage networkMessage, DataOutputStream dos) {
+    public void sendMessage(ChatMessage chatMessage, DataOutputStream dos) {
         try {
-            ChatMessage c = (ChatMessage) networkMessage;
-            dos.write(c.getMessageType().getByte());
-            dos.writeUTF(c.toString());
+            dos.write(chatMessage.getMessageType().getByte());
+            dos.writeUTF(chatMessage.toString());
             dos.flush();
         } catch (IOException e) {
             e.printStackTrace();

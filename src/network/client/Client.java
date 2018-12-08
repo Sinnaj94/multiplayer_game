@@ -1,8 +1,7 @@
 package network.client;
 
-import game.Renderer;
-import game.World;
-import helper.Vector2i;
+import game.gameworld.Renderer;
+import game.ServerGameLogic;
 import network.common.*;
 
 import java.io.IOException;
@@ -23,18 +22,18 @@ public class Client {
             socket = new Socket("localhost", port);
             m = new Manager(socket.getInputStream(), socket.getOutputStream());
             m.register(MessageType.CHAT, new ChatMessageHandler());
-            m.register(MessageType.MOVE, new MoveMessageHandler());
+            //m.register(MessageType.MOVE, new MoveMessageHandler());
             // Receive the ChatMessages
             Thread t = new Thread(m);
             t.start();
-            World w = new World();
+            ServerGameLogic w = new ServerGameLogic();
             w.setToken(token);
-            Renderer r = new Renderer(w, m);
-            r.setToken(token);
+            /*Renderer r = new Renderer(w, m);
+            r.setToken(token);*/
             Thread wThread = new Thread(w);
-            Thread rThread = new Thread(r);
+            //Thread rThread = new Thread(r);
             wThread.start();
-            rThread.start();
+            //rThread.start();
             clientLoop();
         } catch (IOException e) {
             e.printStackTrace();
@@ -44,7 +43,7 @@ public class Client {
     public void clientLoop() {
         while (running) {
             String msg = s.nextLine();
-            NetworkMessage c = new ChatMessage(msg);
+            ChatMessage c = new ChatMessage(msg);
             m.send(c);
         }
     }

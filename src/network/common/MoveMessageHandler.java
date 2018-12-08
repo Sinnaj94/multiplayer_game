@@ -1,8 +1,8 @@
 package network.common;
 
-import game.Input.MoveCommand;
-import game.World;
-import game.gameobjects.Player;
+import game.input.MoveCommand;
+import game.ServerGameLogic;
+import game.gameworld.Player;
 import helper.Vector2f;
 
 import java.io.DataInputStream;
@@ -11,19 +11,18 @@ import java.io.IOException;
 
 public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage> {
     private Player p;
-    private World w;
+    private ServerGameLogic serverGameLogic;
     private MoveCommand c;
     public MoveMessageHandler() {
         c = new MoveCommand();
     }
 
     @Override
-    public void sendMessage(NetworkMessage networkMessage, DataOutputStream dos) {
+    public void sendMessage(MoveMessage moveMessage, DataOutputStream dos) {
         try {
-            MoveMessage m = (MoveMessage) networkMessage;
-            dos.write(m.getMessageType().getByte());
-            dos.writeFloat(m.getDirection().getX());
-            dos.writeFloat(m.getDirection().getY());
+            dos.write(moveMessage.getMessageType().getByte());
+            dos.writeFloat(moveMessage.getDirection().getX());
+            dos.writeFloat(moveMessage.getDirection().getY());
             dos.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,8 +46,8 @@ public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage> {
         c.addGameObject(p);
     }
 
-    public void registerWorld(World w) {
-        this.w = w;
+    public void registerServerGameLogic(ServerGameLogic serverGameLogic) {
+        this.serverGameLogic = serverGameLogic;
     }
 
     @Override
@@ -57,6 +56,6 @@ public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage> {
         MoveCommand test = new MoveCommand();
         test.addGameObject(p);
         test.setStrength(networkMessage.getDirection());
-        w.addCommand(test);
+        serverGameLogic.addCommand(test);
     }
 }

@@ -1,8 +1,7 @@
 package network.server;
 
-import game.Renderer;
-import game.World;
-import helper.Vector2i;
+import game.ServerGameLogic;
+import game.gameworld.Renderer;
 import network.common.*;
 
 import java.io.IOException;
@@ -18,18 +17,17 @@ public class Server {
     private Map<Integer, Socket> clients;
     private BlockingQueue<NetworkMessage> messages;
     private List<Manager> managers;
-    private World w;
-    private Renderer r;
+    private ServerGameLogic serverGameLogic;
+    private Renderer renderer;
     private static Object token = new Object();
     public Server(int port) {
         try {
-            w = new World();
-            w.setToken(token);
-            Renderer r = new Renderer(w, null);
-            r.setToken(token);
-            Thread worldThread = new Thread(w);
-            Thread renderThread = new Thread(r);
-            worldThread.start();
+            serverGameLogic = new ServerGameLogic();
+            Thread logicThread = new Thread(serverGameLogic);
+            // TODO: Take out the renderer.
+            renderer = new Renderer();
+            Thread renderThread = new Thread(renderer);
+            logicThread.start();
             renderThread.start();
             serverSocket = new ServerSocket(port);
             // ChatMessageHandler
@@ -53,8 +51,8 @@ public class Server {
                 c.addOutputStream(t.getOutputStream());
                 // Register the existing ChatMessageHandler and MoveManager
                 MoveMessageHandler m = new MoveMessageHandler();
-                m.registerPlayer(w.addPlayer());
-                m.registerWorld(w);
+                m.registerPlayer(serverGameLogic.addPlayer());
+                m.registerServerGameLogic(serverGameLogic);
                 ma.register(MessageType.CHAT, c);
                 ma.register(MessageType.MOVE, m);
                 //managers.add(ma);

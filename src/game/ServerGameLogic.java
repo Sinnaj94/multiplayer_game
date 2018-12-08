@@ -1,0 +1,72 @@
+package game;
+
+import game.input.Command;
+import game.gameworld.GameObject;
+import game.gameworld.Player;
+import game.gameworld.World;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ServerGameLogic implements Runnable {
+    List<Command> requestedCommands;
+    private Object token;
+    public static int UPDATESPERSECOND = 60;
+    private static ServerGameLogic instance;
+    private World world;
+    private final long UPDATE_RATE = 20;
+    private long lastTime;
+    public ServerGameLogic() {
+        world = World.getInstance();
+        world.addTestScene();
+        requestedCommands = new ArrayList<>();
+    }
+
+    public void setToken(Object token) {
+        this.token = token;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            synchronized (World.getInstance()) {
+                if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {
+                    update();
+                    world.notifyAll();
+                    lastTime = System.currentTimeMillis();
+                } else {
+
+                }
+            }
+        }
+    }
+
+    public void addCommand(Command c) {
+        requestedCommands.add(c);
+    }
+
+
+    /**
+     * This is where the calculations happen.
+     */
+    private void update() {
+        // Execute the Commands
+        for(Command c:requestedCommands) {
+            c.execute();
+        }
+        requestedCommands.clear();
+        // Update the GameObjects
+        // TODO: An dieser Stelle vielleicht auch übertragen (GameObjects changes)
+        for(GameObject gameObject:world.getGameObjects()) {
+            gameObject.update();
+        }
+        world.getLevel().update();
+    }
+
+    public Player addPlayer() {
+        // TODO: Referenzen speichern.
+        Player t = new Player();
+        world.addObject(t);
+        return t;
+    }
+}

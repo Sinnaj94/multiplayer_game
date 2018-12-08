@@ -1,47 +1,31 @@
-package game;
+package game.gameworld;
 
-import game.Input.Command;
-import game.Input.MoveCommand;
-import game.gameobjects.Player;
-import game.tiles.FloorTile;
-import game.tiles.TilesetFactory;
+import game.input.MoveCommand;
 import helper.Vector2f;
 import helper.Vector2i;
-import network.common.Manager;
 import network.common.MoveMessage;
 
 import javax.swing.*;
-import javax.swing.text.TextAction;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
-import java.util.Random;
 
 public class Renderer implements Runnable {
-    private World w;
+    private World world;
     private Vector2i size;
     private JFrame jFrame;
     private Canvas canvas;
     private volatile boolean running;
     BufferStrategy bufferStrategy;
     final Vector2i SIZE = new Vector2i(600, 400);
-    final long D_FPS = 60;
-    final long D_DELTA_LOOP = (1000 * 1000 * 1000)/D_FPS;
-    private Vector2i direction;
-    FloorTile[] a;
-    private int tileSize;
-    private Manager m;
-    private Object token;
-    public Renderer(World w, Manager m) {
-        this.m = m;
+    final long UPDATE_RATE = 10;
+    private long lastTime;
+    // TODO: Manager auslagern
+    public Renderer() {
         this.running = true;
-        direction = new Vector2i(0, 0);
-        this.w = w;
+        world = World.getInstance();
+        // TODO: Umschreiben
         MoveCommand c = new MoveCommand();
-        /*canvas = new JFrame("Game");
-        canvas.setSize(size.getX(), size.getY());
-        canvas.setVisible(true);
-        this.add(canvas);*/
         jFrame = new JFrame("Game");
         JPanel panel = (JPanel)jFrame.getContentPane();
         panel.setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
@@ -64,7 +48,7 @@ public class Renderer implements Runnable {
         bufferStrategy = canvas.getBufferStrategy();
         canvas.setFocusable(true);
         canvas.requestFocus();
-        InputMap inputMap = panel.getInputMap();
+        /*InputMap inputMap = panel.getInputMap();
         ActionMap actionMap = panel.getActionMap();
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, false), "Pressed.up");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, true), "Released.up");
@@ -83,9 +67,9 @@ public class Renderer implements Runnable {
         actionMap.put("Pressed.left", requestLeft());
         actionMap.put("Released.left", requestLeftStop());
         actionMap.put("Pressed.right", requestRight());
-        actionMap.put("Released.right", requestRightStop());
+        actionMap.put("Released.right", requestRightStop());*/
     }
-
+/*
     private Action requestUp() {
         return new MoveAction(new Vector2f(0f, -1f));
     }
@@ -129,38 +113,28 @@ public class Renderer implements Runnable {
             m.send(new MoveMessage(direction));
         }
     }
-
+*/
+    /**
+     * Thread for rendering with desired FPS
+     */
     @Override
     public void run() {
-        long beginLoopTime;
-        long lastUpdateTime;
-        long currentUpdateTime = System.nanoTime();
-        long endLoopTime;
-        long deltaLoop;
         while(running) {
-            beginLoopTime = System.nanoTime();
-            render();
-
-            lastUpdateTime = currentUpdateTime;
-            currentUpdateTime = System.nanoTime();
-            endLoopTime = System.nanoTime();
-            deltaLoop = endLoopTime - beginLoopTime;
-            if(deltaLoop > D_DELTA_LOOP) {
-
-            } else {
-                try {
-                    Thread.sleep((D_DELTA_LOOP - deltaLoop)/(600*1000));
-                } catch(InterruptedException e) {
+            synchronized (World.getInstance()) {
+                if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {
+                    try {
+                        world.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    render();
+                    lastTime = System.currentTimeMillis();
+                } else {
 
                 }
             }
+
         }
-
-
-    }
-
-    public void setToken(Object token) {
-        this.token = token;
     }
 
     private void render() {
@@ -171,12 +145,16 @@ public class Renderer implements Runnable {
         bufferStrategy.show();
     }
 
+    /**
+     * Render Thread
+     * @param g Graphics object
+     */
     private void render(Graphics g) {
         // Render the world.
-        w.getLevel().paint(g);
-        // After that render the players.
-        for(Player p:w.getPlayers()) {
-            p.paint(g);
+        world.getLevel().paint(g);
+        // After that render the GameObjects.
+        for(GameObject gameObject:world.getGameObjects()) {
+            gameObject.paint(g);
         }
     }
 }

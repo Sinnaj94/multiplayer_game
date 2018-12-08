@@ -1,33 +1,30 @@
 package game.tiles;
 
-import game.gameobjects.GameObject;
+import game.gameworld.GameObject;
+import helper.Vector2i;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public abstract class Tile extends GameObject {
-
-
     private BufferedImage resultImg;
 
-    public Tile(BufferedImage image, JSONObject object) {
+    public Tile(BufferedImage image, Vector2i position, Vector2i size) {
+        this(image.getSubimage(position.getX(), position.getY(), size.getX(), size.getY()));
+        System.out.println(position.toString() + " " + size.toString());
+    }
+
+    public Tile(BufferedImage img) {
         super();
-        Graphics g = image.getGraphics();
-        int x = (int) (long) object.get("x");
-        int y = (int) (long) object.get("y");
-        int w = (int) (long) object.get("width");
-        int h = (int) (long) object.get("height");
-        resultImg = image.getSubimage(x, y, w, h);
+        this.setPhysicsEnabled(false);
+        this.resultImg = img;
     }
 
     public BufferedImage getResultImg() {
         return resultImg;
     }
 
-    public Tile(BufferedImage img) {
-        this.resultImg = img;
-    }
 
 
 
