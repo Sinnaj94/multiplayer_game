@@ -1,15 +1,10 @@
 package game;
 
-import game.gameworld.GameObject;
 import game.generics.Renderable;
-import game.input.Collideable;
-import game.tiles.FloorTile;
+import game.generics.Collideable;
 import game.tiles.TilesetFactory;
-import helper.Vector2f;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Level implements Renderable, Collideable {
     private String levelPath;
@@ -38,7 +33,7 @@ public class Level implements Renderable, Collideable {
     }
 
     @Override
-    public boolean collides(Collideable collideable) {
+    public boolean intersects(Collideable collideable) {
         return boundingBox().intersects(collideable.boundingBox());
     }
 

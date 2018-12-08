@@ -4,16 +4,24 @@ package helper;
  * Vector2 Float implementation
  */
 public class Vector2f extends Vector2<Float, Vector2f> {
-    private float x;
-    private float y;
     public Vector2f(Float x, Float y) {
         super(x, y);
     }
 
     @Override
+    public void addY(Float y) {
+        setY(getY() + y);
+    }
+
+    @Override
+    public void addX(Float x) {
+        setX(getX() + x);
+    }
+
+    @Override
     public void add(Vector2f v) {
-        setX(getX() + v.getX());
-        setY(getY() + v.getY());
+        addX(v.getX());
+        addY(v.getY());
     }
 
     @Override

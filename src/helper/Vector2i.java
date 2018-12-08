@@ -10,9 +10,19 @@ public class Vector2i extends Vector2<Integer, Vector2i> {
     }
 
     @Override
+    public void addY(Integer y) {
+        setY(getY() + y);
+    }
+
+    @Override
+    public void addX(Integer x) {
+        setX(getX() + x);
+    }
+
+    @Override
     public void add(Vector2i v) {
-        setX(getX() + v.getX());
-        setY(getY() + v.getY());
+        addX(v.getX());
+        addY(v.getY());
     }
 
     @Override

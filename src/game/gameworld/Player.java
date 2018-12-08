@@ -6,12 +6,10 @@ import helper.Vector2i;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Player extends GameObject {
+public class Player extends PhysicsObject {
     private BufferedImage bufferedImage;
     public Player() {
         super();
-        this.setCollides(true);
-        this.setPhysicsEnabled(true);
         setSize(new Vector2i(16, 16));
         this.setPosition(new Vector2f(0f, 0f));
     }

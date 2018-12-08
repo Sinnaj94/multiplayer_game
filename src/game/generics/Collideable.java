@@ -1,8 +1,8 @@
-package game.input;
+package game.generics;
 
 import java.awt.*;
 
 public interface Collideable {
-    boolean collides(Collideable collideable);
+    boolean intersects(Collideable collideable);
     Rectangle boundingBox();
 }

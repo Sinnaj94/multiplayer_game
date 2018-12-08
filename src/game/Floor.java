@@ -25,7 +25,6 @@ public class Floor extends GameObject {
         gameObjectList = new ArrayList<>();
         this.tilesetFactory = tilesetFactory;
         tileSize = tilesetFactory.getTileSize();
-        setPhysicsEnabled(false);
     }
 
     public void build() {
@@ -37,13 +36,6 @@ public class Floor extends GameObject {
                 c.setPosition(new Vector2f((float)(tileSize * x), (float)(tileSize * y)));
                 gameObjectList.add(c);
             }
-        }
-    }
-
-    @Override
-    public void update() {
-        for(GameObject g:gameObjectList) {
-            g.update();
         }
     }
 

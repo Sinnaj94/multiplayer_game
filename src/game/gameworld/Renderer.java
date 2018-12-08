@@ -123,7 +123,7 @@ public class Renderer implements Runnable {
             synchronized (World.getInstance()) {
                 if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {
                     try {
-                        world.wait();
+                        World.getInstance().wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

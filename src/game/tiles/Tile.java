@@ -17,7 +17,6 @@ public abstract class Tile extends GameObject {
 
     public Tile(BufferedImage img) {
         super();
-        this.setPhysicsEnabled(false);
         this.resultImg = img;
     }
 

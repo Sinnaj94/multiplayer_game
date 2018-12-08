@@ -24,6 +24,9 @@ public abstract class Vector2<Number, Vector2> {
         this.y = n;
     }
 
+    public abstract void addY(Number y);
+    public abstract void addX(Number x);
+
     public abstract void add(Vector2 v);
     public abstract void setVector(Vector2 v);
     public abstract void multiply(Vector2 v);

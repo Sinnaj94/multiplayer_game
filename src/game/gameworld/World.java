@@ -1,9 +1,11 @@
 package game.gameworld;
 
 import game.Level;
+import helper.Vector2f;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Contains all the world objects and is renderable for the renderer. No Gamelogic involved
@@ -29,8 +31,12 @@ public class World {
 
 
     public void addTestScene() {
-        Player p = new Player();
-        gameObjects.add(p);
+        for(int i = 0; i < 20; i++) {
+            Player p = new Player();
+            p.setPosition(new Vector2f(i * 20f, 0f));
+            gameObjects.add(p);
+
+        }
     }
 
     public World() {
@@ -64,6 +70,10 @@ public class World {
      */
     public List<GameObject> getGameObjects() {
         return gameObjects;
+    }
+
+    public List<PhysicsObject> getPhysicsObjects() {
+        return null;
     }
 
 }
