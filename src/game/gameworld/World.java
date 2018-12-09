@@ -12,10 +12,8 @@ import java.util.Random;
  */
 public class World {
     private List<GameObject> gameObjects;
-
+    private List<PhysicsObject> dynamics;
     public final boolean DEBUG_DRAW = true;
-
-
     private Level level;
 
     private static World instance;
@@ -32,17 +30,18 @@ public class World {
 
 
     public void addTestScene() {
-        for(int i = 0; i < 1; i++) {
+        for(int i = 0; i < 2; i++) {
             Random ra = new Random();
             float size = 10f;
             Vector2f r = new Vector2f(size, size);
-            Player p = new Player(new Vector2f(i * 15f, 0f), r);
-            gameObjects.add(p);
+            Player p = new Player(new Vector2f(0f, i * 20f), r);
+            addObject(p);
         }
     }
 
     public World() {
         gameObjects = new ArrayList<>();
+        dynamics = new ArrayList<>();
         level = new Level("test.png", "res/tilesets/forest_tiles.json");
     }
 
@@ -55,7 +54,11 @@ public class World {
      * @return The added Gameobject, so it will work further
      */
     public void addObject(GameObject g) {
+        if(g instanceof PhysicsObject) {
+            dynamics.add((PhysicsObject)g);
+        }
         gameObjects.add(g);
+
     }
 
     /**
@@ -64,6 +67,10 @@ public class World {
      */
     public Level getLevel() {
         return level;
+    }
+
+    public List<PhysicsObject> getDynamics() {
+        return dynamics;
     }
 
     /**

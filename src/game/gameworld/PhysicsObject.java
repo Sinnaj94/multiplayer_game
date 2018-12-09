@@ -67,7 +67,8 @@ public abstract class PhysicsObject extends GameObject {
         }
         touchesFloor = false;
         if (touchesDown()) {
-            float distance= advancedBoundingBox.getMargin() -
+            // TODO: machen
+            /*float distance= advancedBoundingBox.getMargin() -
                             (advancedBoundingBox.getDown().createIntersection(
                              World.getInstance().getLevel().getBoundingBox())).getHeight();
             if(distance < this.currentSpeed.getY() && currentSpeed.getY() > 0) {
@@ -76,8 +77,22 @@ public abstract class PhysicsObject extends GameObject {
                 this.currentSpeed.setY(0f);
                 this.accelerate(impulse);
                 touchesFloor = true;
+
+            }*/
+            this.currentSpeed.setY(0f);
+        }
+    }
+
+    private boolean gameObjectCollision() {
+        for(GameObject g:World.getInstance().getDynamics()) {
+            if(g != this) {
+                if(advancedBoundingBox.getDown().intersects(g.getBoundingBox())) {
+                    System.out.println("INTERSECTION");
+                    return true;
+                }
             }
         }
+        return false;
     }
 
     public boolean getTouchesFloor() {
@@ -90,7 +105,7 @@ public abstract class PhysicsObject extends GameObject {
     }
 
     public boolean touchesDown() {
-        return advancedBoundingBox.getDown().intersects(World.getInstance().getLevel().getBoundingBox());
+        return advancedBoundingBox.getDown().intersects(World.getInstance().getLevel().getBoundingBox()) || gameObjectCollision();
     }
 
     @Override

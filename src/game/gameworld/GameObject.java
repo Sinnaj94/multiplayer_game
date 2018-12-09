@@ -13,7 +13,12 @@ import java.awt.*;
 // TODO: What is better? Vector2i or Vector2f?
 public abstract class GameObject extends BoundingBox implements Renderable, Updateable {
     private static int ID;
-    private static int myID;
+
+    public int getMyID() {
+        return myID;
+    }
+
+    private int myID;
 
     public GameObject() {
         super(new Vector2f(0f, 0f), new Vector2f(16f, 16f));

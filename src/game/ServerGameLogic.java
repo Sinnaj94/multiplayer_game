@@ -1,5 +1,6 @@
 package game;
 
+import game.gameworld.PhysicsObject;
 import game.input.Command;
 import game.gameworld.GameObject;
 import game.gameworld.Player;
@@ -15,7 +16,7 @@ public class ServerGameLogic implements Runnable {
     public static int UPDATESPERSECOND = 60;
     private static ServerGameLogic instance;
     private World world;
-    private final long UPDATE_RATE = 30;
+    private final long UPDATE_RATE = 20;
     private long lastTime;
     public ServerGameLogic() {
         world = World.getInstance();
@@ -59,7 +60,7 @@ public class ServerGameLogic implements Runnable {
         requestedCommands.clear();
         // Update the GameObjects
         // TODO: An dieser Stelle vielleicht auch übertragen (GameObjects changes)
-        for(GameObject gameObject:world.getGameObjects()) {
+        for(PhysicsObject gameObject:world.getDynamics()) {
             gameObject.update();
         }
         world.getLevel().update();
