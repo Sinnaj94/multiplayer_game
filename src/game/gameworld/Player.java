@@ -11,7 +11,7 @@ public class Player extends PhysicsObject {
     private Vector2f jumpAcceleration;
     public Player(Vector2f position) {
         super(position);
-        setSize(new Vector2i(16, 16));
+        //setSize(new Vector2i(16f, 16f));
         jumpAcceleration = new Vector2f(0f, 10f);
     }
 
@@ -22,7 +22,11 @@ public class Player extends PhysicsObject {
     @Override
     public void paint(Graphics g) {
         // TODO cooles Sprite einfügen
-        g.setColor(Color.red);
-        g.fillRect((int)Math.floor(getPosition().getX()), (int)Math.floor(getPosition().getY()), getSize().getX(), getSize().getY());
+        if(World.getInstance().DEBUG_DRAW) {
+            super.paint(g);
+        } else {
+            g.setColor(Color.red);
+            //g.fillRect((int)Math.floor(getPosition().getX()), (int)Math.floor(getPosition().getY()), getSize().getX(), getSize().getY());
+        }
     }
 }

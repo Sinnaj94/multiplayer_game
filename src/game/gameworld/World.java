@@ -13,6 +13,7 @@ import java.util.Random;
 public class World {
     private List<GameObject> gameObjects;
 
+    public final boolean DEBUG_DRAW = true;
 
 
     private Level level;

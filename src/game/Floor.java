@@ -1,8 +1,10 @@
 package game;
 
 import game.gameworld.GameObject;
+import game.gameworld.World;
 import game.tiles.FloorTile;
 import game.tiles.TilesetFactory;
+import helper.BoundingBox;
 import helper.Vector2f;
 
 import java.awt.*;
@@ -29,6 +31,8 @@ public class Floor extends GameObject {
 
     public void build() {
         gameObjectList.clear();
+        setPosition(new Vector2f((float)minX * 16, (float)minY * 16));
+        setSize(new Vector2f((float)(maxX - minX) * 16, (float)(maxY - minY) * 16));
         for(int x = minX; x < maxX; x++) {
             for(int y = minY; y < maxY; y++) {
                 // Implicitely add a new tile
@@ -39,15 +43,21 @@ public class Floor extends GameObject {
         }
     }
 
+    // TODO: improve
     @Override
-    public Rectangle boundingBox() {
-        return new Rectangle(minX* tileSize, minY* tileSize, maxX * tileSize - minX * tileSize, maxY * tileSize - minY * tileSize);
+    public BoundingBox getBoundingBox() {
+        return new BoundingBox(new Vector2f((float)minX*tileSize, (float) minY*tileSize),
+                               new Vector2f((float)maxX * tileSize - minX * tileSize, (float)maxY * tileSize - minY * tileSize));
     }
 
     @Override
     public void paint(Graphics g) {
         for(GameObject ga:gameObjectList) {
-            ga.paint(g);
+            if(World.getInstance().DEBUG_DRAW) {
+                super.paint(g);
+            } else {
+                ga.paint(g);
+            }
         }
     }
 }

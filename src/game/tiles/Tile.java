@@ -1,6 +1,7 @@
 package game.tiles;
 
 import game.gameworld.GameObject;
+import game.gameworld.World;
 import helper.Vector2i;
 import org.json.simple.JSONObject;
 
@@ -29,6 +30,10 @@ public abstract class Tile extends GameObject {
 
     @Override
     public void paint(Graphics g) {
-        g.drawImage(resultImg,Math.round(getPosition().getX()), Math.round(getPosition().getY()), null);
+        if(World.getInstance().DEBUG_DRAW) {
+            super.paint(g);
+        } else {
+            g.drawImage(resultImg,Math.round(getPosition().getX()), Math.round(getPosition().getY()), null);
+        }
     }
 }

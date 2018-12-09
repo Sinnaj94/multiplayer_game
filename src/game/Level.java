@@ -1,8 +1,10 @@
 package game;
 
+import game.gameworld.World;
 import game.generics.Renderable;
 import game.generics.Collideable;
 import game.tiles.TilesetFactory;
+import helper.BoundingBox;
 
 import java.awt.*;
 
@@ -33,12 +35,17 @@ public class Level implements Renderable, Collideable {
     }
 
     @Override
-    public boolean intersects(Collideable collideable) {
-        return boundingBox().intersects(collideable.boundingBox());
+    public boolean intersects(BoundingBox collideable) {
+        return getBoundingBox().intersects(collideable);
     }
 
     @Override
-    public Rectangle boundingBox() {
-        return floor.boundingBox();
+    public BoundingBox createIntersection(BoundingBox collideable) {
+        return getBoundingBox().createIntersection(collideable);
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return floor.getBoundingBox();
     }
 }

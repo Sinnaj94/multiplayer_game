@@ -44,10 +44,10 @@ public abstract class PhysicsObject extends GameObject {
     }
 
     private void applyGravity() {
-        if (intersects(World.getInstance().getLevel())) {
+        if (intersects(World.getInstance().getLevel().getBoundingBox())) {
             this.currentSpeed.setY(0f);
             System.out.println(this.currentSpeed.toString());
-            double difference = World.getInstance().getLevel().boundingBox().createIntersection(boundingBox()).getHeight();
+            double difference = World.getInstance().getLevel().getBoundingBox().createIntersection(getBoundingBox()).getHeight();
             getPosition().setY((float) Math.round(getPosition().getY() - difference));
             return;
         }
@@ -70,45 +70,5 @@ public abstract class PhysicsObject extends GameObject {
         applyGravity();
         accelerate();
         getPosition().add(this.currentSpeed);
-    }
-
-    public class OuterBondings implements Collideable {
-        private int tolerance;
-        private Rectangle big;
-        private SpecificBonding up;
-        private SpecificBonding down;
-        private SpecificBonding left;
-        private SpecificBonding right;
-
-        public OuterBondings(Rectangle r) {
-            tolerance = 5;
-            big = new Rectangle(r.x - tolerance, r.y -tolerance, r.width - tolerance * 2, r.height - tolerance * 2);
-        }
-
-        @Override
-        public boolean intersects(Collideable collideable) {
-            return boundingBox().intersects(collideable.boundingBox());
-        }
-
-        @Override
-        public Rectangle boundingBox() {
-            return big;
-        }
-
-        public class SpecificBonding implements Collideable {
-            public SpecificBonding(Rectangle r) {
-
-            }
-
-            @Override
-            public boolean intersects(Collideable collideable) {
-                return false;
-            }
-
-            @Override
-            public Rectangle boundingBox() {
-                return null;
-            }
-        }
     }
 }
