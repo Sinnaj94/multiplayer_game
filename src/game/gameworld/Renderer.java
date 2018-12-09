@@ -17,7 +17,7 @@ public class Renderer implements Runnable {
     private Canvas canvas;
     private volatile boolean running;
     BufferStrategy bufferStrategy;
-    final Vector2i SIZE = new Vector2i(600, 400);
+    final Vector2i SIZE = new Vector2i(600, 1000);
     final long UPDATE_RATE = 10;
     private long lastTime;
     // TODO: Manager auslagern

@@ -2,6 +2,7 @@ package network.client;
 
 import game.gameworld.Renderer;
 import game.ServerGameLogic;
+import helper.Vector2f;
 import network.common.*;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class Client {
             socket = new Socket("localhost", port);
             m = new Manager(socket.getInputStream(), socket.getOutputStream());
             m.register(MessageType.CHAT, new ChatMessageHandler());
-            //m.register(MessageType.MOVE, new MoveMessageHandler());
+            m.register(MessageType.MOVE, new MoveMessageHandler());
             // Receive the ChatMessages
             Thread t = new Thread(m);
             t.start();
@@ -43,8 +44,8 @@ public class Client {
     public void clientLoop() {
         while (running) {
             String msg = s.nextLine();
-            ChatMessage c = new ChatMessage(msg);
-            m.send(c);
+            MoveMessage mo = new MoveMessage(new Vector2f(1f, 0f));
+            m.send(mo);
         }
     }
 

@@ -22,6 +22,11 @@ public abstract class GameObject extends BoundingBox implements Renderable, Upda
         //System.out.println("Added Game Object with ID " + myID);
     }
 
+    public GameObject(Vector2f position, Vector2f size) {
+        super(position, size);
+        myID = ID++;
+    }
+
     @Override
     public void update() {
         //TODO: Can be destroyed and collected
@@ -31,11 +36,6 @@ public abstract class GameObject extends BoundingBox implements Renderable, Upda
     // Debug draw
     @Override
     public void paint(Graphics g) {
-        Rectangle r = toIntRectangle();
-        g.setColor(Color.black);
-        g.drawRect(r.x, r.y, r.width, r.height);
-        g.setColor(Color.red);
-        g.drawLine(r.x, r.y, r.x + r.width, r.y + r.height);
-        g.drawLine(r.x + r.width, r.y, r.x , r.y + r.height);
+        super.paint(g);
     }
 }

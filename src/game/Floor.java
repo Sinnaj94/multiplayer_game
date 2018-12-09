@@ -21,9 +21,9 @@ public class Floor extends GameObject {
     private int maxY;
     public Floor(TilesetFactory tilesetFactory) {
         minX = 0;
-        maxX = 20;
-        minY = 10;
-        maxY = 20;
+        maxX = 100;
+        minY = 40;
+        maxY = 60;
         gameObjectList = new ArrayList<>();
         this.tilesetFactory = tilesetFactory;
         tileSize = tilesetFactory.getTileSize();

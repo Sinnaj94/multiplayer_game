@@ -24,6 +24,10 @@ public class Vector2f extends Vector2<Float, Vector2f> {
         addY(v.getY());
     }
 
+    public void multiply(Float f) {
+        this.multiply(new Vector2f(f, f));
+    }
+
     @Override
     public void setVector(Vector2f v) {
         setX(v.getX());

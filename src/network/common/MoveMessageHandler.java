@@ -53,6 +53,7 @@ public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage> {
     @Override
     public void handle(MoveMessage networkMessage) {
         // TODO: Why doesn't it work when overwriting the settings?
+        System.out.println("Move message erhalten.");
         MoveCommand test = new MoveCommand();
         test.addGameObject(p);
         test.setStrength(networkMessage.getDirection());

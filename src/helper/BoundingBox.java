@@ -2,11 +2,12 @@ package helper;
 
 import game.generics.Collideable;
 import game.generics.Placeable;
+import game.generics.Renderable;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class BoundingBox implements Collideable, Placeable<Vector2f> {
+public class BoundingBox implements Collideable, Placeable<Vector2f>, Renderable {
     private Vector2f position;
     private Vector2f size;
     public BoundingBox(Vector2f position, Vector2f size) {
@@ -49,7 +50,7 @@ public class BoundingBox implements Collideable, Placeable<Vector2f> {
      * @return
      */
     public Rectangle toIntRectangle() {
-        return new Rectangle((int)Math.floor(getX()), (int)Math.floor(getY()), (int)Math.floor(getWidth()), (int)Math.floor(getHeight()));
+        return new Rectangle((int)Math.round(getX()), (int)Math.round(getY()), (int)Math.round(getWidth()), (int)Math.round(getHeight()));
     }
 
     @Override
@@ -76,5 +77,15 @@ public class BoundingBox implements Collideable, Placeable<Vector2f> {
     @Override
     public Vector2f getSize() {
         return this.size;
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        Rectangle r = toIntRectangle();
+        g.setColor(Color.black);
+        g.drawRect(r.x, r.y, r.width, r.height);
+        g.setColor(Color.red);
+        g.drawLine(r.x, r.y, r.x + r.width, r.y + r.height);
+        g.drawLine(r.x + r.width, r.y, r.x , r.y + r.height);
     }
 }

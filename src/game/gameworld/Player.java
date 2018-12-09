@@ -1,22 +1,47 @@
 package game.gameworld;
 
+import helper.BoundingBox;
 import helper.Vector2f;
 import helper.Vector2i;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Player extends PhysicsObject {
     private BufferedImage bufferedImage;
     private Vector2f jumpAcceleration;
-    public Player(Vector2f position) {
-        super(position);
+    Random r;
+    public Player(Vector2f position, Vector2f size) {
+        super(position, size);
+        r = new Random();
         //setSize(new Vector2i(16f, 16f));
-        jumpAcceleration = new Vector2f(0f, 10f);
+        jumpAcceleration = new Vector2f(0f, -5f);
+    }
+
+    public Player(Vector2f position) {
+        this(position, new Vector2f(16f, 16f));
+    }
+
+    public Player() {
+        this(new Vector2f(0f,0f), new Vector2f(16f, 16f));
     }
 
     public void jump() {
-        setConstantForceRequest(jumpAcceleration);
+        accelerate(new Vector2f(0f, r.nextFloat() * -4));
+    }
+
+    public void move(float direction) {
+        this.getCurrentSpeed().addX(direction);
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        if(getTouchesFloor()) {
+            // TODO only when jump is requested
+            //jump();
+        }
     }
 
     @Override
@@ -26,7 +51,8 @@ public class Player extends PhysicsObject {
             super.paint(g);
         } else {
             g.setColor(Color.red);
-            //g.fillRect((int)Math.floor(getPosition().getX()), (int)Math.floor(getPosition().getY()), getSize().getX(), getSize().getY());
+            Rectangle r = getBoundingBox().toIntRectangle();
+            g.fillRect(r.x, r.y, r.width, r.height);
         }
     }
 }

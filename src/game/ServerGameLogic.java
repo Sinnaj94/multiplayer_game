@@ -53,6 +53,7 @@ public class ServerGameLogic implements Runnable {
     private void update() {
         // Execute the Commands
         for(Command c:requestedCommands) {
+            System.out.println("Executing");
             c.execute();
         }
         requestedCommands.clear();
