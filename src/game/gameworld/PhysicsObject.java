@@ -9,6 +9,11 @@ import java.util.Random;
 public abstract class PhysicsObject extends GameObject {
     private float friction;
     private final float GRAVITY = 0.089f;
+
+    public void setMaxFallingSpeed(float maxFallingSpeed) {
+        this.maxFallingSpeed = maxFallingSpeed;
+    }
+
     private float maxFallingSpeed;
     private float acceleration;
     private Vector2f impulse;

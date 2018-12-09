@@ -12,6 +12,7 @@ public class Player extends PhysicsObject {
     private BufferedImage bufferedImage;
     private Vector2f jumpAcceleration;
     Random r;
+    private Bullet bullet;
     public Player(Vector2f position, Vector2f size) {
         super(position, size);
         r = new Random();
@@ -23,6 +24,7 @@ public class Player extends PhysicsObject {
         this(position, new Vector2f(16f, 16f));
     }
 
+
     public Player() {
         this(new Vector2f(0f,0f), new Vector2f(16f, 16f));
     }
@@ -31,6 +33,20 @@ public class Player extends PhysicsObject {
         accelerate(new Vector2f(0f, r.nextFloat() * -4));
     }
 
+    public boolean shoot() {
+        if(bullet == null) {
+            performShoot();
+        } else if(bullet.ready()) {
+            performShoot();
+        }
+        return false;
+    }
+
+    private void performShoot() {
+        bullet = new Bullet(new Vector2f(getPosition().getX(), getPosition().getY()));
+    }
+
+
     public void move(float direction) {
         this.getCurrentSpeed().addX(direction);
     }
@@ -38,7 +54,12 @@ public class Player extends PhysicsObject {
     @Override
     public void update() {
         super.update();
+        if(bullet!=null) {
+            bullet.update();
+        }
+        shoot();
         if(getTouchesFloor()) {
+            //jump();
             // TODO only when jump is requested
             //jump();
         }
@@ -53,6 +74,9 @@ public class Player extends PhysicsObject {
             g.setColor(Color.red);
             Rectangle r = getBoundingBox().toIntRectangle();
             g.fillRect(r.x, r.y, r.width, r.height);
+        }
+        if(bullet != null) {
+            bullet.paint(g);
         }
     }
 }

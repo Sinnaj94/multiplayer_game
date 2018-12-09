@@ -15,7 +15,7 @@ public class ServerGameLogic implements Runnable {
     public static int UPDATESPERSECOND = 60;
     private static ServerGameLogic instance;
     private World world;
-    private final long UPDATE_RATE = 20;
+    private final long UPDATE_RATE = 30;
     private long lastTime;
     public ServerGameLogic() {
         world = World.getInstance();

@@ -32,11 +32,11 @@ public class World {
 
 
     public void addTestScene() {
-        for(int i = 0; i < 100; i++) {
+        for(int i = 0; i < 1; i++) {
             Random ra = new Random();
             float size = 10f;
             Vector2f r = new Vector2f(size, size);
-            Player p = new Player(new Vector2f(i * 10f, 0f), r);
+            Player p = new Player(new Vector2f(i * 15f, 0f), r);
             gameObjects.add(p);
         }
     }
