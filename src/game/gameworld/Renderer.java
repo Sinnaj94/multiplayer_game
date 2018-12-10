@@ -1,13 +1,11 @@
 package game.gameworld;
 
+import game.input.InputLogic;
 import game.input.MoveCommand;
-import helper.Vector2f;
 import helper.Vector2i;
-import network.common.MoveMessage;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferStrategy;
 
 public class Renderer implements Runnable {
@@ -15,6 +13,7 @@ public class Renderer implements Runnable {
     private Vector2i size;
     private JFrame jFrame;
     private Canvas canvas;
+    private InputLogic inputLogic;
     private volatile boolean running;
     BufferStrategy bufferStrategy;
     final Vector2i SIZE = new Vector2i(600, 1000);
@@ -46,73 +45,13 @@ public class Renderer implements Runnable {
 
         canvas.createBufferStrategy(2);
         bufferStrategy = canvas.getBufferStrategy();
-        canvas.setFocusable(true);
-        canvas.requestFocus();
-        /*InputMap inputMap = panel.getInputMap();
-        ActionMap actionMap = panel.getActionMap();
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, false), "Pressed.up");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, true), "Released.up");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, false), "Pressed.down");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, true), "Released.down");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), "Pressed.left");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, true), "Released.left");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, false), "Pressed.right");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, true), "Released.right");
+        panel.setFocusable(true);
+        panel.requestFocus();
+        inputLogic = new InputLogic(panel);
 
-
-        actionMap.put("Pressed.up", requestUp());
-        actionMap.put("Released.up", requestUpStop());
-        actionMap.put("Pressed.down", requestDown());
-        actionMap.put("Released.down", requestDownStop());
-        actionMap.put("Pressed.left", requestLeft());
-        actionMap.put("Released.left", requestLeftStop());
-        actionMap.put("Pressed.right", requestRight());
-        actionMap.put("Released.right", requestRightStop());*/
     }
 /*
-    private Action requestUp() {
-        return new MoveAction(new Vector2f(0f, -1f));
-    }
 
-    private Action requestUpStop() {
-        return new MoveAction(new Vector2f(0f, 1f));
-    }
-
-    private Action requestDown() {
-        return new MoveAction(new Vector2f(0f, 1f));
-    }
-
-    private Action requestDownStop() {
-        return new MoveAction(new Vector2f(0f, -1f));
-    }
-
-    private Action requestLeft() {
-        return new MoveAction(new Vector2f(-1f, 0f));
-    }
-
-    private Action requestLeftStop() {
-        return new MoveAction(new Vector2f(1f, 0f));
-    }
-
-    private Action requestRight() {
-        return new MoveAction(new Vector2f(1f, 0f));
-    }
-
-    private Action requestRightStop() {
-        return new MoveAction(new Vector2f(-1f, 0f));
-    }
-
-    public class MoveAction extends AbstractAction {
-        private Vector2f direction;
-        public MoveAction(Vector2f direction) {
-            this.direction = direction;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            m.send(new MoveMessage(direction));
-        }
-    }
 */
     /**
      * Thread for rendering with desired FPS
@@ -153,8 +92,11 @@ public class Renderer implements Runnable {
         // Render the world.
         world.getLevel().paint(g);
         // After that render the GameObjects.
-        for(GameObject gameObject:world.getGameObjects()) {
-            gameObject.paint(g);
+        for(PhysicsObject ga:world.getDynamics()) {
+            ga.paint(g);
         }
+        /*for(GameObject gameObject:world.getStatics()) {
+            gameObject.paint(g);
+        }*/
     }
 }

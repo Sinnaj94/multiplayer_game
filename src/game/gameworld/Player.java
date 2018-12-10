@@ -1,23 +1,28 @@
 package game.gameworld;
 
+import game.collectable.Collectable;
 import helper.BoundingBox;
 import helper.Vector2f;
 import helper.Vector2i;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Random;
+import java.util.*;
+import java.util.List;
 
 public class Player extends PhysicsObject {
     private BufferedImage bufferedImage;
-    private Vector2f jumpAcceleration;
+    private float jumpAcceleration;
     Random r;
     private Bullet bullet;
+    private boolean jumpRequested;
+    private Inventory inventory;
     public Player(Vector2f position, Vector2f size) {
         super(position, size);
         r = new Random();
+        inventory = new Inventory();
         //setSize(new Vector2i(16f, 16f));
-        jumpAcceleration = new Vector2f(0f, -5f);
+        jumpAcceleration = -3f;
     }
 
     public Player(Vector2f position) {
@@ -30,7 +35,7 @@ public class Player extends PhysicsObject {
     }
 
     public void jump() {
-        accelerate(new Vector2f(0f, r.nextFloat() * -4));
+        jumpRequested = true;
     }
 
     public boolean shoot() {
@@ -42,13 +47,18 @@ public class Player extends PhysicsObject {
         return false;
     }
 
+    public boolean addItem(Item i) {
+        return inventory.addItem(i);
+
+    }
+
     private void performShoot() {
         bullet = new Bullet(new Vector2f(getPosition().getX(), getPosition().getY()));
     }
 
 
     public void move(float direction) {
-        this.getCurrentSpeed().addX(direction);
+        this.getCurrentSpeed().addX(direction * 3f);
     }
 
     @Override
@@ -58,11 +68,10 @@ public class Player extends PhysicsObject {
             bullet.update();
         }
         shoot();
-        if(getTouchesFloor()) {
-            //jump();
-            // TODO only when jump is requested
-            //jump();
+        if(getTouchesFloor() && jumpRequested) {
+            accelerate(new Vector2f(0f, jumpAcceleration));
         }
+        jumpRequested = false;
     }
 
     @Override
@@ -78,5 +87,26 @@ public class Player extends PhysicsObject {
         if(bullet != null) {
             bullet.paint(g);
         }
+    }
+
+    public class Inventory {
+        List<Item> items;
+        private int capacity;
+        private int index;
+        public Inventory() {
+            capacity = 3;
+            items = new ArrayList<>();
+        }
+
+        public boolean addItem(Item i) {
+            if(index < capacity) {
+                items.add(i);
+                index++;
+                System.out.println("Object added. New Length: " + items.size());
+                return true;
+            }
+            return false;
+        }
+
     }
 }

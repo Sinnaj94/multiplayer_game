@@ -1,15 +1,17 @@
 package game.gameworld;
 
+import game.generics.Collideable;
 import helper.AdvancedBoundingBox;
 import helper.Vector2f;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public abstract class PhysicsObject extends GameObject {
     private float friction;
     private final float GRAVITY = 0.089f;
-
     public void setMaxFallingSpeed(float maxFallingSpeed) {
         this.maxFallingSpeed = maxFallingSpeed;
     }
@@ -67,19 +69,38 @@ public abstract class PhysicsObject extends GameObject {
         }
         touchesFloor = false;
         if (touchesDown()) {
-            // TODO: machen
-            /*float distance= advancedBoundingBox.getMargin() -
-                            (advancedBoundingBox.getDown().createIntersection(
-                             World.getInstance().getLevel().getBoundingBox())).getHeight();
-            if(distance < this.currentSpeed.getY() && currentSpeed.getY() > 0) {
-                // Save the impulse.
-                this.impulse.setY((-this.currentSpeed.getY() * bounciness));
-                this.currentSpeed.setY(0f);
-                this.accelerate(impulse);
-                touchesFloor = true;
+            touchesFloor = true;
+            if(currentSpeed.getY() > 0f) {
+                // TODO: machen
+                float distance = advancedBoundingBox.getMargin() -
+                        (advancedBoundingBox.getDown().createIntersection(
+                                World.getInstance().getLevel().getBoundingBox())).getHeight();
+                // Das GameObject kommt auf dem Boden auf
+                if(distance < currentSpeed.getY() && currentSpeed.getY() > 0) {
+                    getPosition().addY(distance);
+                    float lastSpeed = currentSpeed.getY();
+                    currentSpeed.setY(0f);
+                    if(lastSpeed > .05f) {
+                        this.impulse.setY( -lastSpeed * bounciness);
+                        accelerate(impulse);
+                    }
+                }
+            }
 
+            /*
+            System.out.println(distance);
+            if(distance < this.currentSpeed.getY()) {
+                // Save the impulse.
+                if(this.currentSpeed.getY() < .05f) {
+                    this.impulse.setY(0f);
+                    this.accelerate(impulse);
+                } else {
+                    this.impulse.setY((-this.currentSpeed.getY() * bounciness));
+                }
+                this.currentSpeed.setY(0f);
+                this.getPosition().addY(distance);
+                touchesFloor = true;
             }*/
-            this.currentSpeed.setY(0f);
         }
     }
 
@@ -105,7 +126,7 @@ public abstract class PhysicsObject extends GameObject {
     }
 
     public boolean touchesDown() {
-        return advancedBoundingBox.getDown().intersects(World.getInstance().getLevel().getBoundingBox()) || gameObjectCollision();
+        return advancedBoundingBox.getDown().intersects(World.getInstance().getCollideable().getBoundingBox());
     }
 
     @Override

@@ -13,7 +13,6 @@ public class Manager<T extends NetworkMessage> implements Runnable {
     private int clientID;
 
     public Manager(InputStream is, OutputStream os) {
-        System.out.println("Manager created.");
         map = new HashMap<>();
         dis = new DataInputStream(is);
         dos = new DataOutputStream(os);

@@ -63,6 +63,7 @@ public class ServerGameLogic implements Runnable {
         for(PhysicsObject gameObject:world.getDynamics()) {
             gameObject.update();
         }
+        world.removeObjects();
         world.getLevel().update();
     }
 
