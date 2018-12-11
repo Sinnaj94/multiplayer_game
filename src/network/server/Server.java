@@ -28,10 +28,10 @@ public class Server {
             serverGameLogic = new ServerGameLogic(this);
             Thread logicThread = new Thread(serverGameLogic);
             // TODO: Take out the renderer... TO A FANCY RESTAURANT!
-            renderer = new Renderer();
-            Thread renderThread = new Thread(renderer);
+            //renderer = new Renderer();
+            //Thread renderThread = new Thread(renderer);
             logicThread.start();
-            renderThread.start();
+            //renderThread.start();
             serverSocket = new ServerSocket(port);
             // ChatMessageHandler
             gameObjectMessageHandler = new GameObjectMessageHandler();

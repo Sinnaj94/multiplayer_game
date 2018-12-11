@@ -40,17 +40,9 @@ public class World {
             float size = 2f;
             Vector2f r = new Vector2f(size, size);
             Player p = new Player(new Vector2f(20f*i, 0f));
-            p.setBounciness(1f);
+            p.setBounciness(ra.nextFloat() * 5);
             addObject(p);
         }
-        for(int i = 0; i < 10; i++) {
-            float size = ra.nextFloat() * 1;
-            Item t = new Item(new Vector2f(i*.01f, 0f), new Vector2f(size, size));
-            t.setBounciness(ra.nextFloat() * 2f);
-            t.setMaxFallingSpeed(ra.nextFloat() * 5f + 2f);
-            addObject(t);
-        }
-
     }
 
     public World() {

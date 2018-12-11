@@ -39,11 +39,11 @@ public class Player extends PhysicsObject {
     }
 
     public boolean shoot() {
-        if(bullet == null) {
+        /*if(bullet == null) {
             performShoot();
         } else if(bullet.ready()) {
             performShoot();
-        }
+        }*/
         return false;
     }
 
@@ -67,7 +67,7 @@ public class Player extends PhysicsObject {
         if(bullet!=null) {
             bullet.update();
         }
-        shoot();
+        //shoot();
         if(getTouchesFloor() && jumpRequested) {
             accelerate(new Vector2f(0f, jumpAcceleration));
         }

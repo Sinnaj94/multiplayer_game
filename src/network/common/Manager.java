@@ -25,7 +25,6 @@ public class Manager<T extends NetworkMessage> implements Runnable {
     }
 
     public void send(T n) {
-        System.out.println("Sending message");
         map.get(n.getMessageType()).sendMessage(n, dos);
     }
 
