@@ -1,7 +1,7 @@
 package network.common;
 
 import game.input.MoveCommand;
-import game.ServerGameLogic;
+import network.server.ServerGameLogic;
 import game.gameworld.Player;
 import helper.Vector2f;
 

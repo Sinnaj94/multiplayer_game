@@ -1,8 +1,6 @@
 package network.client;
 
 import game.gameworld.Renderer;
-import game.ServerGameLogic;
-import helper.Vector2f;
 import network.common.*;
 
 import java.io.IOException;
@@ -15,27 +13,29 @@ public class Client {
     Manager m2;
     Scanner s;
     public volatile boolean running;
-    private final static Object token = new Object();
     public Client(int port) {
         try {
+            ClientGameLogic c = new ClientGameLogic();
+            Renderer r = new Renderer();
+            Thread t = new Thread(r);
+            t.start();
             running = true;
             s = new Scanner(System.in);
             socket = new Socket("localhost", port);
             m = new Manager(socket.getInputStream(), socket.getOutputStream());
-            m.register(MessageType.CHAT, new ChatMessageHandler());
-            m.register(MessageType.MOVE, new MoveMessageHandler());
+            m.register(MessageType.GAME_OBJECT, new GameObjectMessageHandler());
             // Receive the ChatMessages
-            Thread t = new Thread(m);
-            t.start();
-            ServerGameLogic w = new ServerGameLogic();
+            Thread ta = new Thread(m);
+            ta.start();
+            /*ServerGameLogic w = new ServerGameLogic();
             w.setToken(token);
             /*Renderer r = new Renderer(w, m);
-            r.setToken(token);*/
+            r.setToken(token);
             Thread wThread = new Thread(w);
             //Thread rThread = new Thread(r);
             wThread.start();
             //rThread.start();
-            clientLoop();
+            clientLoop();*/
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,9 +43,7 @@ public class Client {
 
     public void clientLoop() {
         while (running) {
-            String msg = s.nextLine();
-            MoveMessage mo = new MoveMessage(new Vector2f(1f, 0f));
-            m.send(mo);
+
         }
     }
 

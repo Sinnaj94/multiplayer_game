@@ -61,11 +61,11 @@ public class Renderer implements Runnable {
         while(running) {
             synchronized (World.getInstance()) {
                 if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {
-                    try {
+                    /*try {
                         World.getInstance().wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                     render();
                     lastTime = System.currentTimeMillis();
                 } else {
@@ -94,6 +94,9 @@ public class Renderer implements Runnable {
         // After that render the GameObjects.
         for(PhysicsObject ga:world.getDynamics()) {
             ga.paint(g);
+        }
+        for(GameObject s:world.getStatics()) {
+            s.paint(g);
         }
         /*for(GameObject gameObject:world.getStatics()) {
             gameObject.paint(g);

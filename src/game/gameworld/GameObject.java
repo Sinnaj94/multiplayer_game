@@ -32,6 +32,11 @@ public abstract class GameObject extends BoundingBox implements Renderable, Upda
         myID = ID++;
     }
 
+    public GameObject(Vector2f position, Vector2f size, int id) {
+        super(position, size);
+        myID = id;
+    }
+
     @Override
     public void update() {
         //TODO: Can be destroyed and collected

@@ -1,8 +1,7 @@
-package game;
+package network.server;
 
 import game.gameworld.PhysicsObject;
 import game.input.Command;
-import game.gameworld.GameObject;
 import game.gameworld.Player;
 import game.gameworld.World;
 import helper.Vector2f;
@@ -16,9 +15,11 @@ public class ServerGameLogic implements Runnable {
     public static int UPDATESPERSECOND = 60;
     private static ServerGameLogic instance;
     private World world;
+    private Server server;
     private final long UPDATE_RATE = 20;
     private long lastTime;
-    public ServerGameLogic() {
+    public ServerGameLogic(Server server) {
+        this.server = server;
         world = World.getInstance();
         world.addTestScene();
         requestedCommands = new ArrayList<>();
@@ -61,6 +62,7 @@ public class ServerGameLogic implements Runnable {
         // Update the GameObjects
         // TODO: An dieser Stelle vielleicht auch übertragen (GameObjects changes)
         for(PhysicsObject gameObject:world.getDynamics()) {
+            server.sendGameObject(gameObject);
             gameObject.update();
         }
         world.removeObjects();
