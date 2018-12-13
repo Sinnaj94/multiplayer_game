@@ -46,6 +46,15 @@ public class Server {
         Server s = new Server(6060);
     }
 
+    public void deliverToClients() {
+        for(Manager m:managers) {
+            for(GameObject g:World.getInstance().getPlayers()) {
+                m.send(new GameObjectMessage(g));
+            }
+        }
+
+    }
+
     private void serverLoop() {
         managers = new ArrayList<>();
         //MoveMessageHandler m = new MoveMessageHandler();

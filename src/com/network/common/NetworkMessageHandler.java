@@ -1,5 +1,8 @@
 package com.network.common;
 
+import com.network.stream.MyDataInputStream;
+import com.network.stream.MyDataOutputStream;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
@@ -10,7 +13,7 @@ public interface NetworkMessageHandler<NetworkMessage> {
      * @param networkMessage Implemented NetworkMessage
      * @param dos            DataOutputStream
      */
-    void sendMessage(NetworkMessage networkMessage, DataOutputStream dos);
+    void sendMessage(NetworkMessage networkMessage, MyDataOutputStream dos);
 
     /**
      * Get the actual Network Message
@@ -18,7 +21,7 @@ public interface NetworkMessageHandler<NetworkMessage> {
      * @param dis DataInputStream
      * @return Actual Network Message
      */
-    NetworkMessage getNetworkMessage(DataInputStream dis);
+    NetworkMessage getNetworkMessage(MyDataInputStream dis);
 
     /**
      * Handle the Message

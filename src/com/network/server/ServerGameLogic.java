@@ -16,10 +16,13 @@ public class ServerGameLogic implements Runnable {
     private static ServerGameLogic instance;
     private World world;
     private Server server;
-    private final long UPDATE_RATE = 20;
+    private final int UPDATE_RATE = 10;
+    private final int CLIENT_UPDATE_RATE = 10;
+    private long updateCount;
     private long lastTime;
     public ServerGameLogic(Server server) {
         this.server = server;
+        updateCount = 0;
         world = World.getInstance();
         world.addTestScene();
         requestedCommands = new ArrayList<>();
@@ -35,6 +38,11 @@ public class ServerGameLogic implements Runnable {
             synchronized (World.getInstance()) {
                 if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {
                     update();
+                    updateCount++;
+                    if(updateCount % CLIENT_UPDATE_RATE == 0) {
+                        // TODO
+                        server.deliverToClients();
+                    }
                     world.notifyAll();
                     lastTime = System.currentTimeMillis();
                 } else {

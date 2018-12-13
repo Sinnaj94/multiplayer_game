@@ -36,11 +36,12 @@ public class World {
 
     public void addTestScene() {
         Random ra = new Random();
-        for(int i = 0; i < 100; i++) {
-            float size = 1f;
+        for(int i = 0; i < 10; i++) {
+            float size = 20f;
             Vector2f r = new Vector2f(size, size);
-            Player p = new Player(new Vector2f(0.1f*i, 0f), r);
-            p.setBounciness(ra.nextFloat() * 1f);
+            Player p = new Player(new Vector2f(10f*i, 0f), r);
+            p.setMaxFallingSpeed(ra.nextFloat() +1f);
+            p.setBounciness(ra.nextFloat() * 5f);
             addObject(p);
         }
     }
@@ -79,6 +80,15 @@ public class World {
             }
         }
         return null;
+    }
+
+    public boolean existsObject(int id) {
+        for(GameObject ga:statics) {
+            if(id == ga.getMyID()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // TODO: Event system

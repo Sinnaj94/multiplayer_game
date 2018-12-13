@@ -1,5 +1,8 @@
 package com.network.common;
 
+import com.network.stream.MyDataInputStream;
+import com.network.stream.MyDataOutputStream;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
-    private List<DataOutputStream> dataOutputStreams;
+    private List<MyDataOutputStream> dataOutputStreams;
     public static Object T = new Object();
 
     public ChatMessageHandler() {
@@ -16,7 +19,7 @@ public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
     }
 
     @Override
-    public void sendMessage(ChatMessage chatMessage, DataOutputStream dos) {
+    public void sendMessage(ChatMessage chatMessage, MyDataOutputStream dos) {
         try {
             dos.write(chatMessage.getMessageType().getByte());
             dos.writeUTF(chatMessage.toString());
@@ -27,11 +30,11 @@ public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
     }
 
     public void addOutputStream(OutputStream os) {
-        dataOutputStreams.add(new DataOutputStream(os));
+        dataOutputStreams.add(new MyDataOutputStream(os));
     }
 
     @Override
-    public ChatMessage getNetworkMessage(DataInputStream dis) {
+    public ChatMessage getNetworkMessage(MyDataInputStream dis) {
         try {
             return new ChatMessage(dis.readUTF());
         } catch (IOException e) {
@@ -44,7 +47,7 @@ public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
     public void handle(ChatMessage n) {
         // Chat Thread delivers Message to all the Clients... Otherwise print it out!
         if (dataOutputStreams.size() > 0) {
-            for (DataOutputStream d : dataOutputStreams) {
+            for (MyDataOutputStream d : dataOutputStreams) {
                 sendMessage(n, d);
                 //notifyAll();
             }

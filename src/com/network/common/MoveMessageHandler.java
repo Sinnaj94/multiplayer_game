@@ -4,6 +4,8 @@ import com.game.input.MoveCommand;
 import com.network.server.ServerGameLogic;
 import com.game.gameworld.Player;
 import com.helper.Vector2f;
+import com.network.stream.MyDataInputStream;
+import com.network.stream.MyDataOutputStream;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,7 +20,7 @@ public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage> {
     }
 
     @Override
-    public void sendMessage(MoveMessage moveMessage, DataOutputStream dos) {
+    public void sendMessage(MoveMessage moveMessage, MyDataOutputStream dos) {
         try {
             dos.write(moveMessage.getMessageType().getByte());
             dos.writeFloat(moveMessage.getDirection().getX());
@@ -30,7 +32,7 @@ public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage> {
     }
 
     @Override
-    public MoveMessage getNetworkMessage(DataInputStream dis) {
+    public MoveMessage getNetworkMessage(MyDataInputStream dis) {
         try {
             float x = dis.readFloat();
             float y = dis.readFloat();

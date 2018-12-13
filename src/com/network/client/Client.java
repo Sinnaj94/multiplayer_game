@@ -18,6 +18,8 @@ public class Client {
             ClientGameLogic c = new ClientGameLogic();
             Renderer r = new Renderer();
             Thread t = new Thread(r);
+            Thread cl = new Thread(c);
+            cl.start();
             t.start();
             running = true;
             s = new Scanner(System.in);

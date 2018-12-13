@@ -4,12 +4,12 @@ import com.game.gameworld.GameObject;
 import com.game.gameworld.PhysicsObject;
 
 public class GameObjectMessage implements NetworkMessage {
-    private PhysicsObject physicsObject;
-    public GameObjectMessage(PhysicsObject p) {
+    private GameObject physicsObject;
+    public GameObjectMessage(GameObject p) {
         this.physicsObject = p;
     }
 
-    public PhysicsObject toPhysicsObject() {
+    public GameObject getGameObject() {
         return physicsObject;
     }
 

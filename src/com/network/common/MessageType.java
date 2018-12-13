@@ -1,7 +1,7 @@
 package com.network.common;
 
 public enum MessageType {
-    CHAT((byte) 0), MOVE((byte) 1), GAME_OBJECT((byte) 2);
+    CHAT((byte) 0), MOVE((byte) 1), GAME_OBJECT((byte) 2), EVENT((byte)3);
     byte b;
 
     MessageType(byte b) {
@@ -14,15 +14,22 @@ public enum MessageType {
 
     public static MessageType getMessageTypeByByte(byte b) {
         // TODO: Automate: Values()?
-        switch (b) {
+        for(MessageType m:MessageType.values()) {
+            if(m.getByte() == b) {
+                return m;
+            }
+        }
+        return null;
+        /*switch (b) {
             case (byte) 0:
                 return CHAT;
             case (byte) 1:
                 return MOVE;
             case (byte) 2:
                 return GAME_OBJECT;
-        }
-        return null;
+            case (byte) 3:
+
+        }*/
     }
 
 }

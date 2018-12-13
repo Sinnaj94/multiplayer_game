@@ -1,21 +1,24 @@
 package com.network.common;
 
+import com.network.stream.MyDataInputStream;
+import com.network.stream.MyDataOutputStream;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Manager<T extends NetworkMessage> implements Runnable {
     // TODO
-    DataInputStream dis;
-    DataOutputStream dos;
+    MyDataInputStream dis;
+    MyDataOutputStream dos;
     Map<MessageType, NetworkMessageHandler<T>> map;
     private static int MANAGER_ID = 0;
     private int clientID;
 
     public Manager(InputStream is, OutputStream os) {
         map = new HashMap<>();
-        dis = new DataInputStream(is);
-        dos = new DataOutputStream(os);
+        dis = new MyDataInputStream(is);
+        dos = new MyDataOutputStream(os);
         this.clientID = MANAGER_ID++;
     }
 

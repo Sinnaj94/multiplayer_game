@@ -3,6 +3,7 @@ package com.helper;
 import com.game.generics.Collideable;
 import com.game.generics.Placeable;
 import com.game.generics.Renderable;
+import com.game.generics.Synchronizable;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -50,7 +51,7 @@ public class BoundingBox implements Collideable, Placeable<Vector2f>, Renderable
      * @return
      */
     public Rectangle toIntRectangle() {
-        return new Rectangle((int)Math.round(getX()), (int)Math.round(getY()), (int)Math.round(getWidth()), (int)Math.round(getHeight()));
+        return new Rectangle(Math.round(getX()), Math.round(getY()), Math.round(getWidth()), Math.round(getHeight()));
     }
 
     @Override
