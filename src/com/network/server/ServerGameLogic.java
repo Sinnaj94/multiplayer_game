@@ -73,7 +73,6 @@ public class ServerGameLogic implements Runnable {
             gameObject.update();
         }
         world.removeObjects();
-        world.getLevel().update();
     }
 
     public Player addPlayer() {

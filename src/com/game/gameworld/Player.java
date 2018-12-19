@@ -1,5 +1,6 @@
 package com.game.gameworld;
 
+import com.helper.Vector2;
 import com.helper.Vector2f;
 
 import java.awt.*;
@@ -19,7 +20,7 @@ public class Player extends PhysicsObject {
         r = new Random();
         inventory = new Inventory();
         //setSize(new Vector2i(16f, 16f));
-        jumpAcceleration = -3f;
+        jumpAcceleration = -5f;
     }
 
     public Player(Vector2f position) {
@@ -60,15 +61,16 @@ public class Player extends PhysicsObject {
 
     @Override
     public void update() {
-        super.update();
+        applyGravity();
         if(bullet!=null) {
             bullet.update();
         }
         //shoot();
-        if(getTouchesFloor() && jumpRequested) {
+        if(jumpRequested) {
             accelerate(new Vector2f(0f, jumpAcceleration));
         }
         jumpRequested = false;
+        applySpeed();
     }
 
     @Override

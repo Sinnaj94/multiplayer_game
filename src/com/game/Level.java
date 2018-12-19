@@ -1,50 +1,55 @@
 package com.game;
 
+import com.game.gameworld.Chunk;
 import com.game.generics.Renderable;
 import com.game.generics.Collideable;
 import com.game.tiles.TilesetFactory;
 import com.helper.BoundingBox;
+import com.helper.Vector2f;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Level implements Renderable, Collideable {
     private String levelPath;
-    private Floor floor;
+    //private Floor floor;
     private TilesetFactory t;
+    private Map<Integer, Chunk> chunkMap;
+    private Chunk c;
     public Level(String levelPath, String tilesetImageSrc) {
         // TODO: Get Level from String
         t = new TilesetFactory(tilesetImageSrc);
-        floor = new Floor(t);
+        chunkMap = new HashMap<>();
+        c = new Chunk();
+
         this.levelPath = levelPath;
         build();
     }
 
     public void build() {
-        //TODO: Build from the Charset thing
-        floor.build();
-    }
-
-    public void update() {
-
+        c.build();
     }
 
     @Override
     public void paint(Graphics g) {
-        floor.paint(g);
+        c.paint(g);
     }
 
     @Override
     public boolean intersects(BoundingBox collideable) {
-        return getBoundingBox().intersects(collideable);
+        // TODO
+        return c.intersects(collideable);
+        //return floor.intersects(collideable);
     }
 
     @Override
     public BoundingBox createIntersection(BoundingBox collideable) {
-        return getBoundingBox().createIntersection(collideable);
+        return c.createIntersection(collideable);
     }
 
     @Override
     public BoundingBox getBoundingBox() {
-        return floor.getBoundingBox();
+        return c.getBoundingBox();
     }
 }

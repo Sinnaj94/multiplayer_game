@@ -31,13 +31,13 @@ public class Floor extends GameObject {
 
     public void build() {
         gameObjectList.clear();
-        setPosition(new Vector2f((float)minX * 16, (float)minY * 16));
+        setPosition((float)minX * 16, (float)minY * 16);
         setSize(new Vector2f((float)(maxX - minX) * 16, (float)(maxY - minY) * 16));
         for(int x = minX; x < maxX; x++) {
             for(int y = minY; y < maxY; y++) {
                 // Implicitely add a new tile
                 FloorTile c = new FloorTile(tilesetFactory.getRandomFloorTile().getResultImg());
-                c.setPosition(new Vector2f((float)(tileSize * x), (float)(tileSize * y)));
+                c.setPosition((float)(tileSize * x), (float)(tileSize * y));
                 gameObjectList.add(c);
             }
         }

@@ -5,7 +5,7 @@ import com.helper.Vector2f;
 
 import java.awt.*;
 
-public class Item extends PhysicsObject implements Collectable {
+public class Item extends GameObject implements Collectable {
     public Item(Vector2f position, Vector2f size) {
         super(position, size);
     }
@@ -29,7 +29,7 @@ public class Item extends PhysicsObject implements Collectable {
 
     private void updateTouchedItems() {
         for(PhysicsObject p:World.getInstance().getPlayers()) {
-            if(p!=this && p instanceof Player) {
+            if(p instanceof Player) {
                 if(p.intersects(getBoundingBox())) {
                     give((Player)p);
                 }

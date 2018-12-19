@@ -28,7 +28,6 @@ public class Server {
         try {
             serverGameLogic = new ServerGameLogic(this);
             Thread logicThread = new Thread(serverGameLogic);
-            // TODO: Take out the renderer... TO A FANCY RESTAURANT!
             renderer = new Renderer();
             Thread renderThread = new Thread(renderer);
             logicThread.start();
@@ -47,11 +46,11 @@ public class Server {
     }
 
     public void deliverToClients() {
-        for(Manager m:managers) {
+        /*for(Manager m:managers) {
             for(GameObject g:World.getInstance().getPlayers()) {
                 m.send(new GameObjectMessage(g));
             }
-        }
+        }*/
 
     }
 
@@ -67,7 +66,6 @@ public class Server {
                 Thread managerThread = new Thread(ma);
                 managerThread.start();
                 for(PhysicsObject g: World.getInstance().getPlayers()) {
-                    System.out.println(g);
                     GameObjectMessage ga = new GameObjectMessage(g);
                     ma.send(ga);
                 }

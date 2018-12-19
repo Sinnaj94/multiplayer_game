@@ -8,7 +8,7 @@ import com.game.generics.Synchronizable;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class BoundingBox implements Collideable, Placeable<Vector2f>, Renderable {
+public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Renderable {
     private Vector2f position;
     private Vector2f size;
     public BoundingBox(Vector2f position, Vector2f size) {
@@ -66,6 +66,12 @@ public class BoundingBox implements Collideable, Placeable<Vector2f>, Renderable
     }
 
     @Override
+    public void setPosition(float x, float y) {
+        this.position.setX(x);
+        this.position.setY(y);
+    }
+
+    @Override
     public Vector2f getPosition() {
         return this.position;
     }
@@ -75,9 +81,20 @@ public class BoundingBox implements Collideable, Placeable<Vector2f>, Renderable
         this.size.setVector(size);
     }
 
+    public void setSize(float x, float y) {
+        this.size.setX(x);
+        this.size.setY(y);
+    }
+
     @Override
     public Vector2f getSize() {
         return this.size;
+    }
+
+    @Override
+    public void translate(Float x, Float y) {
+        position.addX(x);
+        position.addY(y);
     }
 
     @Override

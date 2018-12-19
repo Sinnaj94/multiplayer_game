@@ -12,6 +12,7 @@ public class MoveCommand implements Command {
         strength = new Vector2f(0f, 0f);
     }
 
+
     public MoveCommand(Vector2f strength) {
         this.strength = strength;
     }

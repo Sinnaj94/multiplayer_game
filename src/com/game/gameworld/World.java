@@ -2,6 +2,7 @@ package com.game.gameworld;
 
 import com.game.Level;
 import com.game.collectable.Collectable;
+import com.game.event.Event;
 import com.game.generics.Collideable;
 import com.helper.Vector2f;
 
@@ -18,8 +19,11 @@ public class World {
     private List<Collectable> collectables;
     private List<Player> players;
     private List<GameObject> removedObjects;
+    private List<Event> events;
 
     public final boolean DEBUG_DRAW = true;
+    public static final int TILE_SIZE = 64;
+    public static final int CHUNK_SIZE = 16;
     private Level level;
     private static World instance;
 
@@ -36,12 +40,12 @@ public class World {
 
     public void addTestScene() {
         Random ra = new Random();
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 1; i++) {
             float size = 20f;
             Vector2f r = new Vector2f(size, size);
             Player p = new Player(new Vector2f(10f*i, 0f), r);
-            p.setMaxFallingSpeed(ra.nextFloat() +1f);
-            p.setBounciness(ra.nextFloat() * 5f);
+            //p.setMaxFallingSpeed(ra.nextFloat() * 20f + 2f);
+            p.setBounciness(0);
             addObject(p);
         }
     }
@@ -51,7 +55,16 @@ public class World {
         dynamics = new ArrayList<>();
         removedObjects = new ArrayList<>();
         players = new ArrayList<>();
+        events = new ArrayList<>();
         level = new Level("test.png", "res/tilesets/forest_tiles.json");
+    }
+
+    public void addEvent(Event e) {
+        events.add(e);
+    }
+
+    public List getEvents() {
+        return events;
     }
 
     private void build() {

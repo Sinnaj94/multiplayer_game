@@ -1,5 +1,7 @@
 package com.game.gameworld;
 
+import com.game.input.Command;
+import com.game.input.InputListener;
 import com.game.input.InputLogic;
 import com.game.input.MoveCommand;
 import com.helper.Vector2i;
@@ -16,9 +18,13 @@ public class Renderer implements Runnable {
     private InputLogic inputLogic;
     private volatile boolean running;
     BufferStrategy bufferStrategy;
-    final Vector2i SIZE = new Vector2i(600, 1000);
+    final Vector2i SIZE = new Vector2i(400, 400);
     final long UPDATE_RATE = 10;
     private long lastTime;
+    private int pos;
+    private Camera camera;
+    private JPanel panel;
+
     // TODO: Manager auslagern
     public Renderer() {
         this.running = true;
@@ -26,10 +32,10 @@ public class Renderer implements Runnable {
         // TODO: Umschreiben
         MoveCommand c = new MoveCommand();
         jFrame = new JFrame("Game");
-        JPanel panel = (JPanel)jFrame.getContentPane();
+        panel = (JPanel)jFrame.getContentPane();
         panel.setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
         panel.setLayout(null);
-
+        camera = new Camera(new Vector2i(0, 0), SIZE, world.getPlayers().get(0));
         canvas = new Canvas();
         canvas.setBounds(0,0, SIZE.getX(), SIZE.getY());
         canvas.setIgnoreRepaint(true);
@@ -59,13 +65,9 @@ public class Renderer implements Runnable {
     @Override
     public void run() {
         while(running) {
+            Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
             synchronized (World.getInstance()) {
                 if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {
-                    /*try {
-                        World.getInstance().wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }*/
                     render();
                     lastTime = System.currentTimeMillis();
                 } else {
@@ -90,6 +92,8 @@ public class Renderer implements Runnable {
      */
     private void render(Graphics g) {
         // Render the world.
+        camera.update();
+        g.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
         world.getLevel().paint(g);
         // After that render the GameObjects.
         for(PhysicsObject ga:world.getDynamics()) {

@@ -8,6 +8,7 @@ import java.awt.*;
 public abstract class PhysicsObject extends GameObject {
     private float friction;
     private final float GRAVITY = 0.089f;
+    private World w;
     public void setMaxFallingSpeed(float maxFallingSpeed) {
         this.maxFallingSpeed = maxFallingSpeed;
     }
@@ -60,6 +61,7 @@ public abstract class PhysicsObject extends GameObject {
         maxFallingSpeed = 5f;
         friction = 0.9f;
         impulse = new Vector2f(0f, 0f);
+        w = World.getInstance();
     }
 
     public void setBounciness(float bounciness) {
@@ -74,14 +76,12 @@ public abstract class PhysicsObject extends GameObject {
         this.maxRunningSpeed = maxRunningSpeed;
     }
 
-    private void applyGravity() {
+    public void applyGravity() {
         this.currentSpeed.addY(GRAVITY);
         if (this.currentSpeed.getY() > maxFallingSpeed) {
             this.currentSpeed.setY(maxFallingSpeed);
         }
-        touchesFloor = false;
-        if (touchesDown()) {
-            touchesFloor = true;
+            /*touchesFloor = true;
             if(currentSpeed.getY() > 0f) {
                 // TODO: machen
                 float distance = advancedBoundingBox.getMargin() -
@@ -97,35 +97,33 @@ public abstract class PhysicsObject extends GameObject {
                         accelerate(impulse);
                     }
                 }
-            }
-
-            /*
-            System.out.println(distance);
-            if(distance < this.currentSpeed.getY()) {
-                // Save the impulse.
-                if(this.currentSpeed.getY() < .05f) {
-                    this.impulse.setY(0f);
-                    this.accelerate(impulse);
-                } else {
-                    this.impulse.setY((-this.currentSpeed.getY() * bounciness));
-                }
-                this.currentSpeed.setY(0f);
-                this.getPosition().addY(distance);
-                touchesFloor = true;
             }*/
-        }
+
     }
 
-    private boolean gameObjectCollision() {
-        for(GameObject g:World.getInstance().getDynamics()) {
-            if(g != this) {
-                if(advancedBoundingBox.getDown().intersects(g.getBoundingBox())) {
-                    System.out.println("INTERSECTION");
-                    return true;
-                }
+    public void applySpeed() {
+        if(currentSpeed.getX() > 0) {
+            if(touchesRight()) {
+                getCurrentSpeed().setX(0f);
+            }
+        } else if(currentSpeed.getX() < 0) {
+            if(touchesLeft()) {
+                getCurrentSpeed().setX(0f);
             }
         }
-        return false;
+        if(currentSpeed.getY() < 0) {
+            if(touchesUp()) {
+                getCurrentSpeed().setY(0f);
+            }
+        }
+        touchesFloor = false;
+        if (currentSpeed.getY() > 0) {
+            if(touchesDown()) {
+                currentSpeed.setY(0f);
+                touchesFloor = true;
+            }
+        }
+        translate(currentSpeed.getX(), currentSpeed.getY());
     }
 
     public boolean getTouchesFloor() {
@@ -137,20 +135,39 @@ public abstract class PhysicsObject extends GameObject {
         this.currentSpeed.add(speed);
     }
 
-    public boolean touchesDown() {
-        return advancedBoundingBox.getDown().intersects(World.getInstance().getCollideable().getBoundingBox());
+    private void mapCollision() {
+        //if(w.getCollideable().intersects(advancedBoundingBox.))
+    }
+
+    private boolean touchesDown() {
+        return w.getCollideable().intersects(advancedBoundingBox.getDown());
+        //return advancedBoundingBox.getDown().intersects(World.getInstance().getCollideable().getBoundingBox());
+    }
+
+    private boolean touchesUp() {
+        return w.getCollideable().intersects(advancedBoundingBox.getUp());
+    }
+
+    private boolean touchesRight() {
+        return w.getCollideable().intersects(advancedBoundingBox.getRight());
+    }
+
+    private boolean touchesLeft() {
+        return w.getCollideable().intersects(advancedBoundingBox.getLeft());
     }
 
     @Override
     public void update() {
         applyGravity();
-        getPosition().add(this.currentSpeed);
+        applySpeed();
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        //advancedBoundingBox.getUp().paint(g);
-        //advancedBoundingBox.getDown().paint(g);
+        advancedBoundingBox.getUp().paint(g);
+        advancedBoundingBox.getDown().paint(g);
+        advancedBoundingBox.getRight().paint(g);
+        advancedBoundingBox.getLeft().paint(g);
     }
 }

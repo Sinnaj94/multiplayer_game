@@ -4,6 +4,7 @@ import com.game.gameworld.GameObject;
 import com.game.gameworld.SynchronizedGameObject;
 import com.game.gameworld.World;
 import com.helper.Vector2f;
+import com.network.client.ClientGameLogic;
 import com.network.stream.MyDataInputStream;
 import com.network.stream.MyDataOutputStream;
 
