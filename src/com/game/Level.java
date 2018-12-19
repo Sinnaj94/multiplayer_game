@@ -1,6 +1,7 @@
 package com.game;
 
 import com.game.gameworld.Chunk;
+import com.game.gameworld.World;
 import com.game.generics.Renderable;
 import com.game.generics.Collideable;
 import com.game.tiles.TilesetFactory;
@@ -16,43 +17,56 @@ public class Level implements Renderable, Collideable {
     //private Floor floor;
     private TilesetFactory t;
     private Map<Integer, Chunk> chunkMap;
-    private Chunk c;
-    private Chunk c2;
     public Level(String levelPath, String tilesetImageSrc) {
         // TODO: Get Level from String
         t = new TilesetFactory(tilesetImageSrc);
         chunkMap = new HashMap<>();
-        c = new Chunk(0);
-        c2 = new Chunk(1);
+        chunkMap.put(0, new Chunk(0));
+        System.out.println(chunkMap.size());
         this.levelPath = levelPath;
         build();
     }
 
     public void build() {
-        c.build();
-        c2.build();
+        for(Chunk c:chunkMap.values()) {
+            c.build();
+        }
     }
 
     @Override
     public void paint(Graphics g) {
-        c.paint(g);
-        c2.paint(g);
+        for(Chunk c:chunkMap.values()) {
+            c.paint(g);
+        }
     }
 
     @Override
     public boolean intersects(BoundingBox collideable) {
         // TODO
-        return c.intersects(collideable) || c2.intersects(collideable);
-        //return floor.intersects(collideable);
+        int roundedX = (int)Math.floor(collideable.getX() / World.CHUNK_SIZE);
+        int right = (int)Math.floor((collideable.getX() + World.CHUNK_SIZE)/ World.CHUNK_SIZE);
+        int left = (int)Math.floor((collideable.getX() - World.CHUNK_SIZE) / World.CHUNK_SIZE);
+        if(!chunkMap.containsKey(right)) {
+            Chunk c = new Chunk(right);
+            c.build();
+            chunkMap.put(right, c);
+        }
+        if(!chunkMap.containsKey(left)) {
+            Chunk c = new Chunk(left);
+            c.build();
+            chunkMap.put(left, c);
+            //System.out.println(chunkMap.get(left) == chunkMap.get(roundedX));
+        }
+        return chunkMap.get(roundedX).intersects(collideable);
     }
 
     @Override
     public BoundingBox createIntersection(BoundingBox collideable) {
-        return c.createIntersection(collideable);
+        return null;
     }
 
     @Override
     public BoundingBox getBoundingBox() {
-        return c.getBoundingBox();
+        return null;
     }
 }

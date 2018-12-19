@@ -42,7 +42,7 @@ public class Manager<T extends NetworkMessage> implements Runnable {
                 // FIXME: Generics
                 n.handle(n.getNetworkMessage(dis));
             } catch (IOException e) {
-                e.printStackTrace();
+                System.exit(-1);
             }
         }
     }

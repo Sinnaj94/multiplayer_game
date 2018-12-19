@@ -88,7 +88,6 @@ public class InputLogic {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println(commandCount++);
             World.getInstance().getPlayers().get(0).move(direction.getX());
         }
     }

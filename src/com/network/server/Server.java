@@ -65,10 +65,11 @@ public class Server {
                 managers.add(ma);
                 Thread managerThread = new Thread(ma);
                 managerThread.start();
-                for(PhysicsObject g: World.getInstance().getPlayers()) {
+                ma.send(new GameObjectMessage(serverGameLogic.addPlayer()));
+                /*for(PhysicsObject g: World.getInstance().getPlayers()) {
                     GameObjectMessage ga = new GameObjectMessage(g);
                     ma.send(ga);
-                }
+                }*/
 
                 // Register the existing ChatMessageHandler and MoveManager
                 /*MoveMessageHandler m = new MoveMessageHandler();

@@ -38,7 +38,7 @@ public class Floor extends GameObject {
                 // Implicitely add a new tile
                 FloorTile c = new FloorTile(tilesetFactory.getRandomFloorTile().getResultImg());
                 c.setPosition((float)(tileSize * x), (float)(tileSize * y));
-                gameObjectList.add(c);
+                //gameObjectList.add(c);
             }
         }
     }

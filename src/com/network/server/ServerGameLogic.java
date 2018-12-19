@@ -34,6 +34,7 @@ public class ServerGameLogic implements Runnable {
 
     @Override
     public void run() {
+        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         while (true) {
             synchronized (World.getInstance()) {
                 if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {

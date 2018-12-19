@@ -20,15 +20,20 @@ public class Renderer implements Runnable {
     private InputLogic inputLogic;
     private volatile boolean running;
     BufferStrategy bufferStrategy;
-    final Vector2i SIZE = new Vector2i(400, 400);
+    final Vector2i SIZE = new Vector2i(500, 500);
     final long UPDATE_RATE = 10;
     private long lastTime;
     private int pos;
     private Camera camera;
     private JPanel panel;
     private float zoom;
+    private GameObject watchable;
     // TODO: Manager auslagern
     public Renderer() {
+        this(World.getInstance().getPlayers().get(0));
+    }
+
+    public Renderer(GameObject watchable) {
         this.running = true;
         world = World.getInstance();
         // TODO: Umschreiben
@@ -37,7 +42,7 @@ public class Renderer implements Runnable {
         panel = (JPanel)jFrame.getContentPane();
         panel.setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
         panel.setLayout(null);
-        camera = new Camera(new Vector2i(0, 0), SIZE, world.getPlayers().get(0));
+        camera = new Camera(new Vector2i(0, 0), SIZE, watchable);
         canvas = new Canvas();
         canvas.setBounds(0,0, SIZE.getX(), SIZE.getY());
         canvas.setIgnoreRepaint(true);
@@ -56,19 +61,8 @@ public class Renderer implements Runnable {
         panel.setFocusable(true);
         panel.requestFocus();
         inputLogic = new InputLogic(panel);
-        jFrame.addWindowFocusListener(new WindowFocusListener() {
-            @Override
-            public void windowGainedFocus(WindowEvent e) {
-                System.out.println("Focus gained");
-
-            }
-
-            @Override
-            public void windowLostFocus(WindowEvent e) {
-                System.out.println("Focus lost");
-            }
-        });
     }
+
 /*
 
 */
@@ -107,8 +101,6 @@ public class Renderer implements Runnable {
         // Render the world.
         camera.update();
         Graphics2D g2 = (Graphics2D)g.create();
-        zoom *= .999f;
-        g2.scale(zoom, zoom);
         g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
         world.getLevel().paint(g2);
         // After that render the GameObjects.

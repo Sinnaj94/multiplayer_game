@@ -20,10 +20,10 @@ public class World {
     private List<Player> players;
     private List<GameObject> removedObjects;
     private List<Event> events;
-
     public final boolean DEBUG_DRAW = true;
-    public static final int TILE_SIZE = 64;
-    public static final int CHUNK_SIZE = 16;
+    public static final int TILE_SIZE = 32;
+    public static final int CHUNK_TILES = 8;
+    public static final int CHUNK_SIZE = TILE_SIZE * CHUNK_TILES;
     private Level level;
     private static World instance;
 
@@ -41,9 +41,9 @@ public class World {
     public void addTestScene() {
         Random ra = new Random();
         for(int i = 0; i < 1; i++) {
-            float size = 20f;
+            float size = 16f;
             Vector2f r = new Vector2f(size, size);
-            Player p = new Player(new Vector2f(10f*i, 0f), r);
+            Player p = new Player(new Vector2f(0f, -100f), r);
             //p.setMaxFallingSpeed(ra.nextFloat() * 20f + 2f);
             p.setBounciness(0);
             addObject(p);

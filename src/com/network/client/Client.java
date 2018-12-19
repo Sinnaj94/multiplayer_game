@@ -3,11 +3,13 @@ package com.network.client;
 import com.game.gameworld.Renderer;
 import com.network.common.*;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client {
+public class Client implements Runnable {
     Socket socket;
     Manager m;
     Manager m2;
@@ -16,11 +18,8 @@ public class Client {
     public Client(int port) {
         try {
             ClientGameLogic c = new ClientGameLogic();
-            Renderer r = new Renderer();
-            Thread t = new Thread(r);
             Thread cl = new Thread(c);
             cl.start();
-            t.start();
             running = true;
             s = new Scanner(System.in);
             socket = new Socket("localhost", port);
@@ -29,15 +28,6 @@ public class Client {
             // Receive the ChatMessages
             Thread ta = new Thread(m);
             ta.start();
-            /*ServerGameLogic w = new ServerGameLogic();
-            w.setToken(token);
-            /*Renderer r = new Renderer(w, m);
-            r.setToken(token);
-            Thread wThread = new Thread(w);
-            //Thread rThread = new Thread(r);
-            wThread.start();
-            //rThread.start();
-            clientLoop();*/
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,6 +40,32 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        Client a = new Client(6060);
+        SplashScreen splashScreen = new SplashScreen();
+        splashScreen.setSize(new Dimension(400, 800));
+        splashScreen.setResizable(false);
+        splashScreen.pack();
+        splashScreen.setVisible(true);
+
+        //
+        // Client a = new Client(6060);
     }
+
+    @Override
+    public void run() {
+
+    }
+
+
+}
+
+class SplashScreen extends JFrame {
+    public SplashScreen() {
+        super();
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout());
+        panel.add(new TextArea("Willkommen bei Flyff."));
+        panel.add(new Button("Connect to FLYFF HEADQUARTER"));
+        this.add(panel);
+    }
+
 }
