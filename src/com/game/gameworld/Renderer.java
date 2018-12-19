@@ -8,6 +8,8 @@ import com.helper.Vector2i;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 
 public class Renderer implements Runnable {
@@ -24,7 +26,7 @@ public class Renderer implements Runnable {
     private int pos;
     private Camera camera;
     private JPanel panel;
-
+    private float zoom;
     // TODO: Manager auslagern
     public Renderer() {
         this.running = true;
@@ -41,7 +43,7 @@ public class Renderer implements Runnable {
         canvas.setIgnoreRepaint(true);
 
         panel.add(canvas);
-
+        zoom = 1;
         // TODO
 
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -54,7 +56,18 @@ public class Renderer implements Runnable {
         panel.setFocusable(true);
         panel.requestFocus();
         inputLogic = new InputLogic(panel);
+        jFrame.addWindowFocusListener(new WindowFocusListener() {
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                System.out.println("Focus gained");
 
+            }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                System.out.println("Focus lost");
+            }
+        });
     }
 /*
 
@@ -93,14 +106,17 @@ public class Renderer implements Runnable {
     private void render(Graphics g) {
         // Render the world.
         camera.update();
-        g.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
-        world.getLevel().paint(g);
+        Graphics2D g2 = (Graphics2D)g.create();
+        zoom *= .999f;
+        g2.scale(zoom, zoom);
+        g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
+        world.getLevel().paint(g2);
         // After that render the GameObjects.
         for(PhysicsObject ga:world.getDynamics()) {
-            ga.paint(g);
+            ga.paint(g2);
         }
         for(GameObject s:world.getStatics()) {
-            s.paint(g);
+            s.paint(g2);
         }
         /*for(GameObject gameObject:world.getStatics()) {
             gameObject.paint(g);

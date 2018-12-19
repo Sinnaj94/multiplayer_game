@@ -14,8 +14,10 @@ import java.util.Random;
 public class Chunk extends GameObject {
     private List<GameObject> objects;
     Random r;
+    private int id;
 
-    public Chunk() {
+    public Chunk(int id) {
+        this.id = id;
         objects = new ArrayList<>();
     }
 
@@ -29,7 +31,7 @@ public class Chunk extends GameObject {
             for(int y = 0; y < World.CHUNK_SIZE; y++) {
                 if(r.nextBoolean()) {
                     GameObject g = new FloorTile(t.getRandomFloorTile().getResultImg());
-                    g.setPosition(size*x, size*y);
+                    g.setPosition(size*x + id * World.CHUNK_SIZE * size, size*y);
                     g.setSize(size, size);
                     objects.add(g);
                 }

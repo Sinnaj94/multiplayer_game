@@ -17,29 +17,32 @@ public class Level implements Renderable, Collideable {
     private TilesetFactory t;
     private Map<Integer, Chunk> chunkMap;
     private Chunk c;
+    private Chunk c2;
     public Level(String levelPath, String tilesetImageSrc) {
         // TODO: Get Level from String
         t = new TilesetFactory(tilesetImageSrc);
         chunkMap = new HashMap<>();
-        c = new Chunk();
-
+        c = new Chunk(0);
+        c2 = new Chunk(1);
         this.levelPath = levelPath;
         build();
     }
 
     public void build() {
         c.build();
+        c2.build();
     }
 
     @Override
     public void paint(Graphics g) {
         c.paint(g);
+        c2.paint(g);
     }
 
     @Override
     public boolean intersects(BoundingBox collideable) {
         // TODO
-        return c.intersects(collideable);
+        return c.intersects(collideable) || c2.intersects(collideable);
         //return floor.intersects(collideable);
     }
 

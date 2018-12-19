@@ -15,6 +15,7 @@ public class Player extends PhysicsObject {
     private Bullet bullet;
     private boolean jumpRequested;
     private Inventory inventory;
+    private float movingSpeed;
     public Player(Vector2f position, Vector2f size) {
         super(position, size);
         r = new Random();
@@ -56,7 +57,11 @@ public class Player extends PhysicsObject {
 
 
     public void move(float direction) {
-        this.getCurrentSpeed().addX(direction * 3f);
+        if(direction > 0 && movingSpeed <= 0) {
+            this.movingSpeed += direction * 3f;
+        } else if(direction < 0 && movingSpeed >= 0) {
+            this.movingSpeed += direction * 3f;
+        }
     }
 
     @Override
@@ -66,10 +71,11 @@ public class Player extends PhysicsObject {
             bullet.update();
         }
         //shoot();
-        if(jumpRequested) {
+        if(jumpRequested && getTouchesFloor()) {
             accelerate(new Vector2f(0f, jumpAcceleration));
         }
         jumpRequested = false;
+        getCurrentSpeed().setX(movingSpeed);
         applySpeed();
     }
 

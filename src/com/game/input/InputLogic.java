@@ -12,22 +12,22 @@ public class InputLogic {
     private JComponent component;
     private Queue<Command> commandQueue;
     private World w;
+    private int commandCount;
     public InputLogic(JComponent component) {
         w = World.getInstance();
         commandQueue = new ArrayDeque<>();
         //myKeyListener = new MyKeyListener();
         //component.addKeyListener(myKeyListener);
-
         InputMap inputMap = component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = component.getActionMap();
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, false), "Pressed.up");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, true), "Released.up");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, false), "Pressed.down");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, true), "Released.down");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), "Pressed.left");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, true), "Released.left");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, false), "Pressed.right");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, true), "Released.right");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "Pressed.left");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "Released.left");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false), "Pressed.right");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "Released.right");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "Jump");
 
 
@@ -88,6 +88,7 @@ public class InputLogic {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            System.out.println(commandCount++);
             World.getInstance().getPlayers().get(0).move(direction.getX());
         }
     }
