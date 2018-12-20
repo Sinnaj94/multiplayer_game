@@ -87,7 +87,7 @@ public class World implements Updateable {
      * Adds a Gameobject
      * @return The added Gameobject, so it will work further
      */
-    public void addObject(GameObject g) {
+    public GameObject addObject(GameObject g) {
         if(g instanceof PhysicsObject) {
             dynamics.put(g.getMyID(), (PhysicsObject)g);
             if(g instanceof Player) {
@@ -99,6 +99,7 @@ public class World implements Updateable {
         renderables.putAll(dynamics);
         renderables.putAll(playerMap);
         renderables.putAll(statics);
+        return g;
     }
 
     public GameObject getObject(int id) {

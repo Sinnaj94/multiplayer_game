@@ -5,6 +5,7 @@ import com.game.input.Command;
 import com.game.input.InputListener;
 import com.game.input.InputLogic;
 import com.game.input.MoveCommand;
+import com.helper.Vector2f;
 import com.helper.Vector2i;
 
 import javax.swing.*;
@@ -28,19 +29,16 @@ public class Renderer implements Runnable {
     private long lastTime;
     private int pos;
     private Camera camera;
+
+    public JPanel getPanel() {
+        return panel;
+    }
+
     private JPanel panel;
     private float zoom;
     private GameObject watchable;
 
-    public Queue<Command> getCommandList() {
-        return commandList;
-    }
-
-    private Queue<Command> commandList;
-    // TODO: Manager auslagern
-
     public Renderer() {
-        commandList = new ArrayDeque<>();
         this.running = true;
         world = World.getInstance();
         // TODO: Umschreiben
@@ -48,7 +46,7 @@ public class Renderer implements Runnable {
         panel = (JPanel)jFrame.getContentPane();
         panel.setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
         panel.setLayout(null);
-        camera = new Camera(new Vector2i(0, 0), SIZE, world.getObservable());
+        camera = new Camera(new Vector2i(0, 0), SIZE, world.addObject(new Player(new Vector2f(0f,0f))));
         canvas = new Canvas();
         canvas.setBounds(0,0, SIZE.getX(), SIZE.getY());
         canvas.setIgnoreRepaint(true);
@@ -66,7 +64,6 @@ public class Renderer implements Runnable {
         bufferStrategy = canvas.getBufferStrategy();
         panel.setFocusable(true);
         panel.requestFocus();
-        inputLogic = new InputLogic(panel);
     }
 
 /*
@@ -81,13 +78,6 @@ public class Renderer implements Runnable {
             Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
             synchronized (World.getInstance()) {
                 if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {
-                    while(!inputLogic.getCommandQueue().isEmpty()) {
-                        Command c = inputLogic.getCommandQueue().poll();
-                        if(c!=null) {
-                            commandList.add(c);
-                            c.execute();
-                        }
-                    }
                     render();
                     lastTime = System.currentTimeMillis();
                 } else {
@@ -120,8 +110,5 @@ public class Renderer implements Runnable {
         for(Renderable r:world.getRenderables().values()) {
             r.paint(g2);
         }
-        /*for(GameObject gameObject:world.getStatics()) {
-            gameObject.paint(g);
-        }*/
     }
 }
