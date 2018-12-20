@@ -104,10 +104,10 @@ public class Renderer implements Runnable {
         g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
         world.getLevel().paint(g2);
         // After that render the GameObjects.
-        for(PhysicsObject ga:world.getDynamics()) {
+        for(PhysicsObject ga:world.getDynamics().values()) {
             ga.paint(g2);
         }
-        for(GameObject s:world.getStatics()) {
+        for(GameObject s:world.getStatics().values()) {
             s.paint(g2);
         }
         /*for(GameObject gameObject:world.getStatics()) {

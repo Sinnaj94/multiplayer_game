@@ -7,7 +7,7 @@ public class RemoveGameObjectEvent implements Event {
     @Override
     public void execute(GameObject g) {
         // TODO: auslagern
-        World.getInstance().removeObject(g);
+        World.getInstance().removeObject(g.getMyID());
     }
 
     @Override

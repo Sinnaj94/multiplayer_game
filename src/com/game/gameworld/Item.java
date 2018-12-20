@@ -17,7 +17,7 @@ public class Item extends GameObject implements Collectable {
     @Override
     public void give(Player p) {
         if(p.addItem(this)) {
-            World.getInstance().removeObject(this);
+            World.getInstance().removeObject(getMyID());
         }
     }
 
@@ -28,7 +28,7 @@ public class Item extends GameObject implements Collectable {
     }
 
     private void updateTouchedItems() {
-        for(PhysicsObject p:World.getInstance().getPlayers()) {
+        for(PhysicsObject p:World.getInstance().getPlayers().values()) {
             if(p instanceof Player) {
                 if(p.intersects(getBoundingBox())) {
                     give((Player)p);

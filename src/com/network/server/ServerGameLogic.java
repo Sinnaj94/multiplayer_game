@@ -70,7 +70,7 @@ public class ServerGameLogic implements Runnable {
         requestedCommands.clear();
         // Update the GameObjects
         // TODO: An dieser Stelle vielleicht auch übertragen (GameObjects changes)
-        for(PhysicsObject gameObject:world.getDynamics()) {
+        for(PhysicsObject gameObject:world.getDynamics().values()) {
             gameObject.update();
         }
         world.removeObjects();

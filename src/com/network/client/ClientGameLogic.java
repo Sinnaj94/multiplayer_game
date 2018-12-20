@@ -29,7 +29,7 @@ public class ClientGameLogic implements Runnable{
     }
 
     public void update() {
-        for(GameObject g:world.getStatics()) {
+        for(GameObject g:world.getStatics().values()) {
             g.update();
         }
     }
