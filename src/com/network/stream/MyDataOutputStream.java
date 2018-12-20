@@ -1,6 +1,11 @@
 package com.network.stream;
 
 import com.game.gameworld.GameObject;
+import com.game.input.Command;
+import com.game.input.Command.CommandType;
+import com.game.input.JumpCommand;
+import com.game.input.MoveCommand;
+import com.helper.Vector2f;
 
 import java.io.DataOutputStream;
 import java.io.FilterOutputStream;
@@ -23,11 +28,22 @@ public class MyDataOutputStream extends DataOutputStream {
 
     public void writeGameObject(GameObject gameObject) throws IOException {
         writeInt(gameObject.getMyID());
-        writeFloat(gameObject.getPosition().getX());
-        writeFloat(gameObject.getPosition().getY());
-        writeFloat(gameObject.getSize().getX());
-        writeFloat(gameObject.getSize().getY());
+        writeVector2f(gameObject.getPosition());
+        writeVector2f(gameObject.getSize());
         flush();
+    }
+
+    public void writeVector2f(Vector2f vector2f) throws IOException {
+        writeFloat(vector2f.getX());
+        writeFloat(vector2f.getY());
+    }
+
+    public void writeCommand(Command c) throws IOException {
+        writeByte(c.getCommandType().getID());
+        writeInt(c.getPlayer().getMyID());
+        if(c.getCommandType().getID() == CommandType.MOVE.getID()) {
+            writeInt(((MoveCommand)c).getDirection());
+        }
     }
 
 }

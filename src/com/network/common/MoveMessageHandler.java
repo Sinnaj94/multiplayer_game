@@ -1,5 +1,7 @@
 package com.network.common;
 
+import com.game.gameworld.World;
+import com.game.input.JumpCommand;
 import com.game.input.MoveCommand;
 import com.network.server.ServerGameLogic;
 import com.game.gameworld.Player;
@@ -12,11 +14,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage> {
-    private Player p;
+    private int id;
     private ServerGameLogic serverGameLogic;
     private MoveCommand c;
     public MoveMessageHandler() {
-        c = new MoveCommand();
+        c = new MoveCommand(null);
+    }
+
+    public MoveMessageHandler(int id) {
+
     }
 
     @Override
@@ -43,22 +49,27 @@ public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage> {
         return null;
     }
 
-    public void registerPlayer(Player p) {
-        this.p = p;
-        c.addGameObject(p);
-    }
-
-    public void registerServerGameLogic(ServerGameLogic serverGameLogic) {
-        this.serverGameLogic = serverGameLogic;
-    }
-
     @Override
     public void handle(MoveMessage networkMessage) {
         // TODO: Why doesn't it work when overwriting the settings?
-        System.out.println("Move message erhalten.");
-        MoveCommand test = new MoveCommand();
-        test.addGameObject(p);
+        //System.out.println(networkMessage.getDirection());
+
+        /*if(networkMessage.getDirection().getX() != 0) {
+            MoveCommand test = new MoveCommand();
+            test.addGameObject(World.getInstance().getPlayers().get(0));
+            test.setStrength(networkMessage.getDirection());
+            test.execute();
+        }
+        if(networkMessage.getDirection().getY() != 0) {
+            JumpCommand test = new JumpCommand();
+            test.addGameObject(World.getInstance().getPlayers().get(0));
+            test.execute();
+        }*/
+
+        /*MoveCommand test = new MoveCommand();
+
+        //test.addGameObject(p);
         test.setStrength(networkMessage.getDirection());
-        serverGameLogic.addCommand(test);
+        serverGameLogic.addCommand(test);*/
     }
 }

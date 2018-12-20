@@ -126,6 +126,10 @@ public abstract class PhysicsObject extends GameObject {
         translate(currentSpeed.getX(), currentSpeed.getY());
     }
 
+    public boolean hasMotionChanges() {
+        return currentSpeed.getX() != 0 || currentSpeed.getY() != 0;
+    }
+
     public boolean getTouchesFloor() {
         return this.touchesFloor;
     }

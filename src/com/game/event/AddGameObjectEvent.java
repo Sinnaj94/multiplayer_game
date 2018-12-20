@@ -3,11 +3,15 @@ package com.game.event;
 import com.game.gameworld.GameObject;
 import com.game.gameworld.World;
 
-public class AddGameObjectEvent implements Event {
+public class AddGameObjectEvent extends Event {
+    public AddGameObjectEvent(GameObject gameObject) {
+        super(gameObject);
+    }
+
     @Override
-    public void execute(GameObject g) {
+    public void execute(World w) {
         // TODO: auslagern
-        World.getInstance().addObject(g);
+        w.addObject(getGameObject());
     }
 
     @Override

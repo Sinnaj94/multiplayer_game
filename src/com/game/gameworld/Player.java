@@ -16,12 +16,15 @@ public class Player extends PhysicsObject {
     private boolean jumpRequested;
     private Inventory inventory;
     private float movingSpeed;
+    private Camera camera;
+    private int test;
     public Player(Vector2f position, Vector2f size) {
         super(position, size);
         r = new Random();
         inventory = new Inventory();
         //setSize(new Vector2i(16f, 16f));
         jumpAcceleration = -5f;
+        //camera = new Camera(this.getPosition(), this.getSize(), this);
     }
 
     public Player(Vector2f position) {
@@ -32,6 +35,7 @@ public class Player extends PhysicsObject {
     public Player() {
         this(new Vector2f(0f,0f), new Vector2f(16f, 16f));
     }
+
 
     public void jump() {
         jumpRequested = true;
@@ -82,6 +86,7 @@ public class Player extends PhysicsObject {
     @Override
     public void paint(Graphics g) {
         // TODO cooles Sprite einfügen
+        //g.translate(++test, 0);
         if(World.getInstance().DEBUG_DRAW) {
             super.paint(g);
         } else {

@@ -1,6 +1,8 @@
 package com.network.client;
 
+import com.game.gameworld.Player;
 import com.game.gameworld.Renderer;
+import com.game.input.MoveCommand;
 import com.network.common.*;
 
 import javax.swing.*;
@@ -12,6 +14,7 @@ import java.util.Scanner;
 public class Client implements Runnable {
     Socket socket;
     Manager m;
+    private Renderer r;
     Manager m2;
     Scanner s;
     public volatile boolean running;
@@ -25,9 +28,14 @@ public class Client implements Runnable {
             socket = new Socket("localhost", port);
             m = new Manager(socket.getInputStream(), socket.getOutputStream());
             m.register(MessageType.GAME_OBJECT, new GameObjectMessageHandler());
+            //m.register(MessageType.MOVE, new MoveMessageHandler());
+            m.register(MessageType.COMMAND, new CommandMessageHandler());
             // Receive the ChatMessages
             Thread ta = new Thread(m);
             ta.start();
+            r = new Renderer();
+            new Thread(r).start();
+            clientLoop();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -35,19 +43,21 @@ public class Client implements Runnable {
 
     public void clientLoop() {
         while (running) {
-
+            while(!r.getCommandList().isEmpty()) {
+                m.send(new CommandMessage(r.getCommandList().poll()));
+            }
         }
     }
 
     public static void main(String[] args) {
-        SplashScreen splashScreen = new SplashScreen();
+        /*SplashScreen splashScreen = new SplashScreen();
         splashScreen.setSize(new Dimension(400, 800));
         splashScreen.setResizable(false);
         splashScreen.pack();
-        splashScreen.setVisible(true);
+        splashScreen.setVisible(true);*/
 
         //
-        // Client a = new Client(6060);
+        Client a = new Client(6060);
     }
 
     @Override

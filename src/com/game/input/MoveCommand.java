@@ -4,40 +4,37 @@ import com.game.gameworld.PhysicsObject;
 import com.game.gameworld.Player;
 import com.helper.Vector2f;
 
-public class MoveCommand implements Command {
-    private Vector2f strength;
-    private Player g;
-    private Direction direction;
-    public MoveCommand() {
-        strength = new Vector2f(0f, 0f);
+public class MoveCommand extends Command {
+    private int direction;
+    public MoveCommand(Player p) {
+        super(p);
     }
 
-
-    public MoveCommand(Vector2f strength) {
-        this.strength = strength;
+    public MoveCommand(int id) {
+        super(id);
     }
 
-    public void addGameObject(PhysicsObject g) {
-        this.g = (Player)g;
-    }
-
-
-    @Override
-    public void execute() {
-        try {
-            g.move(strength.getX());
-        } catch(NullPointerException e) {
-
+    public void setDirection(int direction) {
+        if(direction < 0) {
+            this.direction = -1;
+        } else if(direction > 0) {
+            this.direction = 1;
+        } else {
+            this.direction = 0;
         }
     }
 
-    @Override
-    public Vector2f getStrength() {
-        return strength;
+    public int getDirection() {
+        return direction;
     }
 
     @Override
-    public void setStrength(Vector2f strength) {
-        this.strength.setVector(strength);
+    public void execute() {
+        getPlayer().move(direction);
+    }
+
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.MOVE;
     }
 }

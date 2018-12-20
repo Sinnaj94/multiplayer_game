@@ -4,6 +4,7 @@ import com.helper.Vector2f;
 
 public class MoveMessage implements NetworkMessage {
     private Vector2f direction;
+    private int id;
 
     public MoveMessage(Vector2f direction) {
         this.direction = direction;

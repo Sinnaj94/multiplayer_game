@@ -5,7 +5,8 @@ import com.game.gameworld.World;
 
 public class ClientGameLogic implements Runnable{
     World w = World.getInstance();
-    private final int CLIENT_UPDATE_RATE = 40;
+    // TODO: UPDATE_RATE DYNAMICALLY
+    private final int CLIENT_UPDATE_RATE = 10;
     private long lastTime;
     public static double averageUpdateTime;
     private static final World world = World.getInstance();
@@ -29,8 +30,6 @@ public class ClientGameLogic implements Runnable{
     }
 
     public void update() {
-        for(GameObject g:world.getStatics().values()) {
-            g.update();
-        }
+        world.update();
     }
 }

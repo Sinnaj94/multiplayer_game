@@ -2,14 +2,21 @@ package com.game.input;
 
 import com.game.gameworld.World;
 import com.helper.Vector2f;
+import com.network.common.MoveMessage;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 
 public class InputLogic {
     private JComponent component;
+
+    public Queue<Command> getCommandQueue() {
+        return commandQueue;
+    }
+
     private Queue<Command> commandQueue;
     private World w;
     private int commandCount;
@@ -30,11 +37,6 @@ public class InputLogic {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "Released.right");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "Jump");
 
-
-        actionMap.put("Pressed.up", requestUp());
-        actionMap.put("Released.up", requestUpStop());
-        actionMap.put("Pressed.down", requestDown());
-        actionMap.put("Released.down", requestDownStop());
         actionMap.put("Pressed.left", requestLeft());
         actionMap.put("Released.left", requestLeftStop());
         actionMap.put("Pressed.right", requestRight());
@@ -44,36 +46,21 @@ public class InputLogic {
     }
 
 
-    private Action requestUp() {
-        return new MoveAction(new Vector2f(0f, -1f));
-    }
-
-    private Action requestUpStop() {
-        return new MoveAction(new Vector2f(0f, 1f));
-    }
-
-    private Action requestDown() {
-        return new MoveAction(new Vector2f(0f, 1f));
-    }
-
-    private Action requestDownStop() {
-        return new MoveAction(new Vector2f(0f, -1f));
-    }
 
     private Action requestLeft() {
-        return new MoveAction(new Vector2f(-1f, 0f));
+        return new MoveAction(-1);
     }
 
     private Action requestLeftStop() {
-        return new MoveAction(new Vector2f(1f, 0f));
+        return new MoveAction(1);
     }
 
     private Action requestRight() {
-        return new MoveAction(new Vector2f(1f, 0f));
+        return new MoveAction(1);
     }
 
     private Action requestRightStop() {
-        return new MoveAction(new Vector2f(-1f, 0f));
+        return new MoveAction(-1);
     }
 
     private Action jumpRequest() {
@@ -81,21 +68,28 @@ public class InputLogic {
     }
 
     public class MoveAction extends AbstractAction {
-        private Vector2f direction;
-        public MoveAction(Vector2f direction) {
+        private int direction;
+        public MoveAction(int direction) {
             this.direction = direction;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            World.getInstance().getPlayers().get(0).move(direction.getX());
+            // TODO: Auslagern
+            //World.getInstance().getPlayers().get(0).move(direction.getX());
+            MoveCommand c = new MoveCommand(World.getInstance().getPlayers().get(0));
+            c.setDirection(direction);
+            //c.addGameObject(World.getInstance().getPlayers().get(0));
+            commandQueue.add(c);
         }
     }
 
     public class JumpAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            World.getInstance().getPlayers().get(0).jump();
+            JumpCommand c = new JumpCommand(World.getInstance().getPlayers().get(0));
+            commandQueue.add(c);
+            //World.getInstance().getPlayers().get(0).jump();
         }
     }
 }

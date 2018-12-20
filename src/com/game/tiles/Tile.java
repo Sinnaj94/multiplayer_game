@@ -16,7 +16,6 @@ public abstract class Tile extends BoundingBox implements Collideable {
 
     public Tile(BufferedImage image, Vector2i position, Vector2i size) {
         this(image.getSubimage(position.getX(), position.getY(), size.getX(), size.getY()));
-        System.out.println(position.toString() + " " + size.toString());
     }
 
     public Tile(BufferedImage img) {

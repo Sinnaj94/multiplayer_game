@@ -1,5 +1,6 @@
 package com.game.gameworld;
 
+import com.game.generics.Renderable;
 import com.game.input.Command;
 import com.game.input.InputListener;
 import com.game.input.InputLogic;
@@ -11,6 +12,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class Renderer implements Runnable {
     private World world;
@@ -28,21 +31,24 @@ public class Renderer implements Runnable {
     private JPanel panel;
     private float zoom;
     private GameObject watchable;
-    // TODO: Manager auslagern
-    public Renderer() {
-        this(World.getInstance().getPlayers().get(0));
+
+    public Queue<Command> getCommandList() {
+        return commandList;
     }
 
-    public Renderer(GameObject watchable) {
+    private Queue<Command> commandList;
+    // TODO: Manager auslagern
+
+    public Renderer() {
+        commandList = new ArrayDeque<>();
         this.running = true;
         world = World.getInstance();
         // TODO: Umschreiben
-        MoveCommand c = new MoveCommand();
         jFrame = new JFrame("Game");
         panel = (JPanel)jFrame.getContentPane();
         panel.setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
         panel.setLayout(null);
-        camera = new Camera(new Vector2i(0, 0), SIZE, watchable);
+        camera = new Camera(new Vector2i(0, 0), SIZE, world.getObservable());
         canvas = new Canvas();
         canvas.setBounds(0,0, SIZE.getX(), SIZE.getY());
         canvas.setIgnoreRepaint(true);
@@ -75,6 +81,13 @@ public class Renderer implements Runnable {
             Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
             synchronized (World.getInstance()) {
                 if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {
+                    while(!inputLogic.getCommandQueue().isEmpty()) {
+                        Command c = inputLogic.getCommandQueue().poll();
+                        if(c!=null) {
+                            commandList.add(c);
+                            c.execute();
+                        }
+                    }
                     render();
                     lastTime = System.currentTimeMillis();
                 } else {
@@ -104,11 +117,8 @@ public class Renderer implements Runnable {
         g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
         world.getLevel().paint(g2);
         // After that render the GameObjects.
-        for(PhysicsObject ga:world.getDynamics().values()) {
-            ga.paint(g2);
-        }
-        for(GameObject s:world.getStatics().values()) {
-            s.paint(g2);
+        for(Renderable r:world.getRenderables().values()) {
+            r.paint(g2);
         }
         /*for(GameObject gameObject:world.getStatics()) {
             gameObject.paint(g);

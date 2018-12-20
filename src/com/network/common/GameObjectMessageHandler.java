@@ -1,6 +1,9 @@
 package com.network.common;
 
+import com.game.event.AddGameObjectEvent;
+import com.game.event.MoveGameObjectEvent;
 import com.game.gameworld.GameObject;
+import com.game.gameworld.Player;
 import com.game.gameworld.SynchronizedGameObject;
 import com.game.gameworld.World;
 import com.helper.Vector2f;
@@ -13,6 +16,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class GameObjectMessageHandler implements NetworkMessageHandler<GameObjectMessage> {
+    private int commandCount;
     @Override
     public void sendMessage(GameObjectMessage objectMessage, MyDataOutputStream dos) {
         try {
@@ -53,13 +57,12 @@ public class GameObjectMessageHandler implements NetworkMessageHandler<GameObjec
 
     @Override
     public void handle(GameObjectMessage objectMessage) {
-        GameObject g = World.getInstance().getObject(objectMessage.getGameObject().getMyID());
-        if(g == null) {
-            World.getInstance().addObject(objectMessage.getGameObject());
+        int id = objectMessage.getGameObject().getMyID();
+        System.out.println(commandCount++);
+        if(!World.getInstance().existsObject(id)) {
+            World.getInstance().addEvent(new AddGameObjectEvent(new Player(objectMessage.getGameObject().getPosition())));
         } else {
-            if(g instanceof SynchronizedGameObject) {
-                ((SynchronizedGameObject) g).deltaPosition(objectMessage.getGameObject().getPosition());
-            }
+            World.getInstance().addEvent(new MoveGameObjectEvent(objectMessage.getGameObject()));
         }
     }
 

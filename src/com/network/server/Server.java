@@ -25,6 +25,7 @@ public class Server {
     private GameObjectMessageHandler gameObjectMessageHandler;
     private static Object token = new Object();
     public Server(int port) {
+        managers = new ArrayList<>();
         try {
             serverGameLogic = new ServerGameLogic(this);
             Thread logicThread = new Thread(serverGameLogic);
@@ -46,26 +47,29 @@ public class Server {
     }
 
     public void deliverToClients() {
-        /*for(Manager m:managers) {
-            for(GameObject g:World.getInstance().getPlayers()) {
-                m.send(new GameObjectMessage(g));
+        for(Manager m:managers) {
+            for(PhysicsObject g:World.getInstance().getPlayers().values()) {
+                if(g.hasMotionChanges()) {
+                    m.send(new GameObjectMessage(g));
+                }
             }
-        }*/
+        }
 
     }
 
     private void serverLoop() {
-        managers = new ArrayList<>();
         //MoveMessageHandler m = new MoveMessageHandler();
         while (true) {
             try {
                 Socket t = serverSocket.accept();
                 Manager ma = new Manager(t.getInputStream(), t.getOutputStream());
                 ma.register(MessageType.GAME_OBJECT, gameObjectMessageHandler);
+                ma.register(MessageType.COMMAND, new CommandMessageHandler());
                 managers.add(ma);
+
+                ma.send(new GameObjectMessage(serverGameLogic.addPlayer()));
                 Thread managerThread = new Thread(ma);
                 managerThread.start();
-                ma.send(new GameObjectMessage(serverGameLogic.addPlayer()));
                 /*for(PhysicsObject g: World.getInstance().getPlayers()) {
                     GameObjectMessage ga = new GameObjectMessage(g);
                     ma.send(ga);
