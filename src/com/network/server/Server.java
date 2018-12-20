@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
-public class Server {
+public class Server implements Runnable {
     // Accepting the connections
     private ServerSocket serverSocket;
     private Map<Integer, Socket> clients;
@@ -27,16 +27,8 @@ public class Server {
     public Server(int port) {
         managers = new ArrayList<>();
         try {
-            serverGameLogic = new ServerGameLogic(this);
-            Thread logicThread = new Thread(serverGameLogic);
-            renderer = new Renderer();
-            Thread renderThread = new Thread(renderer);
-            logicThread.start();
-            renderThread.start();
             serverSocket = new ServerSocket(port);
-            // ChatMessageHandler
             gameObjectMessageHandler = new GameObjectMessageHandler();
-            serverLoop();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,8 +49,8 @@ public class Server {
 
     }
 
-    private void serverLoop() {
-        //MoveMessageHandler m = new MoveMessageHandler();
+    @Override
+    public void run() {
         while (true) {
             try {
                 Socket t = serverSocket.accept();
@@ -66,24 +58,8 @@ public class Server {
                 ma.register(MessageType.GAME_OBJECT, gameObjectMessageHandler);
                 ma.register(MessageType.COMMAND, new CommandMessageHandler());
                 managers.add(ma);
-
-                ma.send(new GameObjectMessage(serverGameLogic.addPlayer()));
                 Thread managerThread = new Thread(ma);
                 managerThread.start();
-                /*for(PhysicsObject g: World.getInstance().getPlayers()) {
-                    GameObjectMessage ga = new GameObjectMessage(g);
-                    ma.send(ga);
-                }*/
-
-                // Register the existing ChatMessageHandler and MoveManager
-                /*MoveMessageHandler m = new MoveMessageHandler();
-                m.registerPlayer(serverGameLogic.addPlayer());
-                m.registerServerGameLogic(serverGameLogic);
-                ma.register(MessageType.CHAT, c);
-                ma.register(MessageType.MOVE, m);*/
-                //managers.add(ma);
-                //ma.register(MessageType);
-                //managers.add(MessageType.GAME_OBJECT, gameObjectMessageHandler);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -1,6 +1,7 @@
 package com.network.server;
 
 import com.game.gameworld.PhysicsObject;
+import com.game.gameworld.Renderer;
 import com.game.input.Command;
 import com.game.gameworld.Player;
 import com.game.gameworld.World;
@@ -20,11 +21,16 @@ public class ServerGameLogic implements Runnable {
     private final int CLIENT_UPDATE_RATE = 10;
     private long updateCount;
     private long lastTime;
-    public ServerGameLogic(Server server) {
-        this.server = server;
-        updateCount = 0;
+    private Renderer renderer;
+    public ServerGameLogic() {
+        server = new Server(6060);
+        new Thread(server).start();
         world = World.getInstance();
         world.addTestScene();
+        renderer = new Renderer();
+        new Thread(renderer).start();
+        updateCount = 0;
+
         requestedCommands = new ArrayList<>();
     }
 
@@ -78,5 +84,10 @@ public class ServerGameLogic implements Runnable {
         Player t = new Player(new Vector2f(0f, 0f));
         world.addObject(t);
         return t;
+    }
+
+    public static void main(String[] args) {
+        ServerGameLogic serverGameLogic = new ServerGameLogic();
+        new Thread(serverGameLogic).start();
     }
 }
