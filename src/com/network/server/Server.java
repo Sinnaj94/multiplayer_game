@@ -4,6 +4,7 @@ import com.game.event.AddGameObjectEvent;
 import com.game.event.MoveGameObjectEvent;
 import com.game.gameworld.*;
 import com.network.common.*;
+import com.network.stream.MyDataOutputStream;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -21,14 +22,19 @@ public class Server implements Runnable {
     private List<Manager> managers;
     private ServerGameLogic serverGameLogic;
     private Renderer renderer;
-    private GameObjectMessageHandler gameObjectMessageHandler;
     private EventMessageHandler eventMessageHandler;
+    //private List<CommandMessageHandler> commandMessageHandlers;
+    private CommandMessageHandler commandMessageHandler;
+    private int port;
+    private volatile boolean exit = false;
     private static Object token = new Object();
     public Server(int port) {
         managers = new ArrayList<>();
         try {
+            this.port = port;
             serverSocket = new ServerSocket(port);
-            //gameObjectMessageHandler = new GameObjectMessageHandler();
+            //commandMessageHandlers = new ArrayList<>();
+            commandMessageHandler = new CommandMessageHandler();
             eventMessageHandler = new EventMessageHandler();
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,8 +52,9 @@ public class Server implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (!exit) {
             try {
+                System.out.println("Listening for new Connections.");
                 Socket t = serverSocket.accept();
                 Manager ma = new Manager(t.getInputStream(), t.getOutputStream());
                 ma.register(MessageType.EVENT, eventMessageHandler);
@@ -55,9 +62,13 @@ public class Server implements Runnable {
                 Player p = World.getInstance().spawnPlayer();
 
                 ma.send(new EventMessage(new AddGameObjectEvent(p, true)));
-                CommandMessageHandler commandMessageHandler = new CommandMessageHandler();
+                //CommandMessageHandler commandMessageHandler = new CommandMessageHandler();
                 commandMessageHandler.setPlayer(p);
                 ma.register(MessageType.COMMAND, commandMessageHandler);
+                //commandMessageHandlers.add(commandMessageHandler);
+                //for(CommandMessageHandler c:commandMessageHandlers) {
+                commandMessageHandler.addOutputStream(ma.getDos());
+                //}
                 managers.add(ma);
                 // Sending this one the right one
                 //TODO: put it in the handler
@@ -77,5 +88,10 @@ public class Server implements Runnable {
                 e.printStackTrace();
             }
         }
+        System.out.println("Server Thread stopped.");
+    }
+
+    public void stop() {
+        exit = true;
     }
 }

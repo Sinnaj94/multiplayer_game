@@ -1,14 +1,11 @@
 package com.game.input;
 
 import com.game.gameworld.World;
-import com.helper.Vector2f;
-import com.network.common.MoveMessage;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
 
 public class InputLogic {
     private JComponent component;
@@ -77,7 +74,7 @@ public class InputLogic {
         public void actionPerformed(ActionEvent e) {
             // TODO: Auslagern
             //World.getInstance().getPlayers().get(0).move(direction.getX());
-            MoveCommand c = new MoveCommand();
+            MoveCommand c = new MoveCommand(World.getInstance().getTarget().getMyID());
             c.setDirection(direction);
             //c.addGameObject(World.getInstance().getPlayers().get(0));
             commandQueue.add(c);
@@ -87,7 +84,7 @@ public class InputLogic {
     public class JumpAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JumpCommand c = new JumpCommand();
+            JumpCommand c = new JumpCommand(World.getInstance().getTarget().getMyID());
             commandQueue.add(c);
             //World.getInstance().getPlayers().get(0).jump();
         }

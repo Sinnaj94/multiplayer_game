@@ -1,0 +1,82 @@
+package com.network.server;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.PrintStream;
+
+public class ServerStartScreen extends JFrame {
+    JTextField port;
+    JButton trigger;
+    private Thread serverThread;
+    private ServerGameLogic serverGameLogic;
+    private JTextArea debug;
+    public ServerStartScreen() {
+        super();
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        gbc.gridwidth = 2;
+        JLabel title = new JLabel("SERVER");
+        title.setFont(new Font("Courier", Font.BOLD,32));
+        gbc.gridy++;
+        panel.add(title);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        panel.add(new JLabel("Port:"),gbc);
+        port = new JTextField("6060");
+        gbc.gridx++;
+
+        panel.add(port,gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        trigger = new JButton("Start");
+        panel.add(trigger,gbc);
+        gbc.gridy++;
+        panel.add(new JLabel("Console:"), gbc);
+        gbc.gridy++;
+        gbc.gridwidth = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.ipady = 200;
+        gbc.ipadx = 400;
+        debug = new JTextArea();
+        debug.setFont(new Font("Andale Mono", Font.BOLD, 12));
+        JScrollPane p = new JScrollPane(debug);
+
+        debug.setSize(400, 300);
+        panel.add(p,gbc);
+        PrintStream print = new PrintStream(new AreaOutputStream(debug));
+        System.setOut(print);
+        trigger.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(serverGameLogic!=null) {
+
+                } else {
+                    int _port = Integer.parseInt(port.getText());
+                    System.out.println(String.format("Attempting to start Server. (Port %d)", _port));
+
+                    serverGameLogic = new ServerGameLogic(_port);
+                    serverThread = new Thread(serverGameLogic);
+                    serverThread.start();
+                    trigger.setEnabled(false);
+                }
+
+            }
+        });
+        this.setLocationRelativeTo(null);
+        //this.setResizable(false);
+        this.add(panel);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    public static void main(String[] args) {
+        ServerStartScreen s = new ServerStartScreen();
+        s.pack();
+        s.setVisible(true);
+        /*ServerGameLogic serverGameLogic = new ServerGameLogic();
+        new Thread(serverGameLogic).start();*/
+    }
+}

@@ -97,7 +97,7 @@ public class World implements Updateable {
      * @return The added Gameobject, so it will work further
      */
     public GameObject addObject(GameObject g) {
-        System.out.println(g.getClass() + "with ID " + g.getMyID() +  " added.");
+        System.out.println(String.format("Added %s with ID %d.", g.getClass().getName(), g.getMyID()));
         if(g instanceof PhysicsObject) {
             dynamics.put(g.getMyID(), (PhysicsObject)g);
             if(g instanceof Player) {

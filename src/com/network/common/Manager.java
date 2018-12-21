@@ -15,7 +15,16 @@ public class Manager<T extends NetworkMessage> implements Runnable {
     private static int MANAGER_ID = 0;
     private int clientID;
 
+    public MyDataInputStream getDis() {
+        return dis;
+    }
+
+    public MyDataOutputStream getDos() {
+        return dos;
+    }
+
     public Manager(InputStream is, OutputStream os) {
+        System.out.println("Adding a new Manager.");
         map = new HashMap<>();
         dis = new MyDataInputStream(is);
         dos = new MyDataOutputStream(os);

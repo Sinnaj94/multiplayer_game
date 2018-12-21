@@ -7,6 +7,8 @@ import com.game.gameworld.Player;
 import com.game.gameworld.World;
 import com.helper.Vector2f;
 
+import javax.swing.*;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +24,13 @@ public class ServerGameLogic implements Runnable {
     private long updateCount;
     private long lastTime;
     private Renderer renderer;
-    public ServerGameLogic() {
-        server = new Server(6060);
+    public volatile boolean exit = false;
+    public ServerGameLogic(int port) {
+        server = new Server(port);
         new Thread(server).start();
         world = World.getInstance();
-        renderer = new Renderer("Server");
-        new Thread(renderer).start();
+        //renderer = new Renderer("Server");
+        //new Thread(renderer).start();
         updateCount = 0;
 
         requestedCommands = new ArrayList<>();
@@ -40,7 +43,7 @@ public class ServerGameLogic implements Runnable {
     @Override
     public void run() {
         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-        while (true) {
+        while (!exit) {
             synchronized (World.getInstance()) {
                 if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {
                     update();
@@ -56,6 +59,12 @@ public class ServerGameLogic implements Runnable {
                 }
             }
         }
+        System.out.println("Server shutting down.");
+        server.stop();
+    }
+
+    public void stop() {
+        this.exit = true;
     }
 
     public void addCommand(Command c) {
@@ -73,7 +82,9 @@ public class ServerGameLogic implements Runnable {
     }
 
     public static void main(String[] args) {
-        ServerGameLogic serverGameLogic = new ServerGameLogic();
-        new Thread(serverGameLogic).start();
+        int port = Integer.parseInt(args[0]);
+        ServerGameLogic serverGameLogic = new ServerGameLogic(port);
+        new Thread(serverGameLogic);
     }
 }
+

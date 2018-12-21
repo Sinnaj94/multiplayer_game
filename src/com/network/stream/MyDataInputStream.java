@@ -3,6 +3,7 @@ package com.network.stream;
 import com.game.event.Event;
 import com.game.gameworld.GameObject;
 import com.game.gameworld.SynchronizedGameObject;
+import com.game.gameworld.World;
 import com.game.input.Command;
 import com.game.input.Command.CommandType;
 import com.game.input.JumpCommand;
@@ -40,12 +41,13 @@ public class MyDataInputStream extends DataInputStream {
     public Command readCommand() throws IOException {
         byte b = readByte();
         CommandType c = CommandType.getMessageTypeByByte(b);
+        int id = readInt();
         switch(c) {
             case JUMP:
-                return new JumpCommand();
+                return new JumpCommand(id);
             case MOVE:
                 int direction = readInt();
-                MoveCommand m = new MoveCommand();
+                MoveCommand m = new MoveCommand(id);
                 m.setDirection(direction);
                 return m;
         }

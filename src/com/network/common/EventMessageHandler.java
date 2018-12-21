@@ -33,6 +33,7 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
             if(eventType == EventType.ADD) {
                 dos.writeBoolean(((AddGameObjectEvent)eventMessage.getEvent()).isMainPlayer());
             }
+            dos.flush();
         } catch(IOException e) {
             e.printStackTrace();
         }

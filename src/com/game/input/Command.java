@@ -4,9 +4,18 @@ import com.game.gameworld.GameObject;
 import com.game.gameworld.Player;
 import com.game.gameworld.World;
 
-public interface Command {
-    void execute(Player p);
-    CommandType getCommandType();
+public abstract class Command {
+    public Player getPlayer() {
+        return player;
+    }
+
+    private Player player;
+    public Command(int id) {
+        this.player = (Player)World.getInstance().getObject(id);
+    }
+
+    public abstract void execute();
+    public abstract CommandType getCommandType();
 
     public enum CommandType {
         JUMP((byte)0), MOVE((byte)1);

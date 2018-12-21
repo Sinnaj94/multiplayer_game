@@ -4,9 +4,11 @@ import com.game.gameworld.PhysicsObject;
 import com.game.gameworld.Player;
 import com.helper.Vector2f;
 
-public class MoveCommand implements Command {
+public class MoveCommand extends Command {
     private int direction;
-    public MoveCommand() {
+
+    public MoveCommand(int id) {
+        super(id);
     }
 
     public void setDirection(int direction) {
@@ -23,9 +25,10 @@ public class MoveCommand implements Command {
         return direction;
     }
 
+
     @Override
-    public void execute(Player p) {
-        p.move(direction);
+    public void execute() {
+        getPlayer().move(direction);
     }
 
     @Override

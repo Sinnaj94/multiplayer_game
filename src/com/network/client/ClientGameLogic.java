@@ -5,6 +5,14 @@ import com.game.gameworld.Renderer;
 import com.game.gameworld.World;
 import com.game.input.Command;
 import com.game.input.InputLogic;
+import com.sun.javafx.font.FontFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.ConnectException;
 
 public class ClientGameLogic implements Runnable{
     World w = World.getInstance();
@@ -16,8 +24,8 @@ public class ClientGameLogic implements Runnable{
     private static final World world = World.getInstance();
     private Renderer renderer;
     private InputLogic inputLogic;
-    public ClientGameLogic() {
-        client = new Client(6060);
+    public ClientGameLogic(String ip, int port) throws IOException {
+        client = new Client(ip, port);
         renderer = new Renderer("Client");
         new Thread(renderer).start();
         inputLogic = new InputLogic(renderer.getPanel());
@@ -31,7 +39,6 @@ public class ClientGameLogic implements Runnable{
                     while(!inputLogic.getCommandQueue().isEmpty()) {
                         Command command = inputLogic.getCommandQueue().poll();
                         if(command!=null) {
-                            command.execute(world.getTarget());
                             client.sendCommand(command);
                         }
                     }
@@ -50,7 +57,26 @@ public class ClientGameLogic implements Runnable{
     }
 
     public static void main(String[] args) {
-        ClientGameLogic clientGameLogic = new ClientGameLogic();
-        new Thread(clientGameLogic).start();
+        if(args.length != 2) {
+            System.out.println("Arguments: IP port");
+
+            System.exit(-1);
+        }
+        String address = args[0];
+        try {
+            int port = Integer.parseInt(args[1]);
+            try {
+                new Thread(new ClientGameLogic(address, port)).start();
+            } catch (IOException e) {
+                System.out.println(String.format("No connection to Server %s:%d possible.", address, port));
+                System.exit(1);
+            }
+
+        } catch(NumberFormatException e) {
+            System.out.println("Wrong format.");
+            System.exit(1);
+        }
     }
 }
+
+
