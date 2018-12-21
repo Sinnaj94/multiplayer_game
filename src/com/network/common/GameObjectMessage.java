@@ -4,6 +4,11 @@ import com.game.gameworld.GameObject;
 
 public class GameObjectMessage implements NetworkMessage {
     private GameObject gameObject;
+
+    public boolean isTarget() {
+        return isTarget;
+    }
+
     private boolean isTarget;
     public GameObjectMessage(GameObject p) {
         this.gameObject = p;

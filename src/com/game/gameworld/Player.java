@@ -36,6 +36,16 @@ public class Player extends PhysicsObject {
         this(new Vector2f(0f,0f), new Vector2f(16f, 16f));
     }
 
+    // TODO: ordentlicher machen
+    public Player(Vector2f position, Vector2f size, int id) {
+        super(position, size, id);
+        r = new Random();
+        inventory = new Inventory();
+        //setSize(new Vector2i(16f, 16f));
+        jumpAcceleration = -5f;
+    }
+
+
 
     public void jump() {
         jumpRequested = true;
@@ -112,7 +122,6 @@ public class Player extends PhysicsObject {
             if(index < capacity) {
                 items.add(i);
                 index++;
-                System.out.println("Object added. New Length: " + items.size());
                 return true;
             }
             return false;

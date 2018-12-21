@@ -21,6 +21,7 @@ public class Client {
             socket = new Socket("localhost", port);
             manager = new Manager(socket.getInputStream(), socket.getOutputStream());
             manager.register(MessageType.GAME_OBJECT, new GameObjectMessageHandler());
+            manager.register(MessageType.EVENT, new EventMessageHandler());
             //manager.register(MessageType.MOVE, new MoveMessageHandler());
             manager.register(MessageType.COMMAND, new CommandMessageHandler());
             // Receive the ChatMessages

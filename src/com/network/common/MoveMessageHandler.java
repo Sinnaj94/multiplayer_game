@@ -18,7 +18,7 @@ public class MoveMessageHandler implements NetworkMessageHandler<MoveMessage> {
     private ServerGameLogic serverGameLogic;
     private MoveCommand c;
     public MoveMessageHandler() {
-        c = new MoveCommand(null);
+        c = new MoveCommand();
     }
 
     public MoveMessageHandler(int id) {

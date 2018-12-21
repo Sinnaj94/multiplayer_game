@@ -4,18 +4,10 @@ import com.game.gameworld.GameObject;
 import com.game.gameworld.Player;
 import com.helper.Vector2f;
 
-public class JumpCommand extends Command {
-    public JumpCommand(Player player) {
-        super(player);
-    }
-
-    public JumpCommand(int id) {
-        super(id);
-    }
-
+public class JumpCommand implements Command {
     @Override
-    public void execute() {
-        getPlayer().jump();
+    public void execute(Player p) {
+        p.jump();
     }
 
     @Override

@@ -18,7 +18,7 @@ public class ClientGameLogic implements Runnable{
     private InputLogic inputLogic;
     public ClientGameLogic() {
         client = new Client(6060);
-        renderer = new Renderer();
+        renderer = new Renderer("Client");
         new Thread(renderer).start();
         inputLogic = new InputLogic(renderer.getPanel());
     }
@@ -31,7 +31,7 @@ public class ClientGameLogic implements Runnable{
                     while(!inputLogic.getCommandQueue().isEmpty()) {
                         Command command = inputLogic.getCommandQueue().poll();
                         if(command!=null) {
-                            command.execute();
+                            command.execute(world.getTarget());
                             client.sendCommand(command);
                         }
                     }

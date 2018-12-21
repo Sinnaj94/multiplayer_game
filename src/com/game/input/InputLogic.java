@@ -77,7 +77,7 @@ public class InputLogic {
         public void actionPerformed(ActionEvent e) {
             // TODO: Auslagern
             //World.getInstance().getPlayers().get(0).move(direction.getX());
-            MoveCommand c = new MoveCommand(World.getInstance().getPlayers().get(0));
+            MoveCommand c = new MoveCommand();
             c.setDirection(direction);
             //c.addGameObject(World.getInstance().getPlayers().get(0));
             commandQueue.add(c);
@@ -87,7 +87,7 @@ public class InputLogic {
     public class JumpAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JumpCommand c = new JumpCommand(World.getInstance().getPlayers().get(0));
+            JumpCommand c = new JumpCommand();
             commandQueue.add(c);
             //World.getInstance().getPlayers().get(0).jump();
         }

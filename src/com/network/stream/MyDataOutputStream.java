@@ -40,7 +40,7 @@ public class MyDataOutputStream extends DataOutputStream {
 
     public void writeCommand(Command c) throws IOException {
         writeByte(c.getCommandType().getID());
-        writeInt(c.getPlayer().getMyID());
+        //writeInt(c.getPlayer().getMyID());
         if(c.getCommandType().getID() == CommandType.MOVE.getID()) {
             writeInt(((MoveCommand)c).getDirection());
         }

@@ -17,6 +17,7 @@ public class World implements Updateable {
     private Map<Integer, Player> playerMap;
     private Map<Integer, GameObject> statics;
     private Map<Integer, Renderable> renderables;
+    private Player target;
 
     private List<Integer> removedObjects;
     private List<Event> eventsList;
@@ -54,6 +55,14 @@ public class World implements Updateable {
         }
     }
 
+    public void setTarget(GameObject target) {
+        this.target = (Player)target;
+    }
+
+    public Player getTarget() {
+        return target;
+    }
+
     public World() {
         /*statics = new ArrayList<>();
         dynamics = new ArrayList<>();
@@ -88,10 +97,12 @@ public class World implements Updateable {
      * @return The added Gameobject, so it will work further
      */
     public GameObject addObject(GameObject g) {
+        System.out.println(g.getClass() + "with ID " + g.getMyID() +  " added.");
         if(g instanceof PhysicsObject) {
             dynamics.put(g.getMyID(), (PhysicsObject)g);
             if(g instanceof Player) {
-                playerMap.put(g.getMyID(),(Player)g);
+                Player p = (Player)g;
+                playerMap.put(g.getMyID(),p);
             }
         } else {
             statics.put(g.getMyID(), g);
@@ -102,23 +113,51 @@ public class World implements Updateable {
         return g;
     }
 
+    /**
+     * Spawns a new Player
+     * @return Player instance
+     */
+    public Player spawnPlayer() {
+        return (Player)addObject(new Player());
+    }
+
+    /**
+     * Return an object by a given ID
+     * @param id GameObject ID
+     * @return GameObject with ID, null if not existant
+     */
     public GameObject getObject(int id) {
         return dynamics.get(id);
     }
 
+    /**
+     * Check if GameObject with given ID exists
+     * @param id GameObject ID
+     * @return true if exists, false if not
+     */
     public boolean existsObject(int id) {
         return dynamics.containsKey(id);
     }
 
-    // TODO: Event system
-    public void removeObject(int i) {
-        removedObjects.add(i);
+    /**
+     * Add Object to Remove List
+     * @param id GameObject ID
+     */
+    public void removeObject(int id) {
+        removedObjects.add(id);
     }
 
+    /**
+     * Add Object to Remove List
+     * @param g GameObject
+     */
     public void removeObject(GameObject g) {
         removedObjects.add(g.getMyID());
     }
 
+    /**
+     * Remove all objects in Remove list and clear the list
+     */
     public void removeObjects() {
         if(removedObjects.isEmpty()) return;
         for(Integer i:removedObjects) {
@@ -178,24 +217,16 @@ public class World implements Updateable {
         eventsList.clear();
     }
 
-    public GameObject getObservable() {
-        return playerMap.get(0);
-    }
-
     @Override
     public void update() {
         for(PhysicsObject gameObject:getDynamics().values()) {
             gameObject.update();
         }
         currentTime = System.currentTimeMillis() - lastTime;
-        //System.out.println(currentTime);
         if(currentTime >= timeStep) {
             time.tick();
-            //System.out.println(time.toString());
             lastTime = System.currentTimeMillis();
         }
-        //removeObjects();
         executeEvents();
-        //lastTime = System.currentTimeMillis();
     }
 }

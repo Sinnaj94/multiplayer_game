@@ -13,7 +13,6 @@ public enum MessageType {
     }
 
     public static MessageType getMessageTypeByByte(byte b) {
-        // TODO: Automate: Values()?
         for(MessageType m:MessageType.values()) {
             if(m.getByte() == b) {
                 return m;

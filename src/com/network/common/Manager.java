@@ -23,7 +23,6 @@ public class Manager<T extends NetworkMessage> implements Runnable {
     }
 
     public void register(MessageType messageType, NetworkMessageHandler<T> handler) {
-        System.out.println("Registering " + messageType.b + ", " + handler.toString());
         map.put(messageType, handler);
     }
 
@@ -33,7 +32,6 @@ public class Manager<T extends NetworkMessage> implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("New Manager Thread with ID " + clientID);
         while (true) {
             try {
                 byte b = dis.readByte();

@@ -39,14 +39,13 @@ public class MyDataInputStream extends DataInputStream {
 
     public Command readCommand() throws IOException {
         byte b = readByte();
-        int id = readInt();
         CommandType c = CommandType.getMessageTypeByByte(b);
         switch(c) {
             case JUMP:
-                return new JumpCommand(id);
+                return new JumpCommand();
             case MOVE:
                 int direction = readInt();
-                MoveCommand m = new MoveCommand(id);
+                MoveCommand m = new MoveCommand();
                 m.setDirection(direction);
                 return m;
         }

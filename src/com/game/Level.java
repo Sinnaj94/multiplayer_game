@@ -22,7 +22,6 @@ public class Level implements Renderable, Collideable {
         t = new TilesetFactory(tilesetImageSrc);
         chunkMap = new HashMap<>();
         chunkMap.put(0, new Chunk(0));
-        System.out.println(chunkMap.size());
         this.levelPath = levelPath;
         build();
     }
@@ -56,6 +55,11 @@ public class Level implements Renderable, Collideable {
             c.build();
             chunkMap.put(left, c);
             //System.out.println(chunkMap.get(left) == chunkMap.get(roundedX));
+        }
+        if(!chunkMap.containsKey(roundedX)) {
+            Chunk c = new Chunk(roundedX);
+            c.build();
+            chunkMap.put(roundedX, c);
         }
         return chunkMap.get(roundedX).intersects(collideable);
     }

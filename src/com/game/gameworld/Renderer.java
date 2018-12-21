@@ -38,15 +38,15 @@ public class Renderer implements Runnable {
     private float zoom;
     private GameObject watchable;
 
-    public Renderer() {
+    public Renderer(String windowName) {
         this.running = true;
         world = World.getInstance();
         // TODO: Umschreiben
-        jFrame = new JFrame("Game");
+        jFrame = new JFrame(windowName);
         panel = (JPanel)jFrame.getContentPane();
         panel.setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
         panel.setLayout(null);
-        camera = new Camera(new Vector2i(0, 0), SIZE, world.addObject(new Player(new Vector2f(0f,0f))));
+        //camera = new Camera(new Vector2i(0, 0), SIZE, world.addObject(new Player(new Vector2f(0f,0f))));
         canvas = new Canvas();
         canvas.setBounds(0,0, SIZE.getX(), SIZE.getY());
         canvas.setIgnoreRepaint(true);
@@ -102,9 +102,9 @@ public class Renderer implements Runnable {
      */
     private void render(Graphics g) {
         // Render the world.
-        camera.update();
+        //camera.update();
         Graphics2D g2 = (Graphics2D)g.create();
-        g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
+        g2.translate(100, 100);
         world.getLevel().paint(g2);
         // After that render the GameObjects.
         for(Renderable r:world.getRenderables().values()) {

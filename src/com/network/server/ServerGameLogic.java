@@ -18,7 +18,7 @@ public class ServerGameLogic implements Runnable {
     private World world;
     private Server server;
     private final int UPDATE_RATE = 10;
-    private final int CLIENT_UPDATE_RATE = 10;
+    private final int CLIENT_UPDATE_RATE = 100;
     private long updateCount;
     private long lastTime;
     private Renderer renderer;
@@ -26,8 +26,7 @@ public class ServerGameLogic implements Runnable {
         server = new Server(6060);
         new Thread(server).start();
         world = World.getInstance();
-        world.addTestScene();
-        renderer = new Renderer();
+        renderer = new Renderer("Server");
         new Thread(renderer).start();
         updateCount = 0;
 
@@ -68,22 +67,9 @@ public class ServerGameLogic implements Runnable {
      * This is where the calculations happen.
      */
     private void update() {
-        // Execute the Commands
-        for(Command c:requestedCommands) {
-            System.out.println("Executing");
-            c.execute();
-        }
-        requestedCommands.clear();
         // Update the GameObjects
         // TODO: An dieser Stelle vielleicht auch übertragen (GameObjects changes)
         world.update();
-    }
-
-    public Player addPlayer() {
-        // TODO: Referenzen speichern.
-        Player t = new Player(new Vector2f(0f, 0f));
-        world.addObject(t);
-        return t;
     }
 
     public static void main(String[] args) {

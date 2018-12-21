@@ -10,15 +10,8 @@ public class EventMessage implements NetworkMessage {
         return event;
     }
 
-    public GameObject getGameObject() {
-        return gameObject;
-    }
-
-    private GameObject gameObject;
-
-    public EventMessage(Event event, GameObject gameObject) {
+    public EventMessage(Event event) {
         this.event = event;
-        this.gameObject = gameObject;
     }
 
     @Override

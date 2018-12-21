@@ -1,6 +1,7 @@
 package com.game.gameworld;
 
 import com.helper.AdvancedBoundingBox;
+import com.helper.Vector2;
 import com.helper.Vector2f;
 
 import java.awt.*;
@@ -51,6 +52,21 @@ public abstract class PhysicsObject extends GameObject {
 
     public PhysicsObject(Vector2f position, Vector2f size) {
         super(position, size);
+        advancedBoundingBox = new AdvancedBoundingBox(getBoundingBox());
+        maxRunningSpeed = 2f;
+        acceleration = .01f;
+        currentSpeed = new Vector2f(0f, 0f);
+        constantForceRequest = new Vector2f(0f, 0f);
+        jumpRequest = 0f;
+        bounciness = 0.2f;
+        maxFallingSpeed = 5f;
+        friction = 0.9f;
+        impulse = new Vector2f(0f, 0f);
+        w = World.getInstance();
+    }
+
+    public PhysicsObject(Vector2f position, Vector2f size, int id) {
+        super(position, size, id);
         advancedBoundingBox = new AdvancedBoundingBox(getBoundingBox());
         maxRunningSpeed = 2f;
         acceleration = .01f;
