@@ -46,7 +46,7 @@ public class Renderer implements Runnable {
         panel = (JPanel)jFrame.getContentPane();
         panel.setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
         panel.setLayout(null);
-        //camera = new Camera(new Vector2i(0, 0), SIZE, world.addObject(new Player(new Vector2f(0f,0f))));
+        camera = new Camera(new Vector2i(0, 0), SIZE);
         canvas = new Canvas();
         canvas.setBounds(0,0, SIZE.getX(), SIZE.getY());
         canvas.setIgnoreRepaint(true);
@@ -102,9 +102,12 @@ public class Renderer implements Runnable {
      */
     private void render(Graphics g) {
         // Render the world.
-        //camera.update();
+        GameObject o = World.getInstance().getTarget();
+        if(o!=null) {
+            camera.observe(World.getInstance().getTarget());
+        }
         Graphics2D g2 = (Graphics2D)g.create();
-        g2.translate(100, 100);
+        g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
         world.getLevel().paint(g2);
         // After that render the GameObjects.
         for(Renderable r:world.getRenderables().values()) {

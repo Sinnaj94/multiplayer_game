@@ -6,12 +6,14 @@ import com.network.stream.MyDataOutputStream;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 public class Manager<T extends NetworkMessage> implements Runnable {
     // TODO
     MyDataInputStream dis;
     MyDataOutputStream dos;
     Map<MessageType, NetworkMessageHandler<T>> map;
+    private WorkingThread workingThread;
     private static int MANAGER_ID = 0;
     private int clientID;
 
@@ -28,6 +30,7 @@ public class Manager<T extends NetworkMessage> implements Runnable {
         map = new HashMap<>();
         dis = new MyDataInputStream(is);
         dos = new MyDataOutputStream(os);
+        workingThread = new WorkingThread();
         this.clientID = MANAGER_ID++;
     }
 
@@ -46,7 +49,7 @@ public class Manager<T extends NetworkMessage> implements Runnable {
                 byte b = dis.readByte();
                 MessageType current = MessageType.getMessageTypeByByte(b);
                 NetworkMessageHandler n = map.get(current);
-                // FIXME: Generics
+                // FIXME : Sometimes I get a Null Pointer here (Network?)
                 n.handle(n.getNetworkMessage(dis));
             } catch (IOException e) {
                 System.exit(-1);

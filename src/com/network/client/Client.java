@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class Client {
@@ -17,7 +18,8 @@ public class Client {
     Manager m2;
     public volatile boolean running;
     public Client(String ip, int port) throws IOException {
-        socket = new Socket(ip, port);
+        socket = new Socket();
+        socket.connect(new InetSocketAddress(ip, port), 1000);
         running = true;
 
         manager = new Manager(socket.getInputStream(), socket.getOutputStream());

@@ -1,6 +1,8 @@
 package com.network.client;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.io.IOException;
 
@@ -32,10 +34,10 @@ public class ClientStartScreen extends JFrame {
                     new Thread(c).start();
                     this.setVisible(false);
                 } catch (IOException e1) {
-                    JOptionPane.showMessageDialog(this, String.format("Could not connect to %s:%d", ip, myPort));
+                    JOptionPane.showMessageDialog(this, String.format("Could not connect to %s:%d (%s)", ip, myPort, e1.getLocalizedMessage()));
                 }
             } catch (NumberFormatException e2) {
-                JOptionPane.showMessageDialog(this, String.format("Port format wrong."));
+                JOptionPane.showMessageDialog(this, "Port must be a number.");
             }
         });
         panel.add(connectButton);

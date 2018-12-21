@@ -4,7 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.net.BindException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class ServerStartScreen extends JFrame {
     JTextField port;
@@ -47,24 +51,30 @@ public class ServerStartScreen extends JFrame {
 
         debug.setSize(400, 300);
         panel.add(p,gbc);
-        PrintStream print = new PrintStream(new AreaOutputStream(debug));
-        System.setOut(print);
-        trigger.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(serverGameLogic!=null) {
-
-                } else {
-                    int _port = Integer.parseInt(port.getText());
-                    System.out.println(String.format("Attempting to start Server. (Port %d)", _port));
-
+        System.setOut(new PrintStream(new AreaOutputStream(debug)));
+        System.setErr(new PrintStream(new AreaOutputStream(debug, true)));
+        trigger.addActionListener(e -> {
+            if(serverGameLogic == null) {
+                int _port = Integer.parseInt(port.getText());
+                System.err.println(String.format("Attempting to start Server. (Port %d)", _port));
+                try {
+                    System.out.println("IP: " + InetAddress.getLocalHost().getHostAddress());
+                } catch (UnknownHostException e1) {
+                    System.err.println("Could not determine IP.");
+                }
+                try {
                     serverGameLogic = new ServerGameLogic(_port);
                     serverThread = new Thread(serverGameLogic);
                     serverThread.start();
                     trigger.setEnabled(false);
+                } catch (IOException e1) {
+                    if(e1 instanceof BindException) {
+                        System.out.println(e1.getMessage());
+                    }
                 }
 
             }
+
         });
         this.setLocationRelativeTo(null);
         //this.setResizable(false);

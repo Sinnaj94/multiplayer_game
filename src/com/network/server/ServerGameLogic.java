@@ -8,6 +8,7 @@ import com.game.gameworld.World;
 import com.helper.Vector2f;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class ServerGameLogic implements Runnable {
     private long lastTime;
     private Renderer renderer;
     public volatile boolean exit = false;
-    public ServerGameLogic(int port) {
+    public ServerGameLogic(int port) throws IOException {
         server = new Server(port);
         new Thread(server).start();
         world = World.getInstance();
@@ -82,9 +83,14 @@ public class ServerGameLogic implements Runnable {
     }
 
     public static void main(String[] args) {
-        int port = Integer.parseInt(args[0]);
-        ServerGameLogic serverGameLogic = new ServerGameLogic(port);
-        new Thread(serverGameLogic);
+        try {
+            int port = Integer.parseInt(args[0]);
+            ServerGameLogic serverGameLogic = new ServerGameLogic(port);
+            new Thread(serverGameLogic);
+        } catch (IOException e) {
+            System.out.println("WHAT THE HECK?");
+        }
+
     }
 }
 

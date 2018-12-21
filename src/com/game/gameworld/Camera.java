@@ -2,21 +2,24 @@ package com.game.gameworld;
 
 import com.game.generics.Updateable;
 import com.helper.Vector2i;
+import com.sun.istack.internal.NotNull;
 
-public class Camera implements Updateable {
+public class Camera  {
     private Vector2i position;
-    private GameObject observable;
     private Vector2i size;
     private Vector2i innerTolerance;
     private Vector2i outerTolerance;
     private float maxSpeed;
-    public Camera(Vector2i position, Vector2i size, GameObject observable) {
+    public Camera(Vector2i position, Vector2i size) {
         this.position = position;
-        this.observable = observable;
         this.size = size;
         this.innerTolerance = new Vector2i((int)Math.floor(size.getX() * .3), (int)Math.floor(size.getY() * .3));
         this.outerTolerance = new Vector2i((int)Math.floor(size.getX() * .1), (int)Math.floor(size.getY() * .1));
         maxSpeed = 10f;
+    }
+
+    public Camera(Vector2i size) {
+        this(new Vector2i(0, 0), size);
     }
 
 
@@ -31,8 +34,7 @@ public class Camera implements Updateable {
         this.position = position;
     }
 
-    @Override
-    public void update() {
+    public void observe(GameObject observable) {
         int x = observable.toIntRectangle().x;
         int y = observable.toIntRectangle().y;
         int r = x + observable.toIntRectangle().width;
@@ -62,41 +64,5 @@ public class Camera implements Updateable {
             float speed = factor * maxSpeed;
             position.addX((int)speed);
         }
-        /*if(x < -position.getX() + innerTolerance.getX()) {
-            position.addX(2);
-            if(x < -position.getX() + outerTolerance.getX()) {
-                position.addX(4);
-                if(x < -position.getX()) {
-                    position.addX(10);
-                }
-            }
-        } else if(r > -position.getX() + size.getX() - innerTolerance.getX()) {
-            position.addX(-2);
-            if(r > -position.getX() + size.getX() - outerTolerance.getX()) {
-                position.addX(-4);
-                if(r > -position.getX() + size.getX()) {
-                    position.addX(-10);
-                }
-            }
-        }
-
-        if(y < -position.getY() + innerTolerance.getY()) {
-            position.addY(2);
-            if(y < -position.getY() + innerTolerance.getY()) {
-                position.addY(4);
-                if(y < -position.getY()) {
-                    position.addY(10);
-                }
-            }
-        } else if(d > -position.getY() + size.getY() - innerTolerance.getY()) {
-            position.addY(-2);
-            if(d > -position.getY() + size.getY() - outerTolerance.getY()) {
-                position.addY(-4);
-                if(d > -position.getY() + size.getY()) {
-                    position.addY(-10);
-                }
-            }
-        }*/
-
     }
 }

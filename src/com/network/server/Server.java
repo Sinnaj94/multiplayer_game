@@ -7,6 +7,7 @@ import com.network.common.*;
 import com.network.stream.MyDataOutputStream;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -28,22 +29,20 @@ public class Server implements Runnable {
     private int port;
     private volatile boolean exit = false;
     private static Object token = new Object();
-    public Server(int port) {
+    public Server(int port) throws IOException {
         managers = new ArrayList<>();
-        try {
-            this.port = port;
-            serverSocket = new ServerSocket(port);
-            //commandMessageHandlers = new ArrayList<>();
-            commandMessageHandler = new CommandMessageHandler();
-            eventMessageHandler = new EventMessageHandler();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.port = port;
+        serverSocket = new ServerSocket(port);
+        //commandMessageHandlers = new ArrayList<>();
+        commandMessageHandler = new CommandMessageHandler();
+        eventMessageHandler = new EventMessageHandler();
+        System.out.println(String.format("Success! Server listening on Port %d!", port));
     }
 
     public void deliverToClients() {
         for(Manager m:managers) {
             for(PhysicsObject g:World.getInstance().getPlayers().values()) {
+                System.out.println("TICK");
                 m.send(new EventMessage(new MoveGameObjectEvent(g)));
             }
         }
