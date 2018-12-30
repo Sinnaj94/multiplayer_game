@@ -1,9 +1,7 @@
 package com.network.stream;
 
-import com.game.event.Event;
 import com.game.gameworld.GameObject;
 import com.game.gameworld.SynchronizedGameObject;
-import com.game.gameworld.World;
 import com.game.input.Command;
 import com.game.input.Command.CommandType;
 import com.game.input.JumpCommand;
@@ -42,7 +40,7 @@ public class MyDataInputStream extends DataInputStream {
         byte b = readByte();
         CommandType c = CommandType.getMessageTypeByByte(b);
         int id = readInt();
-        switch(c) {
+        switch (c) {
             case JUMP:
                 return new JumpCommand(id);
             case MOVE:

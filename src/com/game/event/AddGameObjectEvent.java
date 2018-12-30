@@ -5,6 +5,7 @@ import com.game.gameworld.World;
 
 public class AddGameObjectEvent extends Event {
     private boolean isMainPlayer;
+
     public AddGameObjectEvent(GameObject gameObject) {
         super(gameObject);
         isMainPlayer = false;
@@ -19,7 +20,7 @@ public class AddGameObjectEvent extends Event {
     public void execute(World w) {
         // TODO: auslagern
         w.addObject(getGameObject());
-        if(isMainPlayer) {
+        if (isMainPlayer) {
             w.setTarget(getGameObject());
         }
     }

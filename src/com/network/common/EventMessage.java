@@ -1,7 +1,6 @@
 package com.network.common;
 
 import com.game.event.Event;
-import com.game.gameworld.GameObject;
 
 public class EventMessage implements NetworkMessage {
     private Event event;

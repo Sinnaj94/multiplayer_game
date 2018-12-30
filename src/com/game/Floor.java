@@ -19,6 +19,7 @@ public class Floor extends GameObject {
     private int maxX;
     private int minY;
     private int maxY;
+
     public Floor(TilesetFactory tilesetFactory) {
         minX = 0;
         maxX = 100;
@@ -31,13 +32,13 @@ public class Floor extends GameObject {
 
     public void build() {
         gameObjectList.clear();
-        setPosition((float)minX * 16, (float)minY * 16);
-        setSize(new Vector2f((float)(maxX - minX) * 16, (float)(maxY - minY) * 16));
-        for(int x = minX; x < maxX; x++) {
-            for(int y = minY; y < maxY; y++) {
+        setPosition((float) minX * 16, (float) minY * 16);
+        setSize(new Vector2f((float) (maxX - minX) * 16, (float) (maxY - minY) * 16));
+        for (int x = minX; x < maxX; x++) {
+            for (int y = minY; y < maxY; y++) {
                 // Implicitely add a new tile
                 FloorTile c = new FloorTile(tilesetFactory.getRandomFloorTile().getResultImg());
-                c.setPosition((float)(tileSize * x), (float)(tileSize * y));
+                c.setPosition((float) (tileSize * x), (float) (tileSize * y));
                 //gameObjectList.add(c);
             }
         }
@@ -46,14 +47,14 @@ public class Floor extends GameObject {
     // TODO: improve
     @Override
     public BoundingBox getBoundingBox() {
-        return new BoundingBox(new Vector2f((float)minX*tileSize, (float) minY*tileSize),
-                               new Vector2f((float)maxX * tileSize - minX * tileSize, (float)maxY * tileSize - minY * tileSize));
+        return new BoundingBox(new Vector2f((float) minX * tileSize, (float) minY * tileSize),
+                new Vector2f((float) maxX * tileSize - minX * tileSize, (float) maxY * tileSize - minY * tileSize));
     }
 
     @Override
     public void paint(Graphics g) {
-        for(GameObject ga:gameObjectList) {
-            if(World.getInstance().DEBUG_DRAW) {
+        for (GameObject ga : gameObjectList) {
+            if (World.getInstance().DEBUG_DRAW) {
                 super.paint(g);
             } else {
                 ga.paint(g);

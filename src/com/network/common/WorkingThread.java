@@ -1,7 +1,5 @@
 package com.network.common;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -10,8 +8,9 @@ public class WorkingThread implements Runnable {
 
     private BlockingQueue<NetworkMessage> messages;
     private BlockingQueue<NetworkMessageHandler> messageHandlers;
+
     public static WorkingThread getInstance() {
-        if(instance==null) {
+        if (instance == null) {
             WorkingThread.instance = new WorkingThread();
         }
         return WorkingThread.instance;
@@ -29,7 +28,7 @@ public class WorkingThread implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             try {
                 NetworkMessage message = messages.take();
                 NetworkMessageHandler handler = messageHandlers.take();

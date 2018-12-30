@@ -21,6 +21,7 @@ public class TilesetFactory {
     private Random r;
 
     private int tileSize;
+
     /**
      * TilesetFactory constructor. Returns several Images from a given JSON-Sourcefile
      *
@@ -38,14 +39,14 @@ public class TilesetFactory {
             image = ImageIO.read(new File((String) jobj.get("src")));
 
             // Set tilesize
-            tileSize = (int)(long)jobj.get("tilesize");
+            tileSize = (int) (long) jobj.get("tilesize");
             // Build the different Tiles
             // TODO: Simplify (this is the same function actually!)
             // (https://stackoverflow.com/questions/49589023/factory-pattern-for-superclass-and-its-subclasses)
             JSONArray floor = (JSONArray) jobj.get("floor");
             floorTiles = new FloorTile[floor.size()];
             for (int i = 0; i < floor.size(); i++) {
-                JSONObject current = (JSONObject)floor.get(i);
+                JSONObject current = (JSONObject) floor.get(i);
                 Vector2i position = new Vector2i((int) (long) current.get("x"), (int) (long) current.get("y"));
                 Vector2i size = new Vector2i((int) (long) current.get("width"), (int) (long) current.get("height"));
                 floorTiles[i] = new FloorTile(image, position, size);

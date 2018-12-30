@@ -1,20 +1,13 @@
 package com.network.client;
 
-import com.game.gameworld.GameObject;
 import com.game.gameworld.Renderer;
 import com.game.gameworld.World;
 import com.game.input.Command;
 import com.game.input.InputLogic;
-import com.sun.javafx.font.FontFactory;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.ConnectException;
 
-public class ClientGameLogic implements Runnable{
+public class ClientGameLogic implements Runnable {
     World w = World.getInstance();
     // TODO: UPDATE_RATE DYNAMICALLY
     private final int CLIENT_UPDATE_RATE = 10;
@@ -24,6 +17,7 @@ public class ClientGameLogic implements Runnable{
     private static final World world = World.getInstance();
     private Renderer renderer;
     private InputLogic inputLogic;
+
     public ClientGameLogic(String ip, int port, String name) throws IOException {
         client = new Client(ip, port, name);
         renderer = new Renderer("Client");
@@ -33,12 +27,12 @@ public class ClientGameLogic implements Runnable{
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             synchronized (world) {
                 if (System.currentTimeMillis() - lastTime > CLIENT_UPDATE_RATE) {
-                    while(!inputLogic.getCommandQueue().isEmpty()) {
+                    while (!inputLogic.getCommandQueue().isEmpty()) {
                         Command command = inputLogic.getCommandQueue().poll();
-                        if(command!=null) {
+                        if (command != null) {
                             client.sendCommand(command);
                         }
                     }
@@ -57,7 +51,7 @@ public class ClientGameLogic implements Runnable{
     }
 
     public static void main(String[] args) {
-        if(args.length != 3) {
+        if (args.length != 3) {
             System.out.println("Takes 3 Arguments: IP, PORT, USERNAME");
 
             System.exit(-1);
@@ -73,7 +67,7 @@ public class ClientGameLogic implements Runnable{
                 System.exit(1);
             }
 
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             System.out.println("Wrong format.");
             System.exit(1);
         }

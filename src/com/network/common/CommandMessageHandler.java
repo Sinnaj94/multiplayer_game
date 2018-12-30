@@ -1,7 +1,6 @@
 package com.network.common;
 
 import com.game.gameworld.Player;
-import com.game.gameworld.World;
 import com.game.input.Command;
 import com.network.stream.MyDataInputStream;
 import com.network.stream.MyDataOutputStream;
@@ -14,6 +13,7 @@ public class CommandMessageHandler implements NetworkMessageHandler<CommandMessa
     private Command command;
     private Player player;
     private List<MyDataOutputStream> outputStreams;
+
     public CommandMessageHandler() {
         outputStreams = new ArrayList<>();
     }
@@ -32,7 +32,7 @@ public class CommandMessageHandler implements NetworkMessageHandler<CommandMessa
             dos.writeByte(commandMessage.getMessageType().getByte());
             dos.writeCommand(commandMessage.getCommand());
             dos.flush();
-        } catch(IOException e) {
+        } catch (IOException e) {
 
         }
     }
@@ -42,7 +42,7 @@ public class CommandMessageHandler implements NetworkMessageHandler<CommandMessa
         try {
             Command command = dis.readCommand();
             return new CommandMessage(command);
-        } catch(IOException e) {
+        } catch (IOException e) {
 
         }
         return null;
@@ -51,8 +51,8 @@ public class CommandMessageHandler implements NetworkMessageHandler<CommandMessa
     @Override
     public void handle(CommandMessage commandMessage) {
         // Send the Command Message to all clients (the ones that registered...)
-        if(outputStreams.size() > 0) {
-            for(MyDataOutputStream m:outputStreams) {
+        if (outputStreams.size() > 0) {
+            for (MyDataOutputStream m : outputStreams) {
                 sendMessage(commandMessage, m);
             }
         }

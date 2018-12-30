@@ -35,13 +35,13 @@ public class Chunk implements Collideable, Renderable {
         tiles.clear();
         int size = World.TILE_SIZE;
         SimplexNoise s = new SimplexNoise(0);
-        for(int x = 0; x < World.CHUNK_TILES; x++) {
+        for (int x = 0; x < World.CHUNK_TILES; x++) {
             float n = s.noise(x, id);
-            for(int y = 0; y < World.CHUNK_TILES ; y++) {
+            for (int y = 0; y < World.CHUNK_TILES; y++) {
 
-                if(y > n * World.CHUNK_TILES) {
+                if (y > n * World.CHUNK_TILES) {
                     Tile g = new FloorTile(t.getRandomFloorTile().getResultImg());
-                    g.setPosition(size*x + id * World.CHUNK_TILES * size, size*y);
+                    g.setPosition(size * x + id * World.CHUNK_TILES * size, size * y);
                     g.setSize(size, size);
                     tiles.add(g);
                 }
@@ -51,15 +51,15 @@ public class Chunk implements Collideable, Renderable {
 
     @Override
     public void paint(Graphics g) {
-        for(Tile _g:tiles) {
+        for (Tile _g : tiles) {
             _g.paint(g);
         }
     }
 
     @Override
     public boolean intersects(BoundingBox collideable) {
-        for(Tile t:tiles) {
-            if(t.intersects(collideable)) {
+        for (Tile t : tiles) {
+            if (t.intersects(collideable)) {
                 return true;
             }
         }

@@ -3,13 +3,10 @@ package com.network.common;
 import com.game.event.*;
 import com.game.gameworld.GameObject;
 import com.game.gameworld.Player;
-import com.game.gameworld.SynchronizedGameObject;
 import com.game.gameworld.World;
 import com.network.stream.MyDataInputStream;
 import com.network.stream.MyDataOutputStream;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +27,11 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
             EventType eventType = eventMessage.getEvent().getEventType();
             dos.writeByte(eventType.getID());
             dos.writeGameObject(eventMessage.getEvent().getGameObject());
-            if(eventType == EventType.ADD) {
-                dos.writeBoolean(((AddGameObjectEvent)eventMessage.getEvent()).isMainPlayer());
+            if (eventType == EventType.ADD) {
+                dos.writeBoolean(((AddGameObjectEvent) eventMessage.getEvent()).isMainPlayer());
             }
             dos.flush();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         // TODO
@@ -48,8 +45,8 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
     public EventMessage getNetworkMessage(MyDataInputStream dis) {
         try {
             EventType eventType = EventType.getEventType(dis.readByte());
-            GameObject gameObject  = dis.readGameObject();
-            switch(eventType) {
+            GameObject gameObject = dis.readGameObject();
+            switch (eventType) {
                 case ADD:
                     // TODO: not only player.
                     boolean isMainPlayer = dis.readBoolean();

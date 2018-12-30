@@ -1,8 +1,6 @@
 package com.network.client;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.io.IOException;
 
@@ -11,12 +9,13 @@ public class ClientStartScreen extends JFrame {
     private JTextField port;
     private JTextField username;
     private JButton connectButton;
+
     public ClientStartScreen() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JLabel title = new JLabel("Client");
-        title.setFont(new Font("Courier", Font.BOLD,32));
+        title.setFont(new Font("Courier", Font.BOLD, 32));
         panel.add(title);
 
         panel.add(new JLabel("IP-Adresse:"));

@@ -2,20 +2,17 @@ package com.network.server;
 
 import com.game.event.AddGameObjectEvent;
 import com.game.event.MoveGameObjectEvent;
-import com.game.gameworld.*;
+import com.game.gameworld.PhysicsObject;
+import com.game.gameworld.Player;
+import com.game.gameworld.Renderer;
+import com.game.gameworld.World;
 import com.network.common.*;
-import com.network.stream.MyDataOutputStream;
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
-import sun.jvm.hotspot.opto.Block;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
@@ -33,6 +30,7 @@ public class Server implements Runnable {
     private int port;
     private volatile boolean exit = false;
     private static Object token = new Object();
+
     public Server(int port) throws IOException {
         managers = new HashMap<>();
         this.port = port;
@@ -45,8 +43,8 @@ public class Server implements Runnable {
     }
 
     public void deliverToClients() {
-        for(Manager current:managers.values()) {
-            for(PhysicsObject g:World.getInstance().getPlayers().values()) {
+        for (Manager current : managers.values()) {
+            for (PhysicsObject g : World.getInstance().getPlayers().values()) {
                 current.send(new EventMessage(new MoveGameObjectEvent(g)));
             }
         }
@@ -89,7 +87,7 @@ public class Server implements Runnable {
     }
 
     private void synchronizeManager(Manager manager) {
-        for(Player player:World.getInstance().getPlayers().values()) {
+        for (Player player : World.getInstance().getPlayers().values()) {
             {
                 manager.send(new EventMessage(new AddGameObjectEvent(player)));
             }
@@ -98,8 +96,8 @@ public class Server implements Runnable {
 
     private void addPlayerToAll(Manager manager, Player player) {
         // Synchronize all other Managers with the current Player object
-        for(Manager current:managers.values()) {
-            if(current!=manager) {
+        for (Manager current : managers.values()) {
+            if (current != manager) {
                 current.send(new EventMessage(new AddGameObjectEvent(player)));
             }
         }

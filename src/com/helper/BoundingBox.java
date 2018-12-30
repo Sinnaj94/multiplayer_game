@@ -3,7 +3,6 @@ package com.helper;
 import com.game.generics.Collideable;
 import com.game.generics.Placeable;
 import com.game.generics.Renderable;
-import com.game.generics.Synchronizable;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -11,6 +10,7 @@ import java.awt.geom.Rectangle2D;
 public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Renderable {
     private Vector2f position;
     private Vector2f size;
+
     public BoundingBox(Vector2f position, Vector2f size) {
         this.position = position;
         this.size = size;
@@ -43,11 +43,12 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
     }
 
     public Rectangle.Float toRectangle() {
-        return new Rectangle.Float(getX(),getY(),getWidth(),getHeight());
+        return new Rectangle.Float(getX(), getY(), getWidth(), getHeight());
     }
 
     /**
      * Used for drawing.
+     *
      * @return
      */
     public Rectangle toIntRectangle() {
@@ -56,7 +57,7 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
 
     @Override
     public BoundingBox createIntersection(BoundingBox other) {
-        Rectangle2D.Float r = (Rectangle2D.Float)toRectangle().createIntersection(other.toRectangle());
+        Rectangle2D.Float r = (Rectangle2D.Float) toRectangle().createIntersection(other.toRectangle());
         return new BoundingBox(new Vector2f(r.x, r.y), new Vector2f(r.width, r.height));
     }
 
@@ -104,6 +105,6 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
         g.drawRect(r.x, r.y, r.width, r.height);
         g.setColor(Color.red);
         g.drawLine(r.x, r.y, r.x + r.width, r.y + r.height);
-        g.drawLine(r.x + r.width, r.y, r.x , r.y + r.height);
+        g.drawLine(r.x + r.width, r.y, r.x, r.y + r.height);
     }
 }

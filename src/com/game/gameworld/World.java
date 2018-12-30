@@ -32,11 +32,12 @@ public class World implements Updateable {
     private double currentTime;
     private double lastTime;
     private final double timeStep = 1000;
+
     /**
      * Singleton implementation, there can only be ONE world object.
      */
     public static synchronized World getInstance() {
-        if(World.instance == null) {
+        if (World.instance == null) {
             World.instance = new World();
         }
         return World.instance;
@@ -45,7 +46,7 @@ public class World implements Updateable {
 
     public void addTestScene() {
         Random ra = new Random();
-        for(int i = 0; i < 1; i++) {
+        for (int i = 0; i < 1; i++) {
             float size = 16f;
             Vector2f r = new Vector2f(size, size);
             Player p = new Player(new Vector2f(0f, -100f), r);
@@ -56,7 +57,7 @@ public class World implements Updateable {
     }
 
     public void setTarget(GameObject target) {
-        this.target = (Player)target;
+        this.target = (Player) target;
     }
 
     public Player getTarget() {
@@ -82,15 +83,16 @@ public class World implements Updateable {
 
     /**
      * Adds a Gameobject
+     *
      * @return The added Gameobject, so it will work further
      */
     public GameObject addObject(GameObject g) {
         System.out.println(String.format("Added %s with ID %d.", g.getClass().getName(), g.getMyID()));
-        if(g instanceof PhysicsObject) {
-            dynamics.put(g.getMyID(), (PhysicsObject)g);
-            if(g instanceof Player) {
-                Player p = (Player)g;
-                playerMap.put(g.getMyID(),p);
+        if (g instanceof PhysicsObject) {
+            dynamics.put(g.getMyID(), (PhysicsObject) g);
+            if (g instanceof Player) {
+                Player p = (Player) g;
+                playerMap.put(g.getMyID(), p);
             }
         } else {
             statics.put(g.getMyID(), g);
@@ -104,14 +106,16 @@ public class World implements Updateable {
 
     /**
      * Spawns a new Player
+     *
      * @return Player instance
      */
     public Player spawnPlayer() {
-        return (Player)addObject(new Player());
+        return (Player) addObject(new Player());
     }
 
     /**
      * Return an object by a given ID
+     *
      * @param id GameObject ID
      * @return GameObject with ID, null if not existant
      */
@@ -121,6 +125,7 @@ public class World implements Updateable {
 
     /**
      * Check if GameObject with given ID exists
+     *
      * @param id GameObject ID
      * @return true if exists, false if not
      */
@@ -130,6 +135,7 @@ public class World implements Updateable {
 
     /**
      * Add Object to Remove List
+     *
      * @param id GameObject ID
      */
     public void removeObject(int id) {
@@ -138,6 +144,7 @@ public class World implements Updateable {
 
     /**
      * Add Object to Remove List
+     *
      * @param g GameObject
      */
     public void removeObject(GameObject g) {
@@ -148,8 +155,8 @@ public class World implements Updateable {
      * Remove all objects in Remove list and clear the list
      */
     public void removeObjects() {
-        if(removedObjects.isEmpty()) return;
-        for(Integer i:removedObjects) {
+        if (removedObjects.isEmpty()) return;
+        for (Integer i : removedObjects) {
             dynamics.remove(i);
             renderables.remove(i);
         }
@@ -158,6 +165,7 @@ public class World implements Updateable {
 
     /**
      * Returns the current level
+     *
      * @return
      */
     public Level getLevel() {
@@ -178,6 +186,7 @@ public class World implements Updateable {
 
     /**
      * Get all the GameObjects
+     *
      * @return
      */
     public Map<Integer, GameObject> getStatics() {
@@ -199,8 +208,8 @@ public class World implements Updateable {
 
     public void executeEvents() {
         // Execute all events and then delete
-        if(eventsList.isEmpty()) return;
-        for(Event e:eventsList) {
+        if (eventsList.isEmpty()) return;
+        for (Event e : eventsList) {
             e.execute(this);
         }
         eventsList.clear();
@@ -208,11 +217,11 @@ public class World implements Updateable {
 
     @Override
     public void update() {
-        for(PhysicsObject gameObject:getDynamics().values()) {
+        for (PhysicsObject gameObject : getDynamics().values()) {
             gameObject.update();
         }
         currentTime = System.currentTimeMillis() - lastTime;
-        if(currentTime >= timeStep) {
+        if (currentTime >= timeStep) {
             time.tick();
             lastTime = System.currentTimeMillis();
         }

@@ -1,12 +1,12 @@
 package com.game.gameworld;
 
-import com.helper.Vector2;
 import com.helper.Vector2f;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Player extends PhysicsObject {
     private BufferedImage bufferedImage;
@@ -18,6 +18,7 @@ public class Player extends PhysicsObject {
     private float movingSpeed;
     private Camera camera;
     private int test;
+
     public Player(Vector2f position, Vector2f size) {
         super(position, size);
         r = new Random();
@@ -33,7 +34,7 @@ public class Player extends PhysicsObject {
 
 
     public Player() {
-        this(new Vector2f(0f,0f), new Vector2f(16f, 16f));
+        this(new Vector2f(0f, 0f), new Vector2f(16f, 16f));
     }
 
     // TODO: ordentlicher machen
@@ -44,7 +45,6 @@ public class Player extends PhysicsObject {
         //setSize(new Vector2i(16f, 16f));
         jumpAcceleration = -5f;
     }
-
 
 
     public void jump() {
@@ -71,9 +71,9 @@ public class Player extends PhysicsObject {
 
 
     public void move(float direction) {
-        if(direction > 0 && movingSpeed <= 0) {
+        if (direction > 0 && movingSpeed <= 0) {
             this.movingSpeed += direction * 3f;
-        } else if(direction < 0 && movingSpeed >= 0) {
+        } else if (direction < 0 && movingSpeed >= 0) {
             this.movingSpeed += direction * 3f;
         }
     }
@@ -81,11 +81,11 @@ public class Player extends PhysicsObject {
     @Override
     public void update() {
         applyGravity();
-        if(bullet!=null) {
+        if (bullet != null) {
             bullet.update();
         }
         //shoot();
-        if(jumpRequested && getTouchesFloor()) {
+        if (jumpRequested && getTouchesFloor()) {
             accelerate(new Vector2f(0f, jumpAcceleration));
         }
         jumpRequested = false;
@@ -97,14 +97,14 @@ public class Player extends PhysicsObject {
     public void paint(Graphics g) {
         // TODO cooles Sprite einfügen
         //g.translate(++test, 0);
-        if(World.getInstance().DEBUG_DRAW) {
+        if (World.getInstance().DEBUG_DRAW) {
             super.paint(g);
         } else {
             g.setColor(Color.red);
             Rectangle r = getBoundingBox().toIntRectangle();
             g.fillRect(r.x, r.y, r.width, r.height);
         }
-        if(bullet != null) {
+        if (bullet != null) {
             bullet.paint(g);
         }
     }
@@ -113,13 +113,14 @@ public class Player extends PhysicsObject {
         List<Item> items;
         private int capacity;
         private int index;
+
         public Inventory() {
             capacity = 3;
             items = new ArrayList<>();
         }
 
         public boolean addItem(Item i) {
-            if(index < capacity) {
+            if (index < capacity) {
                 items.add(i);
                 index++;
                 return true;

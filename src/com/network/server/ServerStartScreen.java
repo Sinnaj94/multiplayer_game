@@ -2,8 +2,6 @@ package com.network.server;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.BindException;
@@ -16,6 +14,7 @@ public class ServerStartScreen extends JFrame {
     private Thread serverThread;
     private ServerGameLogic serverGameLogic;
     private JTextArea debug;
+
     public ServerStartScreen() {
         super();
         JPanel panel = new JPanel();
@@ -24,20 +23,20 @@ public class ServerStartScreen extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         gbc.gridwidth = 2;
         JLabel title = new JLabel("SERVER");
-        title.setFont(new Font("Courier", Font.BOLD,32));
+        title.setFont(new Font("Courier", Font.BOLD, 32));
         gbc.gridy++;
         panel.add(title);
         gbc.gridx = 0;
         gbc.gridy++;
-        panel.add(new JLabel("Port:"),gbc);
+        panel.add(new JLabel("Port:"), gbc);
         port = new JTextField("6060");
         gbc.gridx++;
 
-        panel.add(port,gbc);
+        panel.add(port, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
         trigger = new JButton("Start");
-        panel.add(trigger,gbc);
+        panel.add(trigger, gbc);
         gbc.gridy++;
         panel.add(new JLabel("Console:"), gbc);
         gbc.gridy++;
@@ -50,11 +49,11 @@ public class ServerStartScreen extends JFrame {
         JScrollPane p = new JScrollPane(debug);
 
         debug.setSize(400, 300);
-        panel.add(p,gbc);
+        panel.add(p, gbc);
         System.setOut(new PrintStream(new AreaOutputStream(debug)));
         //System.setErr(new PrintStream(new AreaOutputStream(debug, true)));
         trigger.addActionListener(e -> {
-            if(serverGameLogic == null) {
+            if (serverGameLogic == null) {
                 int _port = Integer.parseInt(port.getText());
                 System.out.println(String.format("Attempting to start Server. (Port %d)", _port));
                 try {
@@ -68,7 +67,7 @@ public class ServerStartScreen extends JFrame {
                     serverThread.start();
                     trigger.setEnabled(false);
                 } catch (IOException e1) {
-                    if(e1 instanceof BindException) {
+                    if (e1 instanceof BindException) {
                         System.out.println(e1.getMessage());
                     }
                 }

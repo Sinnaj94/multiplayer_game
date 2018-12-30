@@ -1,15 +1,10 @@
 package com.network.client;
 
-import com.game.gameworld.GameObject;
-import com.game.gameworld.Renderer;
 import com.game.input.Command;
 import com.network.common.*;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -18,6 +13,7 @@ public class Client {
     Manager manager;
     Manager m2;
     public volatile boolean running;
+
     public Client(String ip, int port, String name) throws IOException {
         socket = new Socket();
         socket.connect(new InetSocketAddress(ip, port), 1000);

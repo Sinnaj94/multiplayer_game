@@ -1,7 +1,7 @@
 package com.network.common;
 
 public enum MessageType {
-    CHAT((byte) 0), MOVE((byte) 1), GAME_OBJECT((byte) 2), EVENT((byte)3), COMMAND((byte)4);
+    CHAT((byte) 0), MOVE((byte) 1), GAME_OBJECT((byte) 2), EVENT((byte) 3), COMMAND((byte) 4);
     byte b;
 
     MessageType(byte b) {
@@ -13,8 +13,8 @@ public enum MessageType {
     }
 
     public static MessageType getMessageTypeByByte(byte b) {
-        for(MessageType m:MessageType.values()) {
-            if(m.getByte() == b) {
+        for (MessageType m : MessageType.values()) {
+            if (m.getByte() == b) {
                 return m;
             }
         }

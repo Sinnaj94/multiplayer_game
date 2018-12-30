@@ -12,6 +12,7 @@ public class SynchronizedGameObject extends GameObject {
     private double last;
     private final int FACTOR = 40;
     private double averageRefresh;
+
     public SynchronizedGameObject(Vector2f position, Vector2f size, int id) {
         super(position, size, id);
         lastPosition = new Vector2f(getPosition().getX(), getPosition().getY());
@@ -24,7 +25,7 @@ public class SynchronizedGameObject extends GameObject {
 
     public void deltaPosition(Vector2f delta) {
         setPosition(this.delta.getX(), this.delta.getY());
-        distance = new Vector2f(delta.getX() - getPosition().getX() , delta.getY() - getPosition().getY());
+        distance = new Vector2f(delta.getX() - getPosition().getX(), delta.getY() - getPosition().getY());
         timeDifference = System.currentTimeMillis() - last;
         averageRefresh = (averageRefresh + timeDifference) / 2;
         this.delta = delta;
@@ -34,7 +35,7 @@ public class SynchronizedGameObject extends GameObject {
     @Override
     public void update() {
         // TODO
-        setPosition(this.getPosition().getX() + (float)(distance.getX() * FACTOR / averageRefresh), this.getPosition().getY() + (float)(distance.getY() * FACTOR / averageRefresh));
+        setPosition(this.getPosition().getX() + (float) (distance.getX() * FACTOR / averageRefresh), this.getPosition().getY() + (float) (distance.getY() * FACTOR / averageRefresh));
     }
 
     @Override

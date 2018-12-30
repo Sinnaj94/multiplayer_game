@@ -16,7 +16,7 @@ public class Item extends GameObject implements Collectable {
 
     @Override
     public void give(Player p) {
-        if(p.addItem(this)) {
+        if (p.addItem(this)) {
             World.getInstance().removeObject(getMyID());
         }
     }
@@ -28,10 +28,10 @@ public class Item extends GameObject implements Collectable {
     }
 
     private void updateTouchedItems() {
-        for(PhysicsObject p:World.getInstance().getPlayers().values()) {
-            if(p instanceof Player) {
-                if(p.intersects(getBoundingBox())) {
-                    give((Player)p);
+        for (PhysicsObject p : World.getInstance().getPlayers().values()) {
+            if (p instanceof Player) {
+                if (p.intersects(getBoundingBox())) {
+                    give((Player) p);
                 }
             }
         }
@@ -39,7 +39,7 @@ public class Item extends GameObject implements Collectable {
 
     @Override
     public void paint(Graphics g) {
-        if(World.getInstance().DEBUG_DRAW) {
+        if (World.getInstance().DEBUG_DRAW) {
             super.paint(g);
         } else {
             g.drawRect(toIntRectangle().x, toIntRectangle().y, toIntRectangle().width, toIntRectangle().height);

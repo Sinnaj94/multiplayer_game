@@ -11,10 +11,13 @@ import com.game.gameworld.World;
  */
 public abstract class Event {
     private GameObject gameObject;
+
     public Event(GameObject gameObject) {
         this.gameObject = gameObject;
     }
+
     public abstract void execute(World w);
+
     public abstract EventType getEventType();
 
     public GameObject getGameObject() {

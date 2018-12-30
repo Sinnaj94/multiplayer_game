@@ -3,7 +3,6 @@ package com.network.stream;
 import com.game.gameworld.GameObject;
 import com.game.input.Command;
 import com.game.input.Command.CommandType;
-import com.game.input.JumpCommand;
 import com.game.input.MoveCommand;
 import com.helper.Vector2f;
 
@@ -42,8 +41,8 @@ public class MyDataOutputStream extends DataOutputStream {
         writeByte(c.getCommandType().getID());
         writeInt(c.getPlayer().getMyID());
         //writeInt(c.getPlayer().getMyID());
-        if(c.getCommandType().getID() == CommandType.MOVE.getID()) {
-            writeInt(((MoveCommand)c).getDirection());
+        if (c.getCommandType().getID() == CommandType.MOVE.getID()) {
+            writeInt(((MoveCommand) c).getDirection());
         }
     }
 

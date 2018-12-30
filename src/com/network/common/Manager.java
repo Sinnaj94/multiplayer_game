@@ -3,7 +3,9 @@ package com.network.common;
 import com.network.stream.MyDataInputStream;
 import com.network.stream.MyDataOutputStream;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ public class Manager<T extends NetworkMessage> implements Runnable {
         map.put(messageType, handler);
     }
 
-    public void send(T n){
+    public void send(T n) {
         map.get(n.getMessageType()).sendMessage(n, dos);
     }
 

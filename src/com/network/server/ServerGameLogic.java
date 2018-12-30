@@ -1,17 +1,13 @@
 package com.network.server;
 
-import com.game.gameworld.PhysicsObject;
 import com.game.gameworld.Renderer;
-import com.game.input.Command;
-import com.game.gameworld.Player;
 import com.game.gameworld.World;
-import com.helper.Vector2f;
+import com.game.input.Command;
 
-import javax.swing.*;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class ServerGameLogic implements Runnable {
     List<Command> requestedCommands;
@@ -26,6 +22,7 @@ public class ServerGameLogic implements Runnable {
     private long lastTime;
     private Renderer renderer;
     public volatile boolean exit = false;
+
     public ServerGameLogic(int port) throws IOException {
         server = new Server(port);
         new Thread(server).start();
@@ -46,10 +43,10 @@ public class ServerGameLogic implements Runnable {
         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
         while (!exit) {
             synchronized (World.getInstance()) {
-                if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {
+                if (System.currentTimeMillis() - lastTime > UPDATE_RATE) {
                     update();
                     updateCount++;
-                    if(updateCount % CLIENT_UPDATE_RATE == 0) {
+                    if (updateCount % CLIENT_UPDATE_RATE == 0) {
                         // TODO
                         server.deliverToClients();
                     }

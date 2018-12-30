@@ -1,20 +1,14 @@
 package com.game.gameworld;
 
 import com.game.generics.Renderable;
-import com.game.input.Command;
-import com.game.input.InputListener;
 import com.game.input.InputLogic;
-import com.game.input.MoveCommand;
-import com.helper.Vector2f;
 import com.helper.Vector2i;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.AffineTransform;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
-import java.util.ArrayDeque;
-import java.util.Queue;
 
 public class Renderer implements Runnable {
     private World world;
@@ -43,12 +37,12 @@ public class Renderer implements Runnable {
         world = World.getInstance();
         // TODO: Umschreiben
         jFrame = new JFrame(windowName);
-        panel = (JPanel)jFrame.getContentPane();
+        panel = (JPanel) jFrame.getContentPane();
         panel.setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
         panel.setLayout(null);
         camera = new Camera(new Vector2i(0, 0), SIZE);
         canvas = new Canvas();
-        canvas.setBounds(0,0, SIZE.getX(), SIZE.getY());
+        canvas.setBounds(0, 0, SIZE.getX(), SIZE.getY());
         canvas.setIgnoreRepaint(true);
 
         panel.add(canvas);
@@ -76,7 +70,7 @@ public class Renderer implements Runnable {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            if(World.getInstance().getTarget()!=null) {
+            if (World.getInstance().getTarget() != null) {
                 // TODO
                 GameObject t = World.getInstance().getTarget();
                 float dx = Math.abs(e.getX() + camera.getPosition().getX() - t.getX() - (t.getSize().getX() / 2));
@@ -106,16 +100,17 @@ public class Renderer implements Runnable {
 
     /*
 
-*/
+     */
+
     /**
      * Thread for rendering with desired FPS
      */
     @Override
     public void run() {
-        while(running) {
+        while (running) {
             Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
             synchronized (World.getInstance()) {
-                if(System.currentTimeMillis() - lastTime > UPDATE_RATE) {
+                if (System.currentTimeMillis() - lastTime > UPDATE_RATE) {
                     render();
                     lastTime = System.currentTimeMillis();
                 } else {
@@ -136,19 +131,20 @@ public class Renderer implements Runnable {
 
     /**
      * Render Thread
+     *
      * @param g Graphics object
      */
     private void render(Graphics g) {
         // Render the world.
         GameObject o = World.getInstance().getTarget();
-        if(o!=null) {
+        if (o != null) {
             camera.observe(World.getInstance().getTarget());
         }
-        Graphics2D g2 = (Graphics2D)g.create();
+        Graphics2D g2 = (Graphics2D) g.create();
         g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
         world.getLevel().paint(g2);
         // After that render the GameObjects.
-        for(Renderable r:world.getRenderables().values()) {
+        for (Renderable r : world.getRenderables().values()) {
             r.paint(g2);
         }
     }

@@ -5,9 +5,8 @@ import com.game.gameworld.World;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class InputLogic {
     private JComponent component;
@@ -19,6 +18,7 @@ public class InputLogic {
     private Queue<Command> commandQueue;
     private World w;
     private int commandCount;
+
     public InputLogic(JComponent component) {
         w = World.getInstance();
         commandQueue = new ArrayDeque<>();
@@ -45,8 +45,6 @@ public class InputLogic {
     }
 
 
-
-
     private Action requestLeft() {
         return new MoveAction(-1);
     }
@@ -69,6 +67,7 @@ public class InputLogic {
 
     public class MoveAction extends AbstractAction {
         private int direction;
+
         public MoveAction(int direction) {
             this.direction = direction;
         }

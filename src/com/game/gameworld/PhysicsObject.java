@@ -1,7 +1,6 @@
 package com.game.gameworld;
 
 import com.helper.AdvancedBoundingBox;
-import com.helper.Vector2;
 import com.helper.Vector2f;
 
 import java.awt.*;
@@ -10,6 +9,7 @@ public abstract class PhysicsObject extends GameObject {
     private float friction;
     private final float GRAVITY = 0.089f;
     private World w;
+
     public void setMaxFallingSpeed(float maxFallingSpeed) {
         this.maxFallingSpeed = maxFallingSpeed;
     }
@@ -46,6 +46,7 @@ public abstract class PhysicsObject extends GameObject {
     private AdvancedBoundingBox advancedBoundingBox;
     private float bounciness;
     private boolean touchesFloor;
+
     public void setConstantForceRequest(Vector2f constantForceRequest) {
         this.constantForceRequest = constantForceRequest;
     }
@@ -118,23 +119,23 @@ public abstract class PhysicsObject extends GameObject {
     }
 
     public void applySpeed() {
-        if(currentSpeed.getX() > 0) {
-            if(touchesRight()) {
+        if (currentSpeed.getX() > 0) {
+            if (touchesRight()) {
                 getCurrentSpeed().setX(0f);
             }
-        } else if(currentSpeed.getX() < 0) {
-            if(touchesLeft()) {
+        } else if (currentSpeed.getX() < 0) {
+            if (touchesLeft()) {
                 getCurrentSpeed().setX(0f);
             }
         }
-        if(currentSpeed.getY() < 0) {
-            if(touchesUp()) {
+        if (currentSpeed.getY() < 0) {
+            if (touchesUp()) {
                 getCurrentSpeed().setY(0f);
             }
         }
         touchesFloor = false;
         if (currentSpeed.getY() > 0) {
-            if(touchesDown()) {
+            if (touchesDown()) {
                 currentSpeed.setY(0f);
                 touchesFloor = true;
             }

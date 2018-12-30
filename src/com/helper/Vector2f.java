@@ -41,6 +41,6 @@ public class Vector2f extends Vector2<Float, Vector2f> {
     }
 
     public Vector2f distanceTo(Vector2f other) {
-        return new Vector2f(Math.abs(getX() - other.getX()), Math.abs(getY() -other.getY()));
+        return new Vector2f(Math.abs(getX() - other.getX()), Math.abs(getY() - other.getY()));
     }
 }
