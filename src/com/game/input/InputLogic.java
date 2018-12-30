@@ -5,6 +5,8 @@ import com.game.gameworld.World;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.*;
 
 public class InputLogic {
@@ -41,6 +43,7 @@ public class InputLogic {
 
         actionMap.put("Jump", jumpRequest());
     }
+
 
 
 

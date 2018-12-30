@@ -64,9 +64,47 @@ public class Renderer implements Runnable {
         bufferStrategy = canvas.getBufferStrategy();
         panel.setFocusable(true);
         panel.requestFocus();
+        canvas.addMouseListener(new MyMouseListener());
+
     }
 
-/*
+    public class MyMouseListener implements MouseListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if(World.getInstance().getTarget()!=null) {
+                // TODO
+                GameObject t = World.getInstance().getTarget();
+                float dx = Math.abs(e.getX() + camera.getPosition().getX() - t.getX() - (t.getSize().getX() / 2));
+                float dy = Math.abs(e.getY() + camera.getPosition().getY() - t.getY() - (t.getSize().getX() / 2));
+                System.out.println(String.format("DX: %f, DY: %f", dx, dy));
+            }
+
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
+
+
+    /*
 
 */
     /**

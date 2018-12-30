@@ -24,8 +24,8 @@ public class ClientGameLogic implements Runnable{
     private static final World world = World.getInstance();
     private Renderer renderer;
     private InputLogic inputLogic;
-    public ClientGameLogic(String ip, int port) throws IOException {
-        client = new Client(ip, port);
+    public ClientGameLogic(String ip, int port, String name) throws IOException {
+        client = new Client(ip, port, name);
         renderer = new Renderer("Client");
         new Thread(renderer).start();
         inputLogic = new InputLogic(renderer.getPanel());
@@ -57,16 +57,17 @@ public class ClientGameLogic implements Runnable{
     }
 
     public static void main(String[] args) {
-        if(args.length != 2) {
-            System.out.println("Arguments: IP port");
+        if(args.length != 3) {
+            System.out.println("Takes 3 Arguments: IP, PORT, USERNAME");
 
             System.exit(-1);
         }
         String address = args[0];
+        String username = args[2];
         try {
             int port = Integer.parseInt(args[1]);
             try {
-                new Thread(new ClientGameLogic(address, port)).start();
+                new Thread(new ClientGameLogic(address, port, username)).start();
             } catch (IOException e) {
                 System.out.println(String.format("No connection to Server %s:%d possible.", address, port));
                 System.exit(1);

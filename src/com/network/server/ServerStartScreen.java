@@ -52,11 +52,11 @@ public class ServerStartScreen extends JFrame {
         debug.setSize(400, 300);
         panel.add(p,gbc);
         System.setOut(new PrintStream(new AreaOutputStream(debug)));
-        System.setErr(new PrintStream(new AreaOutputStream(debug, true)));
+        //System.setErr(new PrintStream(new AreaOutputStream(debug, true)));
         trigger.addActionListener(e -> {
             if(serverGameLogic == null) {
                 int _port = Integer.parseInt(port.getText());
-                System.err.println(String.format("Attempting to start Server. (Port %d)", _port));
+                System.out.println(String.format("Attempting to start Server. (Port %d)", _port));
                 try {
                     System.out.println("IP: " + InetAddress.getLocalHost().getHostAddress());
                 } catch (UnknownHostException e1) {

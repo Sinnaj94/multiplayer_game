@@ -80,18 +80,6 @@ public class World implements Updateable {
         level = new Level("test.png", "res/tilesets/forest_tiles.json");
     }
 
-    /*public void addEvent(Event e) {
-        events.add(e);
-    }*/
-
-    /*public List getEvents() {
-        return events;
-    }*/
-
-    private void build() {
-        level.build();
-    }
-
     /**
      * Adds a Gameobject
      * @return The added Gameobject, so it will work further
@@ -110,6 +98,7 @@ public class World implements Updateable {
         renderables.putAll(dynamics);
         renderables.putAll(playerMap);
         renderables.putAll(statics);
+        System.out.println(renderables.size());
         return g;
     }
 

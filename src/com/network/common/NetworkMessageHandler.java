@@ -5,15 +5,16 @@ import com.network.stream.MyDataOutputStream;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public interface NetworkMessageHandler<NetworkMessage> {
+public interface NetworkMessageHandler<N extends NetworkMessage> {
     /**
      * Send the Message over a given DataOutputStream
      *
      * @param networkMessage Implemented NetworkMessage
      * @param dos            DataOutputStream
      */
-    void sendMessage(NetworkMessage networkMessage, MyDataOutputStream dos);
+    void sendMessage(N networkMessage, MyDataOutputStream dos);
 
     /**
      * Get the actual Network Message
@@ -21,12 +22,12 @@ public interface NetworkMessageHandler<NetworkMessage> {
      * @param dis DataInputStream
      * @return Actual Network Message
      */
-    NetworkMessage getNetworkMessage(MyDataInputStream dis);
+    N getNetworkMessage(MyDataInputStream dis);
 
     /**
      * Handle the Message
      *
      * @param networkMessage Given Networkmessage
      */
-    void handle(NetworkMessage networkMessage);
+    void handle(N networkMessage);
 }

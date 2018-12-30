@@ -9,6 +9,7 @@ import java.io.IOException;
 public class ClientStartScreen extends JFrame {
     private JTextField ipAddress;
     private JTextField port;
+    private JTextField username;
     private JButton connectButton;
     public ClientStartScreen() {
         JPanel panel = new JPanel();
@@ -23,14 +24,17 @@ public class ClientStartScreen extends JFrame {
         panel.add(ipAddress);
         port = new JTextField("6060");
         panel.add(port);
+        username = new JTextField();
+        panel.add(new JLabel("Username:"));
+        panel.add(username);
         connectButton = new JButton("Connect");
         connectButton.addActionListener(e -> {
             try {
                 String ip = ipAddress.getText();
-
                 int myPort = Integer.parseInt(port.getText());
+                String user = username.getText();
                 try {
-                    ClientGameLogic c = new ClientGameLogic(ip, myPort);
+                    ClientGameLogic c = new ClientGameLogic(ip, myPort, user);
                     new Thread(c).start();
                     this.setVisible(false);
                 } catch (IOException e1) {
