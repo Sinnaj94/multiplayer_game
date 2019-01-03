@@ -8,13 +8,13 @@ public enum MessageType {
         this.b = b;
     }
 
-    public byte getByte() {
+    public byte getID() {
         return b;
     }
 
     public static MessageType getMessageTypeByByte(byte b) {
         for (MessageType m : MessageType.values()) {
-            if (m.getByte() == b) {
+            if (m.getID() == b) {
                 return m;
             }
         }

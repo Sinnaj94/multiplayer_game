@@ -18,7 +18,9 @@ public class Player extends PhysicsObject {
     private float movingSpeed;
     private Camera camera;
     private int test;
-
+    private boolean moveLeft;
+    private boolean moveRight;
+    private String username;
     public Player(Vector2f position, Vector2f size) {
         super(position, size);
         r = new Random();
@@ -28,13 +30,17 @@ public class Player extends PhysicsObject {
         //camera = new Camera(this.getPosition(), this.getSize(), this);
     }
 
-    public Player(Vector2f position) {
-        this(position, new Vector2f(16f, 16f));
-    }
-
-
     public Player() {
         this(new Vector2f(0f, 0f), new Vector2f(16f, 16f));
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Player(String username) {
+        this();
+        this.username = username;
     }
 
     // TODO: ordentlicher machen
@@ -51,12 +57,13 @@ public class Player extends PhysicsObject {
         jumpRequested = true;
     }
 
-    public boolean shoot() {
+    public boolean shoot(Vector2f direction) {
         /*if(bullet == null) {
-            performShoot();
+            performShoot(direction);
         } else if(bullet.ready()) {
-            performShoot();
-        }*/
+            performShoot(direction);
+        }
+        return false;*/
         return false;
     }
 
@@ -65,8 +72,8 @@ public class Player extends PhysicsObject {
 
     }
 
-    private void performShoot() {
-        bullet = new Bullet(new Vector2f(getPosition().getX(), getPosition().getY()));
+    private void performShoot(Vector2f direction) {
+        bullet = new Bullet(new Vector2f(getPosition().getX(), getPosition().getY()), direction);
     }
 
 
@@ -78,35 +85,55 @@ public class Player extends PhysicsObject {
         }
     }
 
+    public void move(boolean left, boolean move) {
+        if(left) {
+            moveLeft = move;
+        } else {
+            moveRight = move;
+        }
+    }
+
     @Override
     public void update() {
-        applyGravity();
+        calculateGravity();
         if (bullet != null) {
             bullet.update();
         }
-        //shoot();
+        float moveSpeed = 0;
+        if(moveLeft) {
+            moveSpeed-=3;
+        }
+        if(moveRight) {
+            moveSpeed+=3;
+        }
+        move(new Vector2f(moveSpeed, 0f));
         if (jumpRequested && getTouchesFloor()) {
             accelerate(new Vector2f(0f, jumpAcceleration));
         }
         jumpRequested = false;
-        getCurrentSpeed().setX(movingSpeed);
         applySpeed();
+        updateCollision();
     }
 
     @Override
     public void paint(Graphics g) {
         // TODO cooles Sprite einfügen
         //g.translate(++test, 0);
+        Rectangle r = getBoundingBox().toIntRectangle();
         if (World.getInstance().DEBUG_DRAW) {
             super.paint(g);
         } else {
             g.setColor(Color.red);
-            Rectangle r = getBoundingBox().toIntRectangle();
             g.fillRect(r.x, r.y, r.width, r.height);
         }
         if (bullet != null) {
             bullet.paint(g);
         }
+        g.drawString(username, r.x, r.y - 20);
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public class Inventory {
@@ -127,6 +154,10 @@ public class Player extends PhysicsObject {
             }
             return false;
         }
+    }
 
+    @Override
+    public GameObjectType getGameObjectType() {
+        return GameObjectType.PLAYER;
     }
 }

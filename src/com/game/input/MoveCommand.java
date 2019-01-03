@@ -1,30 +1,26 @@
 package com.game.input;
 
 public class MoveCommand extends Command {
-    private int direction;
-
-    public MoveCommand(int id) {
+    private boolean left;
+    private boolean move;
+    public MoveCommand(int id, boolean left, boolean move) {
         super(id);
+        this.left = left;
+        this.move = move;
     }
 
-    public void setDirection(int direction) {
-        if (direction < 0) {
-            this.direction = -1;
-        } else if (direction > 0) {
-            this.direction = 1;
-        } else {
-            this.direction = 0;
-        }
+    public boolean getLeft() {
+        return left;
     }
 
-    public int getDirection() {
-        return direction;
+    public boolean getMove() {
+        return move;
     }
 
 
     @Override
     public void execute() {
-        getPlayer().move(direction);
+        getPlayer().move(left, move);
     }
 
     @Override

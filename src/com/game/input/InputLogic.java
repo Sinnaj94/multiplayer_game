@@ -46,19 +46,19 @@ public class InputLogic {
 
 
     private Action requestLeft() {
-        return new MoveAction(-1);
+        return new MoveAction(true, true);
     }
 
     private Action requestLeftStop() {
-        return new MoveAction(1);
+        return new MoveAction(true, false);
     }
 
     private Action requestRight() {
-        return new MoveAction(1);
+        return new MoveAction(false, true);
     }
 
     private Action requestRightStop() {
-        return new MoveAction(-1);
+        return new MoveAction(false, false);
     }
 
     private Action jumpRequest() {
@@ -66,19 +66,18 @@ public class InputLogic {
     }
 
     public class MoveAction extends AbstractAction {
-        private int direction;
-
-        public MoveAction(int direction) {
-            this.direction = direction;
+        private boolean left;
+        private boolean move;
+        public MoveAction(boolean left, boolean move) {
+            this.left = left;
+            this.move = move;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO: Auslagern
             //World.getInstance().getPlayers().get(0).move(direction.getX());
-            MoveCommand c = new MoveCommand(World.getInstance().getTarget().getMyID());
-            c.setDirection(direction);
-            //c.addGameObject(World.getInstance().getPlayers().get(0));
+            MoveCommand c = new MoveCommand(World.getInstance().getTarget().getMyID(), left, move);
             commandQueue.add(c);
         }
     }

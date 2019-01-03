@@ -2,6 +2,7 @@ package com.game.gameworld;
 
 import com.game.generics.Renderable;
 import com.game.input.InputLogic;
+import com.helper.Vector2f;
 import com.helper.Vector2i;
 
 import javax.swing.*;
@@ -71,11 +72,16 @@ public class Renderer implements Runnable {
         @Override
         public void mousePressed(MouseEvent e) {
             if (World.getInstance().getTarget() != null) {
-                // TODO
                 GameObject t = World.getInstance().getTarget();
-                float dx = Math.abs(e.getX() + camera.getPosition().getX() - t.getX() - (t.getSize().getX() / 2));
-                float dy = Math.abs(e.getY() + camera.getPosition().getY() - t.getY() - (t.getSize().getX() / 2));
-                System.out.println(String.format("DX: %f, DY: %f", dx, dy));
+                double dx = Math.abs(e.getX() + camera.getPosition().getX() - t.getX() - (t.getSize().getX() / 2));
+                double dy = Math.abs(e.getY() + camera.getPosition().getY() - t.getY() - (t.getSize().getX() / 2));
+                double length = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+
+                float adx = (float)(dx/length);
+                float ady = (float)(dy/length);
+                Vector2f direction = new Vector2f(adx, ady);
+                System.out.println(direction);
+                world.getTarget().shoot(direction);
             }
 
 

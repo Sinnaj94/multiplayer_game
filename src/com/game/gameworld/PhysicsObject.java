@@ -9,7 +9,7 @@ public abstract class PhysicsObject extends GameObject {
     private float friction;
     private final float GRAVITY = 0.089f;
     private World w;
-
+    private Collision collision;
     public void setMaxFallingSpeed(float maxFallingSpeed) {
         this.maxFallingSpeed = maxFallingSpeed;
     }
@@ -64,6 +64,7 @@ public abstract class PhysicsObject extends GameObject {
         friction = 0.9f;
         impulse = new Vector2f(0f, 0f);
         w = World.getInstance();
+        collision = new Collision();
     }
 
     public PhysicsObject(Vector2f position, Vector2f size, int id) {
@@ -79,6 +80,7 @@ public abstract class PhysicsObject extends GameObject {
         friction = 0.9f;
         impulse = new Vector2f(0f, 0f);
         w = World.getInstance();
+        collision = new Collision();
     }
 
     public void setBounciness(float bounciness) {
@@ -93,7 +95,7 @@ public abstract class PhysicsObject extends GameObject {
         this.maxRunningSpeed = maxRunningSpeed;
     }
 
-    public void applyGravity() {
+    public void calculateGravity() {
         this.currentSpeed.addY(GRAVITY);
         if (this.currentSpeed.getY() > maxFallingSpeed) {
             this.currentSpeed.setY(maxFallingSpeed);
@@ -118,24 +120,30 @@ public abstract class PhysicsObject extends GameObject {
 
     }
 
+    public void updateCollision() {
+        collision.setLeft(touchesLeft());
+        collision.setRight(touchesRight());
+        collision.setUp(touchesUp());
+        collision.setDown(touchesDown());
+    }
+
     public void applySpeed() {
         if (currentSpeed.getX() > 0) {
-            if (touchesRight()) {
+            if (collision.isRight()) {
                 getCurrentSpeed().setX(0f);
             }
         } else if (currentSpeed.getX() < 0) {
-            if (touchesLeft()) {
+            if (collision.isLeft()) {
                 getCurrentSpeed().setX(0f);
             }
         }
+        touchesFloor = false;
         if (currentSpeed.getY() < 0) {
-            if (touchesUp()) {
+            if (collision.isUp()) {
                 getCurrentSpeed().setY(0f);
             }
-        }
-        touchesFloor = false;
-        if (currentSpeed.getY() > 0) {
-            if (touchesDown()) {
+        } else if (currentSpeed.getY() > 0) {
+            if (collision.isDown()) {
                 currentSpeed.setY(0f);
                 touchesFloor = true;
             }
@@ -143,8 +151,20 @@ public abstract class PhysicsObject extends GameObject {
         translate(currentSpeed.getX(), currentSpeed.getY());
     }
 
-    public boolean hasMotionChanges() {
+    public boolean  hasMotionChanges() {
         return currentSpeed.getX() != 0 || currentSpeed.getY() != 0;
+    }
+
+    public void move(Vector2f direction) {
+        if(direction.getX() > 0) {
+            if(!collision.isRight()) {
+                translate(direction.getX(), 0f);
+            }
+        } else if(direction.getX() < 0) {
+            if(!collision.isLeft()) {
+                translate(direction.getX(), 0f);
+            }
+        }
     }
 
     public boolean getTouchesFloor() {
@@ -152,7 +172,7 @@ public abstract class PhysicsObject extends GameObject {
     }
 
     public void accelerate(Vector2f speed) {
-        speed.multiply(friction);
+        //speed.multiply(friction);
         this.currentSpeed.add(speed);
     }
 
@@ -162,7 +182,6 @@ public abstract class PhysicsObject extends GameObject {
 
     private boolean touchesDown() {
         return w.getCollideable().intersects(advancedBoundingBox.getDown());
-        //return advancedBoundingBox.getDown().intersects(World.getInstance().getCollideable().getBoundingBox());
     }
 
     private boolean touchesUp() {
@@ -177,10 +196,12 @@ public abstract class PhysicsObject extends GameObject {
         return w.getCollideable().intersects(advancedBoundingBox.getLeft());
     }
 
+
     @Override
     public void update() {
-        applyGravity();
+        calculateGravity();
         applySpeed();
+        updateCollision();
     }
 
     @Override
@@ -190,5 +211,10 @@ public abstract class PhysicsObject extends GameObject {
         advancedBoundingBox.getDown().paint(g);
         advancedBoundingBox.getRight().paint(g);
         advancedBoundingBox.getLeft().paint(g);
+    }
+
+    @Override
+    public GameObjectType getGameObjectType() {
+        return GameObjectType.PHYSICSOBJECT;
     }
 }

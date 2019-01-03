@@ -45,4 +45,9 @@ public class Item extends GameObject implements Collectable {
             g.drawRect(toIntRectangle().x, toIntRectangle().y, toIntRectangle().width, toIntRectangle().height);
         }
     }
+
+    @Override
+    public GameObjectType getGameObjectType() {
+        return GameObjectType.ITEM;
+    }
 }

@@ -44,9 +44,9 @@ public class MyDataInputStream extends DataInputStream {
             case JUMP:
                 return new JumpCommand(id);
             case MOVE:
-                int direction = readInt();
-                MoveCommand m = new MoveCommand(id);
-                m.setDirection(direction);
+                boolean left = readBoolean();
+                boolean move = readBoolean();
+                MoveCommand m = new MoveCommand(id, left, move);
                 return m;
         }
         return null;

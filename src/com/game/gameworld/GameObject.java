@@ -45,4 +45,8 @@ public abstract class GameObject extends BoundingBox implements Renderable, Upda
     public void paint(Graphics g) {
         super.paint(g);
     }
+
+    public GameObjectType getGameObjectType() {
+        return GameObjectType.GAMEOBJECT;
+    }
 }

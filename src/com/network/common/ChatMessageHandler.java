@@ -19,7 +19,7 @@ public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
     @Override
     public void sendMessage(ChatMessage chatMessage, MyDataOutputStream dos) {
         try {
-            dos.write(chatMessage.getMessageType().getByte());
+            dos.write(chatMessage.getMessageType().getID());
             dos.writeUTF(chatMessage.toString());
             dos.flush();
         } catch (IOException e) {

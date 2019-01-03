@@ -62,7 +62,7 @@ public class Server implements Runnable {
             manager.register(MessageType.EVENT, eventMessageHandler);
             // Give this Client all the current GameObjects
             synchronizeManager(manager);
-            Player player = World.getInstance().spawnPlayer();
+            Player player = World.getInstance().spawnPlayer(username);
             manager.send(new EventMessage(new AddGameObjectEvent(player, true)));
             // Give all the other ones this Player (but not this one)
             addPlayerToAll(manager, player);

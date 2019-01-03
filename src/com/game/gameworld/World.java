@@ -109,8 +109,8 @@ public class World implements Updateable {
      *
      * @return Player instance
      */
-    public Player spawnPlayer() {
-        return (Player) addObject(new Player());
+    public Player spawnPlayer(String username) {
+        return (Player) addObject(new Player(username));
     }
 
     /**

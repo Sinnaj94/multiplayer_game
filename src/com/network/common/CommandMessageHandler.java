@@ -29,7 +29,7 @@ public class CommandMessageHandler implements NetworkMessageHandler<CommandMessa
     @Override
     public void sendMessage(CommandMessage commandMessage, MyDataOutputStream dos) {
         try {
-            dos.writeByte(commandMessage.getMessageType().getByte());
+            dos.writeByte(commandMessage.getMessageType().getID());
             dos.writeCommand(commandMessage.getCommand());
             dos.flush();
         } catch (IOException e) {

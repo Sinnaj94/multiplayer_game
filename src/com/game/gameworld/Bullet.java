@@ -8,12 +8,12 @@ public class Bullet extends PhysicsObject {
     private int lifetime;
     private int maxLifetime;
 
-    public Bullet(Vector2f position) {
+    public Bullet(Vector2f position, Vector2f speed) {
         super(position, new Vector2f(2f, 2f));
-        setMaxFallingSpeed(0f);
+        //setMaxFallingSpeed(0f);
         maxLifetime = 60;
         lifetime = 0;
-        this.accelerate(new Vector2f(10f, 0f));
+        this.accelerate(new Vector2f(10f, 10f));
     }
 
     public boolean ready() {
