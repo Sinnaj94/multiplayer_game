@@ -10,6 +10,10 @@ public class Collision {
 
     }
 
+    public boolean collides() {
+        return left || right || up || down;
+    }
+
     public boolean isRight() {
         return right;
     }

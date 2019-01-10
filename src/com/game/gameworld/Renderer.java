@@ -1,5 +1,6 @@
 package com.game.gameworld;
 
+import com.game.UI;
 import com.game.generics.Renderable;
 import com.game.input.InputLogic;
 import com.helper.Vector2f;
@@ -73,8 +74,8 @@ public class Renderer implements Runnable {
         public void mousePressed(MouseEvent e) {
             if (World.getInstance().getTarget() != null) {
                 GameObject t = World.getInstance().getTarget();
-                double dx = Math.abs(e.getX() + camera.getPosition().getX() - t.getX() - (t.getSize().getX() / 2));
-                double dy = Math.abs(e.getY() + camera.getPosition().getY() - t.getY() - (t.getSize().getX() / 2));
+                double dx = e.getX() + camera.getPosition().getX() - t.getX() - (t.getSize().getX() / 2);
+                double dy = e.getY() + camera.getPosition().getY() - t.getY() - (t.getSize().getX() / 2);
                 double length = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
                 float adx = (float)(dx/length);
@@ -145,7 +146,9 @@ public class Renderer implements Runnable {
         GameObject o = World.getInstance().getTarget();
         if (o != null) {
             camera.observe(World.getInstance().getTarget());
+            UI.paint(g, (Player)o);
         }
+
         Graphics2D g2 = (Graphics2D) g.create();
         g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
         world.getLevel().paint(g2);

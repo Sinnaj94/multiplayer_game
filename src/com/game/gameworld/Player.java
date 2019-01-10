@@ -1,5 +1,7 @@
 package com.game.gameworld;
 
+import com.game.tiles.PlayerTilesetFactory;
+import com.game.tiles.TilesetFactory;
 import com.helper.Vector2f;
 
 import java.awt.*;
@@ -21,17 +23,26 @@ public class Player extends PhysicsObject {
     private boolean moveLeft;
     private boolean moveRight;
     private String username;
+    private int life;
+    private PlayerTilesetFactory tilesetFactory;
+    private boolean facesLeft;
+    private float animationStep;
+    public int getLife() {
+        return life;
+    }
+
     public Player(Vector2f position, Vector2f size) {
         super(position, size);
         r = new Random();
         inventory = new Inventory();
-        //setSize(new Vector2i(16f, 16f));
         jumpAcceleration = -5f;
-        //camera = new Camera(this.getPosition(), this.getSize(), this);
+        life = 5;
+        tilesetFactory = new PlayerTilesetFactory();
     }
 
+
     public Player() {
-        this(new Vector2f(0f, 0f), new Vector2f(16f, 16f));
+        this(new Vector2f(0f, 0f), new Vector2f(32f, 32f));
     }
 
     public void setUsername(String username) {
@@ -43,13 +54,13 @@ public class Player extends PhysicsObject {
         this.username = username;
     }
 
-    // TODO: ordentlicher machen
     public Player(Vector2f position, Vector2f size, int id) {
         super(position, size, id);
         r = new Random();
         inventory = new Inventory();
-        //setSize(new Vector2i(16f, 16f));
         jumpAcceleration = -5f;
+        life = 5;
+        tilesetFactory = new PlayerTilesetFactory();
     }
 
 
@@ -58,12 +69,7 @@ public class Player extends PhysicsObject {
     }
 
     public boolean shoot(Vector2f direction) {
-        /*if(bullet == null) {
-            performShoot(direction);
-        } else if(bullet.ready()) {
-            performShoot(direction);
-        }
-        return false;*/
+        performShoot(direction);
         return false;
     }
 
@@ -73,7 +79,9 @@ public class Player extends PhysicsObject {
     }
 
     private void performShoot(Vector2f direction) {
-        bullet = new Bullet(new Vector2f(getPosition().getX(), getPosition().getY()), direction);
+        if(bullet == null) {
+            bullet = new Bullet(new Vector2f(getPosition().getX() + getSize().getX()/2, getPosition().getY() + getSize().getX() / 2), direction);
+        }
     }
 
 
@@ -88,8 +96,10 @@ public class Player extends PhysicsObject {
     public void move(boolean left, boolean move) {
         if(left) {
             moveLeft = move;
+            facesLeft = true;
         } else {
             moveRight = move;
+            facesLeft = false;
         }
     }
 
@@ -98,6 +108,9 @@ public class Player extends PhysicsObject {
         calculateGravity();
         if (bullet != null) {
             bullet.update();
+            if(bullet.dies()) {
+                bullet = null;
+            }
         }
         float moveSpeed = 0;
         if(moveLeft) {
@@ -107,12 +120,16 @@ public class Player extends PhysicsObject {
             moveSpeed+=3;
         }
         move(new Vector2f(moveSpeed, 0f));
-        if (jumpRequested && getTouchesFloor()) {
+        if (jumpRequested && canJump()) {
             accelerate(new Vector2f(0f, jumpAcceleration));
         }
         jumpRequested = false;
         applySpeed();
         updateCollision();
+    }
+
+    private boolean canJump() {
+        return getCollision().isDown();
     }
 
     @Override
@@ -121,7 +138,12 @@ public class Player extends PhysicsObject {
         //g.translate(++test, 0);
         Rectangle r = getBoundingBox().toIntRectangle();
         if (World.getInstance().DEBUG_DRAW) {
-            super.paint(g);
+            //super.paint(g);
+            if(facesLeft) {
+                g.drawImage(tilesetFactory.getIdleLeft()[Math.round(animationStep)], toIntRectangle().x, toIntRectangle().y,32,32,null);
+            } else {
+                g.drawImage(tilesetFactory.getIdleRight()[Math.round(animationStep)], toIntRectangle().x, toIntRectangle().y, 32, 32, null);
+            }
         } else {
             g.setColor(Color.red);
             g.fillRect(r.x, r.y, r.width, r.height);
@@ -130,6 +152,10 @@ public class Player extends PhysicsObject {
             bullet.paint(g);
         }
         g.drawString(username, r.x, r.y - 20);
+        animationStep+=.05;
+        if(animationStep > 3) {
+            animationStep = 0;
+        }
     }
 
     public String getUsername() {

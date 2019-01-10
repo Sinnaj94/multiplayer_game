@@ -9,6 +9,11 @@ public abstract class PhysicsObject extends GameObject {
     private float friction;
     private final float GRAVITY = 0.089f;
     private World w;
+
+    public Collision getCollision() {
+        return collision;
+    }
+
     private Collision collision;
     public void setMaxFallingSpeed(float maxFallingSpeed) {
         this.maxFallingSpeed = maxFallingSpeed;
@@ -97,7 +102,7 @@ public abstract class PhysicsObject extends GameObject {
 
     public void calculateGravity() {
         this.currentSpeed.addY(GRAVITY);
-        if (this.currentSpeed.getY() > maxFallingSpeed) {
+        if (this.currentSpeed.getY() > maxFallingSpeed && maxFallingSpeed != 0) {
             this.currentSpeed.setY(maxFallingSpeed);
         }
             /*touchesFloor = true;
@@ -137,22 +142,16 @@ public abstract class PhysicsObject extends GameObject {
                 getCurrentSpeed().setX(0f);
             }
         }
-        touchesFloor = false;
         if (currentSpeed.getY() < 0) {
             if (collision.isUp()) {
                 getCurrentSpeed().setY(0f);
             }
         } else if (currentSpeed.getY() > 0) {
             if (collision.isDown()) {
-                currentSpeed.setY(0f);
-                touchesFloor = true;
+                getCurrentSpeed().setY(0f);
             }
         }
         translate(currentSpeed.getX(), currentSpeed.getY());
-    }
-
-    public boolean  hasMotionChanges() {
-        return currentSpeed.getX() != 0 || currentSpeed.getY() != 0;
     }
 
     public void move(Vector2f direction) {
@@ -167,17 +166,8 @@ public abstract class PhysicsObject extends GameObject {
         }
     }
 
-    public boolean getTouchesFloor() {
-        return this.touchesFloor;
-    }
-
     public void accelerate(Vector2f speed) {
-        //speed.multiply(friction);
-        this.currentSpeed.add(speed);
-    }
-
-    private void mapCollision() {
-        //if(w.getCollideable().intersects(advancedBoundingBox.))
+        getCurrentSpeed().add(speed);
     }
 
     private boolean touchesDown() {
