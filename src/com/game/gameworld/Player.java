@@ -132,21 +132,32 @@ public class Player extends PhysicsObject {
         return getCollision().isDown();
     }
 
+    public PlayerState getPlayerState() {
+        if(!getCollision().isDown()) {
+            if(getCurrentSpeed().getY() > 0) {
+                return PlayerState.FALLING;
+            }
+            return PlayerState.JUMPING;
+        }
+        if(moveLeft || moveRight) {
+            return PlayerState.MOVING;
+        }
+        return PlayerState.IDLE;
+    }
+
     @Override
     public void paint(Graphics g) {
         // TODO cooles Sprite einfügen
         //g.translate(++test, 0);
         Rectangle r = getBoundingBox().toIntRectangle();
         if (World.getInstance().DEBUG_DRAW) {
-            //super.paint(g);
-            if(facesLeft) {
-                g.drawImage(tilesetFactory.getIdleLeft()[Math.round(animationStep)], toIntRectangle().x, toIntRectangle().y,32,32,null);
-            } else {
-                g.drawImage(tilesetFactory.getIdleRight()[Math.round(animationStep)], toIntRectangle().x, toIntRectangle().y, 32, 32, null);
-            }
+            super.paint(g);
         } else {
-            g.setColor(Color.red);
-            g.fillRect(r.x, r.y, r.width, r.height);
+            // TODO
+
+            BufferedImage image = tilesetFactory.getAnimationFrame(getPlayerState(), facesLeft);
+            g.drawImage(image, r.x - 5, r.y -5 , r.width +10, r.height + 10, null);
+            tilesetFactory.update();
         }
         if (bullet != null) {
             bullet.paint(g);
@@ -181,6 +192,8 @@ public class Player extends PhysicsObject {
             return false;
         }
     }
+
+
 
     @Override
     public GameObjectType getGameObjectType() {

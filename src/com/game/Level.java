@@ -4,7 +4,7 @@ import com.game.gameworld.Chunk;
 import com.game.gameworld.World;
 import com.game.generics.Collideable;
 import com.game.generics.Renderable;
-import com.game.tiles.TilesetFactory;
+import com.game.tiles.OldTilesetFactory;
 import com.helper.BoundingBox;
 
 import java.awt.*;
@@ -14,12 +14,12 @@ import java.util.Map;
 public class Level implements Renderable, Collideable {
     private String levelPath;
     //private Floor floor;
-    private TilesetFactory t;
+    private OldTilesetFactory t;
     private Map<Integer, Chunk> chunkMap;
 
     public Level(String levelPath, String tilesetImageSrc) {
         // TODO: Get Level from String
-        t = new TilesetFactory(tilesetImageSrc);
+        t = new OldTilesetFactory(tilesetImageSrc);
         chunkMap = new HashMap<>();
         chunkMap.put(0, new Chunk(0));
         this.levelPath = levelPath;

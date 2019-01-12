@@ -1,69 +1,60 @@
 package com.game.tiles;
 
-import com.helper.Vector2i;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import com.game.gameworld.PlayerState;
+import com.game.generics.Updateable;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
-public class PlayerTilesetFactory {
-    // Floor tiles
-    private BufferedImage image;
-    private BufferedImage[] idleLeftImages;
-    private BufferedImage[] idleRightImages;
-
-    private Random r;
-
-    private int tileSize;
-
+public class PlayerTilesetFactory extends TilesetFactory implements Updateable {
+    private double currentStep;
+    private int currentAnimationStep;
+    private double animationStep;
     /**
-     * TilesetFactory constructor. Returns several Images from a given JSON-Sourcefile
+     * OldTilesetFactory constructor. Returns several Images from a given JSON-Sourcefile
      *
      */
     public PlayerTilesetFactory() {
-        idleLeftImages = new BufferedImage[4];
-        idleRightImages = new BufferedImage[4];
-        try {
-            JSONParser jsonParser = new JSONParser();
+        super("res/tilesets/person_tiles.json");
+        animationStep = 10;
+    }
 
 
-            JSONObject obj = (JSONObject)jsonParser.parse(new FileReader("res/tilesets/person_tiles.json"));
-            image = ImageIO.read(new File((String) obj.get("src")));
-
-            JSONArray currentAnimation = (JSONArray) obj.get("idle_left");
-            for(int i = 0; i < currentAnimation.size(); i++) {
-                JSONObject current = (JSONObject) currentAnimation.get(i);
-                int x = (int)(long)current.get("x");
-                int y = (int)(long)current.get("y");
-                idleLeftImages[i] = image.getSubimage(x, y, 16, 16);
-            }
-            currentAnimation = (JSONArray) obj.get("idle_right");
-            for(int i = 0; i < currentAnimation.size(); i++) {
-                JSONObject current = (JSONObject) currentAnimation.get(i);
-                int x = (int)(long)current.get("x");
-                int y = (int)(long)current.get("y");
-                idleRightImages[i] = image.getSubimage(x, y, 16, 16);
-            }
-
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
+    public BufferedImage getAnimationFrame(PlayerState playerState, boolean facesLeft) {
+        BufferedImage[] temp = null;
+        switch(playerState) {
+            case IDLE:
+                if(facesLeft) {
+                    return frame(getAnimationMap().get("idle_left"));
+                }
+                return frame(getAnimationMap().get("idle_right"));
+            case MOVING:
+                if(facesLeft) {
+                    return frame(getAnimationMap().get("walk_left"));
+                }
+                return frame(getAnimationMap().get("walk_right"));
+            case JUMPING:
+                if(facesLeft) {
+                    return frame(getAnimationMap().get("jump_left"));
+                }
+                return frame(getAnimationMap().get("jump_right"));
+            case FALLING:
+                if(facesLeft) {
+                    return frame(getAnimationMap().get("fall_left"));
+                }
+                return frame(getAnimationMap().get("fall_right"));
         }
+        return null;
     }
 
-    public BufferedImage[] getIdleLeft() {
-        return idleLeftImages;
+    private BufferedImage frame(BufferedImage[] image) {
+        return image[currentAnimationStep % image.length];
     }
 
-    public BufferedImage[] getIdleRight() {
-        return idleRightImages;
+    @Override
+    public void update() {
+        currentStep++;
+        if(currentStep % animationStep == 0) {
+            currentAnimationStep++;
+        }
     }
 }

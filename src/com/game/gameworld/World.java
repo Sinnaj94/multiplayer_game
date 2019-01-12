@@ -21,8 +21,8 @@ public class World implements Updateable {
 
     private List<Integer> removedObjects;
     private List<Event> eventsList;
-    public final boolean DEBUG_DRAW = true;
-    public static final int TILE_SIZE = 32;
+    public final boolean DEBUG_DRAW = false;
+    public static final int TILE_SIZE = 64;
     public static final int CHUNK_TILES = 8;
     public static final int CHUNK_SIZE = TILE_SIZE * CHUNK_TILES;
     private Level level;

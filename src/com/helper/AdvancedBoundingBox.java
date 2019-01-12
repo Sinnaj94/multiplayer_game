@@ -12,8 +12,9 @@ public class AdvancedBoundingBox {
 
     public AdvancedBoundingBox(BoundingBox main) {
         this.main = main;
-        down = new BoundingBox(new Vector2f(0f, 0f), new Vector2f(10f, 10f));
-        margin = 10;
+        margin = 6;
+        down = new BoundingBox(new Vector2f(0f, 0f), new Vector2f(margin, margin));
+
     }
 
     public BoundingBox getRight() {

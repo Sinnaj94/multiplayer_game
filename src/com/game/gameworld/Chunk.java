@@ -4,7 +4,7 @@ import com.game.generics.Collideable;
 import com.game.generics.Renderable;
 import com.game.tiles.FloorTile;
 import com.game.tiles.Tile;
-import com.game.tiles.TilesetFactory;
+import com.game.tiles.OldTilesetFactory;
 import com.helper.BoundingBox;
 import com.helper.SimplexNoise;
 
@@ -30,7 +30,7 @@ public class Chunk implements Collideable, Renderable {
     }
 
     public void build() {
-        TilesetFactory t = new TilesetFactory("res/tilesets/forest_tiles.json");
+        OldTilesetFactory t = new OldTilesetFactory("res/tilesets/forest_tiles.json");
 
         tiles.clear();
         int size = World.TILE_SIZE;

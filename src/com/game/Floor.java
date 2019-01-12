@@ -3,7 +3,7 @@ package com.game;
 import com.game.gameworld.GameObject;
 import com.game.gameworld.World;
 import com.game.tiles.FloorTile;
-import com.game.tiles.TilesetFactory;
+import com.game.tiles.OldTilesetFactory;
 import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
@@ -13,21 +13,21 @@ import java.util.List;
 
 public class Floor extends GameObject {
     private List<GameObject> gameObjectList;
-    private TilesetFactory tilesetFactory;
+    private OldTilesetFactory oldTilesetFactory;
     private int tileSize;
     private int minX;
     private int maxX;
     private int minY;
     private int maxY;
 
-    public Floor(TilesetFactory tilesetFactory) {
+    public Floor(OldTilesetFactory oldTilesetFactory) {
         minX = 0;
         maxX = 100;
         minY = 40;
         maxY = 60;
         gameObjectList = new ArrayList<>();
-        this.tilesetFactory = tilesetFactory;
-        tileSize = tilesetFactory.getTileSize();
+        this.oldTilesetFactory = oldTilesetFactory;
+        tileSize = oldTilesetFactory.getTileSize();
     }
 
     public void build() {
@@ -37,7 +37,7 @@ public class Floor extends GameObject {
         for (int x = minX; x < maxX; x++) {
             for (int y = minY; y < maxY; y++) {
                 // Implicitely add a new tile
-                FloorTile c = new FloorTile(tilesetFactory.getRandomFloorTile().getResultImg());
+                FloorTile c = new FloorTile(oldTilesetFactory.getRandomFloorTile().getResultImg());
                 c.setPosition((float) (tileSize * x), (float) (tileSize * y));
                 //gameObjectList.add(c);
             }

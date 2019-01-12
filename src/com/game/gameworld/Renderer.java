@@ -33,6 +33,7 @@ public class Renderer implements Runnable {
     private JPanel panel;
     private float zoom;
     private GameObject watchable;
+    private Sky sky;
 
     public Renderer(String windowName) {
         this.running = true;
@@ -46,7 +47,7 @@ public class Renderer implements Runnable {
         canvas = new Canvas();
         canvas.setBounds(0, 0, SIZE.getX(), SIZE.getY());
         canvas.setIgnoreRepaint(true);
-
+        sky = new Sky(SIZE);
         panel.add(canvas);
         zoom = 1;
         // TODO
@@ -141,16 +142,22 @@ public class Renderer implements Runnable {
      *
      * @param g Graphics object
      */
+    double test;
     private void render(Graphics g) {
         // Render the world.
         GameObject o = World.getInstance().getTarget();
         if (o != null) {
             camera.observe(World.getInstance().getTarget());
+            sky.paint(g);
             UI.paint(g, (Player)o);
+        }
+        while(test < 1) {
+            test+= .00001f;
         }
 
         Graphics2D g2 = (Graphics2D) g.create();
         g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
+        g2.scale(test, test);
         world.getLevel().paint(g2);
         // After that render the GameObjects.
         for (Renderable r : world.getRenderables().values()) {

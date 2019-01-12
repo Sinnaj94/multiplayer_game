@@ -31,7 +31,7 @@ public abstract class Tile extends BoundingBox implements Collideable {
         if (World.getInstance().DEBUG_DRAW) {
             super.paint(g);
         } else {
-            g.drawImage(resultImg, Math.round(getPosition().getX()), Math.round(getPosition().getY()), null);
+            g.drawImage(resultImg, (int)Math.floor(getPosition().getX()), (int)Math.floor(getPosition().getY()), (int)Math.ceil(getSize().getX()), (int)Math.ceil(getSize().getY()), null);
         }
     }
 }

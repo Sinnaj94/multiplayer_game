@@ -1,6 +1,5 @@
 package com.game.tiles;
 
-import com.helper.Vector2i;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -11,66 +10,59 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Random;
+import java.util.*;
 
 public class TilesetFactory {
     // Floor tiles
     private BufferedImage image;
-    private FloorTile[] floorTiles;
-    private JSONObject jobj;
+
+    public Map<String, BufferedImage[]> getAnimationMap() {
+        return animationMap;
+    }
+
+    // Storing in the Map
+    private Map<String, BufferedImage[]> animationMap;
     private Random r;
 
     private int tileSize;
 
     /**
-     * TilesetFactory constructor. Returns several Images from a given JSON-Sourcefile
+     * OldTilesetFactory constructor. Returns several Images from a given JSON-Sourcefile
      *
-     * @param path
      */
-    public TilesetFactory(String path) {
-        // Getting a JSON Parser
-        JSONParser jsonParser = new JSONParser();
+    public TilesetFactory(String jsonSource) {
         try {
-            // Parse the file
-            Object obj = jsonParser.parse(new FileReader(path));
-            jobj = (JSONObject) obj;
-            r = new Random();
-            // Read the TilesetFactory Image
-            image = ImageIO.read(new File((String) jobj.get("src")));
+            // Storing them in a HashMap
+            animationMap = new HashMap<>();
+            JSONParser jsonParser = new JSONParser();
 
-            // Set tilesize
-            tileSize = (int) (long) jobj.get("tilesize");
-            // Build the different Tiles
-            // TODO: Simplify (this is the same function actually!)
-            // (https://stackoverflow.com/questions/49589023/factory-pattern-for-superclass-and-its-subclasses)
-            JSONArray floor = (JSONArray) jobj.get("floor");
-            floorTiles = new FloorTile[floor.size()];
-            for (int i = 0; i < floor.size(); i++) {
-                JSONObject current = (JSONObject) floor.get(i);
-                Vector2i position = new Vector2i((int) (long) current.get("x"), (int) (long) current.get("y"));
-                Vector2i size = new Vector2i((int) (long) current.get("width"), (int) (long) current.get("height"));
-                floorTiles[i] = new FloorTile(image, position, size);
+            JSONObject obj = (JSONObject)jsonParser.parse(new FileReader(jsonSource));
+            image = ImageIO.read(new File((String) obj.get("src")));
+            int playerSize = (int)(long)obj.get("object_size");
+            JSONObject animations = (JSONObject)obj.get("animations");
+            Iterator iterator = animations.keySet().iterator();
+
+            while(iterator.hasNext()) {
+                String key = (String)(iterator.next());
+                JSONArray current = (JSONArray) animations.get(key);
+                BufferedImage[] buffered = new BufferedImage[current.size()];
+
+                for(int i = 0; i < current.size(); i++) {
+                    // {"x":x, "y":y}
+                    JSONObject positions = (JSONObject) current.get(i);
+                    int x = (int)(long)positions.get("x");
+                    int y = (int)(long)positions.get("y");
+                    buffered[i] = image.getSubimage(x, y, playerSize, playerSize);
+                }
+                animationMap.put(key, buffered);
             }
-
-            /*JSONArray walls = (JSONArray) jobj.get("walls");
-            wallTiles = new WallTile[floor.size()];
-            for (int i = 0; i < walls.size(); i++) {
-                wallTiles[i] = new WallTile(image, (JSONObject) floor.get(i));
-            }*/
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public int getTileSize() {
-        return tileSize;
+    public class PlayerTilesetFactory {
+
     }
 
-    public FloorTile getRandomFloorTile() {
-        return floorTiles[r.nextInt(floorTiles.length)];
-    }
-
-    public FloorTile[] getFloorTiles() {
-        return floorTiles;
-    }
 }

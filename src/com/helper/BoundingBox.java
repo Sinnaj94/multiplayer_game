@@ -10,10 +10,12 @@ import java.awt.geom.Rectangle2D;
 public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Renderable {
     private Vector2f position;
     private Vector2f size;
+    private Rectangle intRectangle;
 
     public BoundingBox(Vector2f position, Vector2f size) {
         this.position = position;
         this.size = size;
+        this.intRectangle = new Rectangle(Math.round(getX()), Math.round(getY()), Math.round(getWidth()), Math.round(getHeight()));
     }
 
     @Override
@@ -101,6 +103,8 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
     @Override
     public void paint(Graphics g) {
         Rectangle r = toIntRectangle();
+        g.setColor(Color.white);
+        g.fillRect(r.x, r.y, r.width, r.height);
         g.setColor(Color.black);
         g.drawRect(r.x, r.y, r.width, r.height);
         g.setColor(Color.red);
