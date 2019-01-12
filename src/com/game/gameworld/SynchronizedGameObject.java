@@ -43,7 +43,5 @@ public class SynchronizedGameObject extends GameObject {
         super.paint(g);
         g.setColor(Color.green);
         g.drawLine(Math.round(getPosition().getX()), Math.round(getPosition().getY()), Math.round(getPosition().getX() + distance.getX()), Math.round(getPosition().getY() + distance.getY()));
-        /*.setColor(Color.red);
-        g.drawString(distance.toString(), Math.round(getPosition().getX()) + 20,Math.round(getPosition().getY()));*/
     }
 }

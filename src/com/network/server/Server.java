@@ -58,27 +58,42 @@ public class Server implements Runnable {
             Socket socket = serverSocket.accept();
             // Check for the username
             String username = new DataInputStream(socket.getInputStream()).readUTF();
+
             Manager manager = new Manager(socket.getInputStream(), socket.getOutputStream());
-            manager.register(MessageType.EVENT, eventMessageHandler);
-            // Give this Client all the current GameObjects
-            synchronizeManager(manager);
+            manager.register(MessageType.CONFIG, new ConfigMessageHandler());
+            if(managers.containsKey(username)) {
+                // Throw him from the server.
+                System.out.println("Duplicate name.");
+                manager.send(new ConfigMessage());
+                socket.close();
+                return;
+            }
+            System.out.println(String.format("User %s has Successfully connected. Welcome %s!", username, username));
+
+
+            // Spawn the player on the map
             Player player = World.getInstance().spawnPlayer(username);
-            manager.send(new EventMessage(new AddGameObjectEvent(player, true)));
-            // Give all the other ones this Player (but not this one)
-            addPlayerToAll(manager, player);
-            //CommandMessageHandler commandMessageHandler = new CommandMessageHandler();
+
+            // Send the Config Message. => Right Player should be assigned to the client!
+            manager.send(new ConfigMessage(player.getMyID()));
+            manager.register(MessageType.EVENT, eventMessageHandler);
+
+
+
+            //manager.send(new EventMessage(new AddGameObjectEvent(player, true)));
+            // Give ALL THE OTHER ONES this Player (but not this one)
+
+            // Set all the Commands to this player Object
             commandMessageHandler.setPlayer(player);
             manager.register(MessageType.COMMAND, commandMessageHandler);
-            //commandMessageHandlers.add(commandMessageHandler);
-            //for(CommandMessageHandler c:commandMessageHandlers) {
             commandMessageHandler.addOutputStream(manager.getDos());
-            //}
+
             managers.put(username, manager);
-            // Sending this one the right one
-            //TODO: put it in the handler
+            // Give THIS Client all the current GameObjects
+            synchronizeManager(manager);
             addPlayerToAll(manager, player);
+
             Thread managerThread = new Thread(manager);
-            System.out.println(String.format("User %s has connected. Welcome %s!", username, username));
             managerThread.start();
         } catch (IOException e) {
             e.printStackTrace();

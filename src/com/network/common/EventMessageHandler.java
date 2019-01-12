@@ -30,6 +30,7 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
             if (eventType == EventType.ADD) {
                 // TODO: Auslagern?
                 // First write the Type of the EVENT
+                World.getInstance().setLoaded(true);
                 GameObject object = event.getGameObject();
                 GameObjectType type = event.getGameObject().getGameObjectType();
                 // Write the ID
@@ -72,10 +73,7 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
                             Player player = new Player(gameObject.getPosition(), gameObject.getSize(), gameObject.getMyID());
                             player.setUsername(username);
                             return new EventMessage(new AddGameObjectEvent(player, isMainPlayer));
-
                     }
-                    /*boolean isMainPlayer = dis.readBoolean();
-                    return new EventMessage(new AddGameObjectEvent(new Player(gameObject.getPosition(), gameObject.getSize(), gameObject.getMyID()), isMainPlayer));*/
                 case MOVE:
                     return new EventMessage(new MoveGameObjectEvent(gameObject));
                 case REMOVE:

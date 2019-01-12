@@ -22,6 +22,7 @@ public class Client {
         running = true;
 
         manager = new Manager(socket.getInputStream(), socket.getOutputStream());
+        manager.register(MessageType.CONFIG, new ConfigMessageHandler());
         manager.register(MessageType.EVENT, new EventMessageHandler());
         //manager.register(MessageType.MOVE, new MoveMessageHandler());
         manager.register(MessageType.COMMAND, new CommandMessageHandler());

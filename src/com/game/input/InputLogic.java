@@ -78,6 +78,7 @@ public class InputLogic {
             // TODO: Auslagern
             //World.getInstance().getPlayers().get(0).move(direction.getX());
             MoveCommand c = new MoveCommand(World.getInstance().getTarget().getMyID(), left, move);
+            // ALSO do the update // TODO fix
             commandQueue.add(c);
         }
     }

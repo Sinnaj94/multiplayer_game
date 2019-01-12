@@ -49,4 +49,8 @@ public abstract class GameObject extends BoundingBox implements Renderable, Upda
     public GameObjectType getGameObjectType() {
         return GameObjectType.GAMEOBJECT;
     }
+
+    public String toString() {
+        return getPosition().toString() + " " + getMyID();
+    }
 }

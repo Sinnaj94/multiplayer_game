@@ -25,7 +25,6 @@ public class Renderer implements Runnable {
     private long lastTime;
     private int pos;
     private Camera camera;
-
     public JPanel getPanel() {
         return panel;
     }
@@ -34,7 +33,7 @@ public class Renderer implements Runnable {
     private float zoom;
     private GameObject watchable;
     private Sky sky;
-
+    private LoadingScreen loadingScreen;
     public Renderer(String windowName) {
         this.running = true;
         world = World.getInstance();
@@ -62,6 +61,7 @@ public class Renderer implements Runnable {
         panel.setFocusable(true);
         panel.requestFocus();
         canvas.addMouseListener(new MyMouseListener());
+        loadingScreen = new LoadingScreen();
 
     }
 
@@ -144,24 +144,29 @@ public class Renderer implements Runnable {
      */
     double test;
     private void render(Graphics g) {
-        // Render the world.
         GameObject o = World.getInstance().getTarget();
-        if (o != null) {
+        if(o!=null) {
             camera.observe(World.getInstance().getTarget());
             sky.paint(g);
             UI.paint(g, (Player)o);
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
+            world.getLevel().paint(g2);
+            // After that render the GameObjects.
+            for (Renderable r : world.getRenderables().values()) {
+                r.paint(g2);
+            }
+        } else {
+            loadingScreen.paint(g);
         }
-        while(test < 1) {
-            test+= .00001f;
-        }
+    }
 
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
-        g2.scale(test, test);
-        world.getLevel().paint(g2);
-        // After that render the GameObjects.
-        for (Renderable r : world.getRenderables().values()) {
-            r.paint(g2);
+    private class LoadingScreen implements Renderable {
+        @Override
+        public void paint(Graphics g) {
+            g.setFont(Font.getFont(Font.DIALOG));
+            g.setColor(Color.black);
+            g.drawString("Connecting to the Server...", 0, 0);
         }
     }
 }

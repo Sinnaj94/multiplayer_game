@@ -62,7 +62,6 @@ public class Manager<T extends NetworkMessage> implements Runnable {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                System.out.println(String.format("Bye, bye!"));
             }
         }
     }

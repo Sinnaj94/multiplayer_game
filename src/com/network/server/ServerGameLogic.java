@@ -27,8 +27,6 @@ public class ServerGameLogic implements Runnable {
         server = new Server(port);
         new Thread(server).start();
         world = World.getInstance();
-        //renderer = new Renderer("Server");
-        //new Thread(renderer).start();
         updateCount = 0;
 
         requestedCommands = new ArrayList<>();
@@ -87,7 +85,6 @@ public class ServerGameLogic implements Runnable {
         } catch (IOException e) {
             System.out.println("WHAT THE HECK?");
         }
-
     }
 }
 

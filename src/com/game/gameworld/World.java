@@ -17,7 +17,7 @@ public class World implements Updateable {
     private Map<Integer, Player> playerMap;
     private Map<Integer, GameObject> statics;
     private Map<Integer, Renderable> renderables;
-    private Player target;
+    private int targetID;
 
     private List<Integer> removedObjects;
     private List<Event> eventsList;
@@ -33,6 +33,16 @@ public class World implements Updateable {
     private double lastTime;
     private final double timeStep = 1000;
 
+    public void setLoaded(boolean loaded) {
+        isLoaded = loaded;
+    }
+
+    public boolean isLoaded() {
+        return isLoaded;
+    }
+
+    private boolean isLoaded;
+
     /**
      * Singleton implementation, there can only be ONE world object.
      */
@@ -42,7 +52,6 @@ public class World implements Updateable {
         }
         return World.instance;
     }
-
 
     public void addTestScene() {
         Random ra = new Random();
@@ -57,11 +66,15 @@ public class World implements Updateable {
     }
 
     public void setTarget(GameObject target) {
-        this.target = (Player) target;
+        //this.target = (Player) target;
+    }
+
+    public void setTargetID(int objectID) {
+        this.targetID = objectID;
     }
 
     public Player getTarget() {
-        return target;
+        return playerMap.get(targetID);
     }
 
     public World() {
@@ -70,6 +83,7 @@ public class World implements Updateable {
         removedObjects = new ArrayList<>();
         players = new ArrayList<>();
         events = new ArrayList<>();*/
+        isLoaded = false;
         dynamics = new HashMap<>();
         playerMap = new HashMap<>();
         statics = new HashMap<>();

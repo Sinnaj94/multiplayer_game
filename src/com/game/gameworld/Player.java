@@ -154,7 +154,6 @@ public class Player extends PhysicsObject {
             super.paint(g);
         } else {
             // TODO
-
             BufferedImage image = tilesetFactory.getAnimationFrame(getPlayerState(), facesLeft);
             g.drawImage(image, r.x - 5, r.y -5 , r.width +10, r.height + 10, null);
             tilesetFactory.update();
@@ -162,6 +161,7 @@ public class Player extends PhysicsObject {
         if (bullet != null) {
             bullet.paint(g);
         }
+        g.setColor(Color.black);
         g.drawString(username, r.x, r.y - 20);
         animationStep+=.05;
         if(animationStep > 3) {
