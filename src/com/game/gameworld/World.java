@@ -1,7 +1,9 @@
 package com.game.gameworld;
 
 import com.game.Level;
+import com.game.event.AddGameObjectEvent;
 import com.game.event.Event;
+import com.game.event.RemoveGameObjectEvent;
 import com.game.generics.Collideable;
 import com.game.generics.Renderable;
 import com.game.generics.Updateable;
@@ -97,15 +99,6 @@ public class World implements Updateable {
         }
         renderables.putAll(objects);
         return g;
-    }
-
-    /**
-     * Spawns a new Player
-     *
-     * @return Player instance
-     */
-    public Player spawnPlayer(String username) {
-        return (Player) addObject(new Player(username));
     }
 
     /**
@@ -219,6 +212,18 @@ public class World implements Updateable {
      * Class for accessing data
      */
     public class Accessor {
+        public List<Event> getEventList() {
+            return eventList;
+        }
+
+        public void clearEvents() {
+            eventList.clear();
+        }
+
+        private List<Event> eventList;
+        public Accessor() {
+            eventList = new ArrayList<>();
+        }
         public GameObject get(int id) {
             return getObject(id);
         }
@@ -228,11 +233,17 @@ public class World implements Updateable {
         }
 
         public GameObject add(GameObject g) {
+            eventList.add(new AddGameObjectEvent(g));
             return addObject(g);
         }
 
         public void remove(int id) {
+            eventList.add(new RemoveGameObjectEvent(objects.get(id)));
             removeObject(id);
+        }
+
+        public Player addPlayer(String username) {
+            return (Player)add(new Player(username));
         }
 
         public boolean exists(int id) {

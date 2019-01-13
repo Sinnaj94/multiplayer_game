@@ -13,7 +13,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 
 public class Renderer implements Runnable {
-    private World world;
+    private static final World world=World.getInstance();
     private Vector2i size;
     private JFrame jFrame;
     private Canvas canvas;
@@ -34,9 +34,9 @@ public class Renderer implements Runnable {
     private GameObject watchable;
     private Sky sky;
     private LoadingScreen loadingScreen;
+    private Object token;
     public Renderer(String windowName) {
         this.running = true;
-        world = World.getInstance();
         // TODO: Umschreiben
         jFrame = new JFrame(windowName);
         panel = (JPanel) jFrame.getContentPane();
@@ -62,7 +62,10 @@ public class Renderer implements Runnable {
         panel.requestFocus();
         canvas.addMouseListener(new MyMouseListener());
         loadingScreen = new LoadingScreen();
+    }
 
+    public void addToken(Object token) {
+        this.token = token;
     }
 
     public class MyMouseListener implements MouseListener {
@@ -114,17 +117,16 @@ public class Renderer implements Runnable {
      */
     @Override
     public void run() {
-        while (running) {
-            Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-            synchronized (World.getInstance()) {
-                if (System.currentTimeMillis() - lastTime > UPDATE_RATE) {
+        synchronized (World.getInstance()) {
+            while (running) {
+                try {
+                    World.getInstance().wait();
                     render();
-                    lastTime = System.currentTimeMillis();
-                } else {
-
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            }
 
+            }
         }
     }
 
@@ -146,17 +148,15 @@ public class Renderer implements Runnable {
         GameObject o = World.getInstance().getTarget();
         if(o!=null) {
             camera.observe(World.getInstance().getTarget());
-            sky.paint(g);
             UI.paint(g, (Player)o);
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
-            world.getLevel().paint(g2);
-            // After that render the GameObjects.
-            for (Renderable r : world.getRenderables().values()) {
-                r.paint(g2);
-            }
-        } else {
-            loadingScreen.paint(g);
+        }
+        sky.paint(g);
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
+        world.getLevel().paint(g2);
+        // After that render the GameObjects.
+        for (Renderable r : world.getRenderables().values()) {
+            r.paint(g2);
         }
     }
 

@@ -38,21 +38,18 @@ public class ServerGameLogic implements Runnable {
 
     @Override
     public void run() {
-        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+        System.out.println("Running thread");
         while (!exit) {
             synchronized (World.getInstance()) {
                 if (System.currentTimeMillis() - lastTime > UPDATE_RATE) {
                     update();
-                    updateCount++;
-                    if (updateCount % CLIENT_UPDATE_RATE == 0) {
-                        // TODO
-                        server.deliverToClients();
-                    }
-                    world.notifyAll();
-                    lastTime = System.currentTimeMillis();
-                } else {
-
+                    world.notify();
                 }
+            }
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
         System.out.println("Server shutting down.");
@@ -72,16 +69,19 @@ public class ServerGameLogic implements Runnable {
      * This is where the calculations happen.
      */
     private void update() {
-        // Update the GameObjects
-        // TODO: An dieser Stelle vielleicht auch übertragen (GameObjects changes)
+
         world.update();
+        updateCount++;
+        if (updateCount % CLIENT_UPDATE_RATE == 0) {
+            // TODO
+            server.deliverToClients();
+        }
     }
 
     public static void main(String[] args) {
         try {
             int port = Integer.parseInt(args[0]);
             ServerGameLogic serverGameLogic = new ServerGameLogic(port);
-            new Thread(serverGameLogic);
         } catch (IOException e) {
             System.out.println("WHAT THE HECK?");
         }

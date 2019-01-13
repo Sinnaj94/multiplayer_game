@@ -1,5 +1,7 @@
 package com.network.server;
 
+import com.game.gameworld.Renderer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -14,6 +16,7 @@ public class ServerStartScreen extends JFrame {
     private Thread serverThread;
     private ServerGameLogic serverGameLogic;
     private JTextArea debug;
+    private JCheckBox render;
 
     public ServerStartScreen() {
         super();
@@ -47,9 +50,11 @@ public class ServerStartScreen extends JFrame {
         debug = new JTextArea();
         debug.setFont(new Font("Andale Mono", Font.BOLD, 12));
         JScrollPane p = new JScrollPane(debug);
+        render = new JCheckBox("Render");
 
         debug.setSize(400, 300);
         panel.add(p, gbc);
+        panel.add(render);
         System.setOut(new PrintStream(new AreaOutputStream(debug)));
         //System.setErr(new PrintStream(new AreaOutputStream(debug, true)));
         trigger.addActionListener(e -> {
@@ -64,6 +69,9 @@ public class ServerStartScreen extends JFrame {
                 try {
                     serverGameLogic = new ServerGameLogic(_port);
                     serverThread = new Thread(serverGameLogic);
+                    if(render.isSelected()) {
+                        new Thread(new Renderer("Test")).start();
+                    }
                     serverThread.start();
                     trigger.setEnabled(false);
                 } catch (IOException e1) {

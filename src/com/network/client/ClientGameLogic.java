@@ -10,14 +10,14 @@ import java.io.IOException;
 public class ClientGameLogic implements Runnable {
     World w = World.getInstance();
     // TODO: UPDATE_RATE DYNAMICALLY
-    private final int CLIENT_UPDATE_RATE = 10;
+    private final int CLIENT_UPDATE_RATE = 40;
     private Client client;
     private long lastTime;
     public static double averageUpdateTime;
     private static final World world = World.getInstance();
     private Renderer renderer;
     private InputLogic inputLogic;
-
+    private final Object token = new Object();
     public ClientGameLogic(String ip, int port, String name) throws IOException {
         client = new Client(ip, port, name);
         renderer = new Renderer("Client");
@@ -28,25 +28,25 @@ public class ClientGameLogic implements Runnable {
     @Override
     public void run() {
         while (true) {
-            synchronized (world) {
-                if (System.currentTimeMillis() - lastTime > CLIENT_UPDATE_RATE) {
-                    while (!inputLogic.getCommandQueue().isEmpty()) {
-                        Command command = inputLogic.getCommandQueue().poll();
-                        if (command != null) {
-                            client.sendCommand(command);
-                        }
-                    }
-                    update();
-                    world.notifyAll();
-                    lastTime = System.currentTimeMillis();
-                } else {
-
-                }
+            synchronized (World.getInstance()) {
+                update();
+                World.getInstance().notifyAll();
+            }
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
 
     public void update() {
+        while (!inputLogic.getCommandQueue().isEmpty()) {
+            Command command = inputLogic.getCommandQueue().poll();
+            if (command != null) {
+                client.sendCommand(command);
+            }
+        }
         world.update();
     }
 

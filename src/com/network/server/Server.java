@@ -1,6 +1,7 @@
 package com.network.server;
 
 import com.game.event.AddGameObjectEvent;
+import com.game.event.Event;
 import com.game.event.MoveGameObjectEvent;
 import com.game.gameworld.*;
 import com.helper.BoundingBox;
@@ -45,8 +46,9 @@ public class Server implements Runnable {
     }
 
     public void deliverToClients() {
+        System.out.println("Tick");
         for (Manager current : managers.values()) {
-            for (PhysicsObject g : World.getInstance().getPlayers().values()) {
+            for (GameObject g : accessor.get()) {
                 current.send(new EventMessage(new MoveGameObjectEvent(g)));
             }
         }
@@ -61,43 +63,48 @@ public class Server implements Runnable {
             // TODO: The manager should be removed when player exits
             Socket socket = serverSocket.accept();
             // Check for the username
-            String username = new DataInputStream(socket.getInputStream()).readUTF();
+            String wishedUsername = new DataInputStream(socket.getInputStream()).readUTF();
+            String username = wishedUsername;
+            int id = 0;
+
+            while(managers.containsKey(username)) {
+                System.out.println("Duplicate name detected. Changing.");
+                username = String.format("%s_%d", wishedUsername, id);
+                id++;
+            }
 
             Manager manager = new Manager(socket.getInputStream(), socket.getOutputStream());
             manager.register(MessageType.CONFIG, new ConfigMessageHandler());
+
             if(managers.containsKey(username)) {
                 // Throw him from the server.
-                System.out.println("Duplicate name.");
                 manager.send(new ConfigMessage());
                 socket.close();
                 return;
             }
 
+
             System.out.println(String.format("User %s has Successfully connected. Welcome %s!", username, username));
-
-
-            // Spawn the player on the map
-            Player player = World.getInstance().spawnPlayer(username);
-
-            // Send the Config Message. => Right Player should be assigned to the client!
-            manager.send(new ConfigMessage(player.getID()));
             manager.register(MessageType.EVENT, eventMessageHandler);
 
+            // Send all Objects to current user
+            sendAllObjects(manager);
 
+            // Spawn the player on the map using the Accessor
+            Player player = accessor.addPlayer(username);
+            // Send the Config Message. => Right Player should be assigned to the client!
+            manager.send(new ConfigMessage(player.getID()));
 
-            //manager.send(new EventMessage(new AddGameObjectEvent(player, true)));
-            // Give ALL THE OTHER ONES this Player (but not this one)
-
-            // Set all the Commands to this player Object
+            // Command Messages (Steering of the Player)
             commandMessageHandler.setPlayer(player);
             manager.register(MessageType.COMMAND, commandMessageHandler);
             commandMessageHandler.addOutputStream(manager.getDos());
 
+            // Put the account in the hashmap
             managers.put(username, manager);
-            // Give THIS Client all the current GameObjects
-            synchronizeManager(manager);
 
-            addPlayerToAll(manager, player);
+            // Sync all game Objects
+            sync();
 
             Thread managerThread = new Thread(manager);
             managerThread.start();
@@ -107,21 +114,19 @@ public class Server implements Runnable {
         System.out.println("Server Thread stopped.");
     }
 
-    private void synchronizeManager(Manager manager) {
-        for (GameObject g : accessor.get()) {
-            {
-                manager.send(new EventMessage(new AddGameObjectEvent(g)));
-            }
+    private void sendAllObjects(Manager manager) {
+        for(GameObject g:accessor.get()) {
+            manager.send(new EventMessage(new AddGameObjectEvent(g)));
         }
     }
 
-    private void addPlayerToAll(Manager manager, Player player) {
-        // Synchronize all other Managers with the current Player object
-        for (Manager current : managers.values()) {
-            if (current != manager) {
-                current.send(new EventMessage(new AddGameObjectEvent(player)));
+    private void sync() {
+        for(Manager manager: managers.values()) {
+            for(Event event : accessor.getEventList()) {
+                manager.send(new EventMessage(event));
             }
         }
+        accessor.clearEvents();
     }
 
     public void stop() {
