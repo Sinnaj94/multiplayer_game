@@ -7,25 +7,32 @@ import com.helper.Vector2f;
 import java.awt.*;
 
 public class Item extends PhysicsObject implements Collectable {
+    public boolean isGiven() {
+        return given;
+    }
+
+    private boolean given;
     public Item(Vector2f position) {
         this(new BoundingBox(position, new Vector2f(16f, 16f)));
     }
 
     public Item(BoundingBox prototype) {
         super(prototype);
+        given = false;
     }
 
     public Item(BoundingBox prototype, int id) {
         super(prototype, id);
+        given = false;
     }
 
 
 
     @Override
     public void give(Player p) {
-        /*if (p.addItem(this)) {
-            World.getInstance().removeObject(getID());
-        }*/
+        if (p.addItem(this)) {
+            given = true;
+        }
     }
 
     @Override

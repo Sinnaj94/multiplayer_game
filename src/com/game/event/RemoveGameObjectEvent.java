@@ -10,7 +10,7 @@ public class RemoveGameObjectEvent extends Event {
 
     @Override
     public void execute(World w) {
-        w.getAccessor().remove(getGameObject().getID());
+        w.removeObject(getGameObject().getID());
     }
 
     @Override

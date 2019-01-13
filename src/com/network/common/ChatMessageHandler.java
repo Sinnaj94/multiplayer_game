@@ -21,7 +21,6 @@ public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
         try {
             dos.write(chatMessage.getMessageType().getID());
             dos.writeUTF(chatMessage.toString());
-            dos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

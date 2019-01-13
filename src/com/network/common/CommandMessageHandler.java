@@ -12,26 +12,25 @@ import java.util.List;
 public class CommandMessageHandler implements NetworkMessageHandler<CommandMessage> {
     private Command command;
     private Player player;
-    private List<MyDataOutputStream> outputStreams;
+    private List<Manager.Accessor> managers;
 
     public CommandMessageHandler() {
-        outputStreams = new ArrayList<>();
+        managers = new ArrayList<>();
     }
 
     public void setPlayer(Player player) {
         this.player = player;
     }
 
-    public void addOutputStream(MyDataOutputStream m) {
-        outputStreams.add(m);
+    public void addAccessor(Manager.Accessor accessor) {
+        managers.add(accessor);
     }
 
     @Override
     public void sendMessage(CommandMessage commandMessage, MyDataOutputStream dos) {
         try {
-            dos.writeByte(commandMessage.getMessageType().getID());
+            dos.writeByte(MessageType.COMMAND.getID());
             dos.writeCommand(commandMessage.getCommand());
-            dos.flush();
         } catch (IOException e) {
 
         }
@@ -51,9 +50,9 @@ public class CommandMessageHandler implements NetworkMessageHandler<CommandMessa
     @Override
     public void handle(CommandMessage commandMessage) {
         // Send the Command Message to all clients (the ones that registered...)
-        if (outputStreams.size() > 0) {
-            for (MyDataOutputStream os : outputStreams) {
-                sendMessage(commandMessage, os);
+        if (managers.size() > 0) {
+            for (Manager.Accessor accessor : managers) {
+                accessor.addMessage(commandMessage);
             }
         }
         commandMessage.getCommand().execute();

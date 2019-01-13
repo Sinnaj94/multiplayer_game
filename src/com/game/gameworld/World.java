@@ -7,20 +7,27 @@ import com.game.event.RemoveGameObjectEvent;
 import com.game.generics.Collideable;
 import com.game.generics.Renderable;
 import com.game.generics.Updateable;
+import com.helper.Vector2f;
 
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Contains all the world objects and is renderable for the renderer. No Gamelogic involved
  */
 public class World implements Updateable {
     private Map<Integer, Player> playerMap;
+    private Map<Integer, Item> itemMap;
     private Map<Integer, GameObject> objects;
     private Map<Integer, Renderable> renderables;
+    private Map<Player, Item> playerItemCollisions;
     private int targetID;
 
+    private BlockingQueue<Event> events;
+
+
     private List<Integer> removedObjects;
-    private List<Event> eventsList;
     public final boolean DEBUG_DRAW = false;
     public static final int TILE_SIZE = 64;
     public static final int CHUNK_TILES = 8;
@@ -32,6 +39,7 @@ public class World implements Updateable {
     private double currentTime;
     private double lastTime;
     private final double timeStep = 1000;
+
 
     private Accessor accessor;
 
@@ -77,9 +85,12 @@ public class World implements Updateable {
         playerMap = new HashMap<>();
         objects = new HashMap<>();
         renderables = new HashMap<>();
+        itemMap = new HashMap<>();
+        events = new ArrayBlockingQueue<Event>(100);
+
+        playerItemCollisions = new HashMap<>();
         // TODO: DELETE
         removedObjects = new ArrayList<>();
-        eventsList = new ArrayList<>();
         time = new Time();
         level = new Level("test.png", "res/tilesets/forest_tiles.json");
     }
@@ -95,7 +106,7 @@ public class World implements Updateable {
         if (g instanceof Player) { ;
             playerMap.put(g.getID(), (Player)g);
         } else if(g instanceof Item) {
-
+            itemMap.put(g.getID(), (Item)g);
         }
         renderables.putAll(objects);
         return g;
@@ -126,7 +137,7 @@ public class World implements Updateable {
      *
      * @param id GameObject ID
      */
-    private void removeObject(int id) {
+    public void removeObject(int id) {
         System.out.println("REMOVE ATTEMPT " + id);
         removedObjects.add(id);
     }
@@ -134,7 +145,7 @@ public class World implements Updateable {
     /**
      * Remove all objects in Remove list and clear the list
      */
-    private void removeObjects() {
+    /*private void removeObjects() {
         if (removedObjects.isEmpty()) return;
         for (Integer i : removedObjects) {
             System.out.println("Removing Object with ID " + i);
@@ -143,7 +154,7 @@ public class World implements Updateable {
             renderables.remove(i);
         }
         removedObjects.clear();
-    }
+    }*/
 
     /**
      * Returns the current level
@@ -181,37 +192,76 @@ public class World implements Updateable {
     }
 
     public void addEvent(Event e) {
-        eventsList.add(e);
+        events.add(e);
+    }
+
+    private void removeObjects() {
+        if (removedObjects.isEmpty()) return;
+        for (Integer i : removedObjects) {
+            System.out.println("Removing Object with ID " + i);
+            objects.remove(i);
+            playerMap.remove(i);
+            itemMap.remove(i);
+            renderables.remove(i);
+        }
+        removedObjects.clear();
     }
 
     public void executeEvents() {
         // Execute all events and then delete
-        if (eventsList.isEmpty()) return;
-        for (Event e : eventsList) {
+        if (events.isEmpty()) return;
+        for (Event e : events) {
             e.execute(this);
         }
-        eventsList.clear();
+        events.clear();
     }
 
     @Override
     public void update() {
-        // Remove Objects..
+        // Remove Objects.. Clean up!
+        executeEvents();
         removeObjects();
+
         for (GameObject gameObject : getObjects().values()) {
             gameObject.update();
         }
+        // Update Collisions
+        playerItemCollisions.clear();
+        for(Item item:itemMap.values()) {
+            for(Player player:playerMap.values()) {
+                if (player.getBoundingBox().intersects(item.getBoundingBox())) {
+                    playerItemCollisions.put(player, item);
+                }
+            }
+        }
+
+        // Update found Items (remove them) :P
+        for(Item item:itemMap.values()) {
+            if(item.isGiven()) {
+                accessor.remove(item.getID());
+            }
+        }
+
         currentTime = System.currentTimeMillis() - lastTime;
         if (currentTime >= timeStep) {
             time.tick();
             lastTime = System.currentTimeMillis();
         }
-        executeEvents();
     }
 
     /**
      * Class for accessing data
      */
     public class Accessor {
+        private List<Event> eventList;
+
+
+
+        private void addEvent(Event e) {
+            eventList.add(e);
+            events.add(e);
+        }
+
         public List<Event> getEventList() {
             return eventList;
         }
@@ -220,7 +270,6 @@ public class World implements Updateable {
             eventList.clear();
         }
 
-        private List<Event> eventList;
         public Accessor() {
             eventList = new ArrayList<>();
         }
@@ -233,21 +282,55 @@ public class World implements Updateable {
         }
 
         public GameObject add(GameObject g) {
-            eventList.add(new AddGameObjectEvent(g));
-            return addObject(g);
+            addEvent(new AddGameObjectEvent(g));
+            //return addObject(g);
+            return g;
         }
 
         public void remove(int id) {
-            eventList.add(new RemoveGameObjectEvent(objects.get(id)));
-            removeObject(id);
+            addEvent(new RemoveGameObjectEvent(objects.get(id)));
         }
 
         public Player addPlayer(String username) {
-            return (Player)add(new Player(username));
+            Event e = new AddGameObjectEvent(new Player(username));
+            addEvent(e);
+            return (Player)e.getGameObject();
+        }
+
+        public Map<Player, Item> getPlayerItemCollisions() {
+            return playerItemCollisions;
         }
 
         public boolean exists(int id) {
             return existsObject(id);
         }
     }
+
+    /*private class EventThread implements Runnable {
+        private BlockingQueue<Event> events;
+        public EventThread() {
+            events = new ArrayBlockingQueue<Event>(100);
+        }
+
+        public void addEvent(Event event) {
+            try {
+                System.out.println("ADDING EVENT");
+                events.put(event);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void run() {
+            while(true) {
+                try {
+                    Event e = events.take();
+                    e.execute(World.getInstance());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }*/
 }

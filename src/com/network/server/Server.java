@@ -21,6 +21,11 @@ public class Server implements Runnable {
     private ServerSocket serverSocket;
     private Map<Integer, Socket> clients;
     private BlockingQueue<NetworkMessage> messages;
+
+    public Map<String, Manager> getManagers() {
+        return managers;
+    }
+
     private Map<String, Manager> managers;
     private ServerGameLogic serverGameLogic;
     private Renderer renderer;
@@ -41,24 +46,11 @@ public class Server implements Runnable {
         commandMessageHandler = new CommandMessageHandler();
         eventMessageHandler = new EventMessageHandler();
         System.out.println(String.format("Success! Server listening on Port %d!", port));
-        new Thread(WorkingThread.getInstance()).start();
         accessor = World.getInstance().getAccessor();
     }
 
-    public void deliverToClients() {
-        System.out.println("Tick");
-        for (Manager current : managers.values()) {
-            for (GameObject g : accessor.get()) {
-                current.send(new EventMessage(new MoveGameObjectEvent(g)));
-            }
-        }
-    }
-
-
     @Override
     public void run() {
-        GameObject i = accessor.add(new Item(new Vector2f(100f, 0f)));
-        accessor.remove(i.getID());
         while (!exit) try {
             // TODO: The manager should be removed when player exits
             Socket socket = serverSocket.accept();
@@ -98,7 +90,7 @@ public class Server implements Runnable {
             // Command Messages (Steering of the Player)
             commandMessageHandler.setPlayer(player);
             manager.register(MessageType.COMMAND, commandMessageHandler);
-            commandMessageHandler.addOutputStream(manager.getDos());
+            commandMessageHandler.addAccessor(manager.getAccessor());
 
             // Put the account in the hashmap
             managers.put(username, manager);
@@ -108,6 +100,7 @@ public class Server implements Runnable {
 
             Thread managerThread = new Thread(manager);
             managerThread.start();
+            new Thread(new ServerTickThread(manager)).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -128,6 +121,7 @@ public class Server implements Runnable {
         }
         accessor.clearEvents();
     }
+
 
     public void stop() {
         exit = true;

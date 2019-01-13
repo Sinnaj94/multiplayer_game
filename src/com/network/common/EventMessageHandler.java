@@ -27,7 +27,6 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
             if (eventType == EventType.ADD) {
                 // TODO: Auslagern?
                 // First write the Type of the EVENT
-                World.getInstance().setLoaded(true);
                 GameObject object = event.getGameObject();
                 GameObjectType type = event.getGameObject().getGameObjectType();
                 // Write the ID
@@ -40,9 +39,9 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
                     case ITEM:
                         break;
                 }
-
+            } else if(eventType == EventType.REMOVE) {
+                System.out.println("Remove Message...");
             }
-            dos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,7 +55,8 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
     @Override
     public EventMessage getNetworkMessage(MyDataInputStream dis) {
         try {
-            EventType eventType = EventType.getEventType(dis.readByte());
+            byte id = dis.readByte();
+            EventType eventType = EventType.getEventType(id);
             GameObject gameObject = dis.readGameObject();
             switch (eventType) {
                 case ADD:
