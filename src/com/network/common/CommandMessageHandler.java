@@ -52,8 +52,8 @@ public class CommandMessageHandler implements NetworkMessageHandler<CommandMessa
     public void handle(CommandMessage commandMessage) {
         // Send the Command Message to all clients (the ones that registered...)
         if (outputStreams.size() > 0) {
-            for (MyDataOutputStream m : outputStreams) {
-                sendMessage(commandMessage, m);
+            for (MyDataOutputStream os : outputStreams) {
+                sendMessage(commandMessage, os);
             }
         }
         commandMessage.getCommand().execute();

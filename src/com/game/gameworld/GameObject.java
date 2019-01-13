@@ -11,7 +11,7 @@ import java.awt.*;
 public abstract class GameObject extends BoundingBox implements Renderable, Updateable {
     private static int ID;
 
-    public int getMyID() {
+    public int getID() {
         return myID;
     }
 
@@ -19,18 +19,18 @@ public abstract class GameObject extends BoundingBox implements Renderable, Upda
 
     public GameObject() {
         super(new Vector2f(0f, 0f), new Vector2f(16f, 16f));
-
-        myID = ID++;
-        //System.out.println("Added Game Object with ID " + myID);
     }
 
-    public GameObject(Vector2f position, Vector2f size) {
-        super(position, size);
-        myID = ID++;
+    public int generateID() {
+        return ID++;
     }
 
-    public GameObject(Vector2f position, Vector2f size, int id) {
-        super(position, size);
+    public GameObject(BoundingBox prototype) {
+        this(prototype, ID++);
+    }
+
+    public GameObject(BoundingBox prototype, int id) {
+        super(prototype.getPosition(), prototype.getSize());
         myID = id;
     }
 
@@ -51,6 +51,6 @@ public abstract class GameObject extends BoundingBox implements Renderable, Upda
     }
 
     public String toString() {
-        return getPosition().toString() + " " + getMyID();
+        return String.format("position: %s, size: %s, id: %d", getPosition(), getSize(), getID());
     }
 }

@@ -26,7 +26,7 @@ public class MyDataOutputStream extends DataOutputStream {
     }
 
     public void writeGameObject(GameObject gameObject) throws IOException {
-        writeInt(gameObject.getMyID());
+        writeInt(gameObject.getID());
         writeVector2f(gameObject.getPosition());
         writeVector2f(gameObject.getSize());
         flush();
@@ -39,8 +39,8 @@ public class MyDataOutputStream extends DataOutputStream {
 
     public void writeCommand(Command c) throws IOException {
         writeByte(c.getCommandType().getID());
-        writeInt(c.getPlayer().getMyID());
-        //writeInt(c.getPlayer().getMyID());
+        writeInt(c.getPlayer().getID());
+        //writeInt(c.getPlayer().getID());
         if (c.getCommandType().getID() == CommandType.MOVE.getID()) {
             MoveCommand mC = (MoveCommand)c;
             writeBoolean(mC.getLeft());

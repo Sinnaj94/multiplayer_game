@@ -47,7 +47,6 @@ public class ChatMessageHandler implements NetworkMessageHandler<ChatMessage> {
         if (dataOutputStreams.size() > 0) {
             for (MyDataOutputStream d : dataOutputStreams) {
                 sendMessage(n, d);
-                //notifyAll();
             }
         } else {
             System.out.println(n.toString());

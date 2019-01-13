@@ -1,53 +1,57 @@
 package com.game.gameworld;
 
-public class Collision {
-    private boolean left;
-    private boolean right;
-    private boolean up;
-    private boolean down;
+import com.game.generics.Collideable;
+import com.game.generics.Updateable;
+import com.helper.AdvancedBoundingBox;
 
-    public Collision() {
+public class Collision implements Updateable {
 
+    private Object objUp;
+    private Object objRight;
+    private Object objLeft;
+    private Object objDown;
+
+    private Collideable other;
+    private AdvancedBoundingBox advancedBoundingBox;
+
+    public Collision(AdvancedBoundingBox advancedBoundingBox, Collideable other) {
+        this.advancedBoundingBox = advancedBoundingBox;
+        // TODO not only world.getInstance
+        this.other = other;
     }
 
     public boolean collides() {
-        return left || right || up || down;
+        return isLeft() || isRight() || isUp() || isDown();
     }
 
     public boolean isRight() {
-        return right;
-    }
-
-    public void setRight(boolean right) {
-        this.right = right;
+        return objRight != null;
     }
 
     public boolean isUp() {
-        return up;
+        return objUp != null;
     }
 
-    public void setUp(boolean up) {
-        this.up = up;
-    }
 
     public boolean isDown() {
-        return down;
+        return objDown != null;
     }
 
-    public void setDown(boolean down) {
-        this.down = down;
-    }
 
     public boolean isLeft() {
-        return left;
+        return objLeft != null;
     }
 
-    public void setLeft(boolean left) {
-        this.left = left;
+    public String toString() {
+        return String.format("%s %s %s %s", objUp, objLeft, objRight, objDown);
     }
 
     @Override
-    public String toString() {
-        return String.format("L: %b, R: %b, U: %b, D: %b", left, right, up, down);
+    public void update() {
+        objUp = other.intersectsObject(advancedBoundingBox.getUp());
+        objDown = other.intersectsObject(advancedBoundingBox.getDown());
+        objLeft = other.intersectsObject(advancedBoundingBox.getLeft());
+        objRight = other.intersectsObject(advancedBoundingBox.getRight());
+
     }
 }

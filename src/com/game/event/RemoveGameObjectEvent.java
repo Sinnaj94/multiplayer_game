@@ -10,8 +10,7 @@ public class RemoveGameObjectEvent extends Event {
 
     @Override
     public void execute(World w) {
-        // TODO: auslagern
-        w.removeObject(getGameObject());
+        w.getAccessor().remove(getGameObject().getID());
     }
 
     @Override

@@ -11,7 +11,7 @@ public abstract class Command {
     private Player player;
 
     public Command(int id) {
-        this.player = (Player) World.getInstance().getObject(id);
+        this.player = (Player) World.getInstance().getAccessor().get(id);
     }
 
     public abstract void execute();

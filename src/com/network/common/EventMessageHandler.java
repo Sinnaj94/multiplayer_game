@@ -1,10 +1,7 @@
 package com.network.common;
 
 import com.game.event.*;
-import com.game.gameworld.GameObject;
-import com.game.gameworld.GameObjectType;
-import com.game.gameworld.Player;
-import com.game.gameworld.World;
+import com.game.gameworld.*;
 import com.network.stream.MyDataInputStream;
 import com.network.stream.MyDataOutputStream;
 
@@ -38,7 +35,6 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
                 switch(type) {
                     case PLAYER:
                         Player p = (Player)eventMessage.getEvent().getGameObject();
-                        dos.writeBoolean(((AddGameObjectEvent) eventMessage.getEvent()).isMainPlayer());
                         dos.writeUTF(p.getUsername());
                         break;
                     case ITEM:
@@ -68,12 +64,13 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
                     GameObjectType gameObjectType = GameObjectType.getMessageTypeByID(dis.readByte());
                     switch(gameObjectType) {
                         case PLAYER:
-                            boolean isMainPlayer = dis.readBoolean();
                             String username = dis.readUTF();
-                            Player player = new Player(gameObject.getPosition(), gameObject.getSize(), gameObject.getMyID());
-                            player.setUsername(username);
-                            return new EventMessage(new AddGameObjectEvent(player, isMainPlayer));
-                    }
+                            Player player = new Player(gameObject.getBoundingBox(), gameObject.getID(), username);
+                            System.out.println(player);
+                            return new EventMessage(new AddGameObjectEvent(player));
+                        case ITEM:
+                            return new EventMessage(new AddGameObjectEvent(new Item(gameObject.getBoundingBox(), gameObject.getID())));
+                     }
                 case MOVE:
                     return new EventMessage(new MoveGameObjectEvent(gameObject));
                 case REMOVE:

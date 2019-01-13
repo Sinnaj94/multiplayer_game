@@ -2,10 +2,9 @@ package com.network.server;
 
 import com.game.event.AddGameObjectEvent;
 import com.game.event.MoveGameObjectEvent;
-import com.game.gameworld.PhysicsObject;
-import com.game.gameworld.Player;
-import com.game.gameworld.Renderer;
-import com.game.gameworld.World;
+import com.game.gameworld.*;
+import com.helper.BoundingBox;
+import com.helper.Vector2f;
 import com.network.common.*;
 
 import java.io.DataInputStream;
@@ -31,6 +30,8 @@ public class Server implements Runnable {
     private volatile boolean exit = false;
     private static Object token = new Object();
 
+    private World.Accessor accessor;
+
     public Server(int port) throws IOException {
         managers = new HashMap<>();
         this.port = port;
@@ -40,6 +41,7 @@ public class Server implements Runnable {
         eventMessageHandler = new EventMessageHandler();
         System.out.println(String.format("Success! Server listening on Port %d!", port));
         new Thread(WorkingThread.getInstance()).start();
+        accessor = World.getInstance().getAccessor();
     }
 
     public void deliverToClients() {
@@ -53,6 +55,8 @@ public class Server implements Runnable {
 
     @Override
     public void run() {
+        GameObject i = accessor.add(new Item(new Vector2f(100f, 0f)));
+        accessor.remove(i.getID());
         while (!exit) try {
             // TODO: The manager should be removed when player exits
             Socket socket = serverSocket.accept();
@@ -68,6 +72,7 @@ public class Server implements Runnable {
                 socket.close();
                 return;
             }
+
             System.out.println(String.format("User %s has Successfully connected. Welcome %s!", username, username));
 
 
@@ -75,7 +80,7 @@ public class Server implements Runnable {
             Player player = World.getInstance().spawnPlayer(username);
 
             // Send the Config Message. => Right Player should be assigned to the client!
-            manager.send(new ConfigMessage(player.getMyID()));
+            manager.send(new ConfigMessage(player.getID()));
             manager.register(MessageType.EVENT, eventMessageHandler);
 
 
@@ -91,6 +96,7 @@ public class Server implements Runnable {
             managers.put(username, manager);
             // Give THIS Client all the current GameObjects
             synchronizeManager(manager);
+
             addPlayerToAll(manager, player);
 
             Thread managerThread = new Thread(manager);
@@ -102,9 +108,9 @@ public class Server implements Runnable {
     }
 
     private void synchronizeManager(Manager manager) {
-        for (Player player : World.getInstance().getPlayers().values()) {
+        for (GameObject g : accessor.get()) {
             {
-                manager.send(new EventMessage(new AddGameObjectEvent(player)));
+                manager.send(new EventMessage(new AddGameObjectEvent(g)));
             }
         }
     }

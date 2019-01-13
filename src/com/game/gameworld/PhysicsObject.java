@@ -1,6 +1,7 @@
 package com.game.gameworld;
 
 import com.helper.AdvancedBoundingBox;
+import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
 import java.awt.*;
@@ -15,6 +16,7 @@ public abstract class PhysicsObject extends GameObject {
     }
 
     private Collision collision;
+
     public void setMaxFallingSpeed(float maxFallingSpeed) {
         this.maxFallingSpeed = maxFallingSpeed;
     }
@@ -48,6 +50,11 @@ public abstract class PhysicsObject extends GameObject {
     // Speed is a variable, which is multiplied with the position
     private Vector2f currentSpeed;
     private Vector2f constantForceRequest;
+
+    public AdvancedBoundingBox getAdvancedBoundingBox() {
+        return advancedBoundingBox;
+    }
+
     private AdvancedBoundingBox advancedBoundingBox;
     private float bounciness;
     private boolean touchesFloor;
@@ -56,24 +63,18 @@ public abstract class PhysicsObject extends GameObject {
         this.constantForceRequest = constantForceRequest;
     }
 
-    public PhysicsObject(Vector2f position, Vector2f size) {
-        super(position, size);
-        advancedBoundingBox = new AdvancedBoundingBox(getBoundingBox());
-        maxRunningSpeed = 2f;
-        acceleration = .01f;
-        currentSpeed = new Vector2f(0f, 0f);
-        constantForceRequest = new Vector2f(0f, 0f);
-        jumpRequest = 0f;
-        bounciness = 0.2f;
-        maxFallingSpeed = 5f;
-        friction = 0.9f;
-        impulse = new Vector2f(0f, 0f);
-        w = World.getInstance();
-        collision = new Collision();
+    // TODO: Merge constructors
+    public PhysicsObject(BoundingBox prototype) {
+        super(prototype);
+        buildAttributes();
     }
 
-    public PhysicsObject(Vector2f position, Vector2f size, int id) {
-        super(position, size, id);
+    public PhysicsObject(BoundingBox prototype, int id) {
+        super(prototype, id);
+        buildAttributes();
+    }
+
+    private void buildAttributes() {
         advancedBoundingBox = new AdvancedBoundingBox(getBoundingBox());
         maxRunningSpeed = 2f;
         acceleration = .01f;
@@ -85,7 +86,7 @@ public abstract class PhysicsObject extends GameObject {
         friction = 0.9f;
         impulse = new Vector2f(0f, 0f);
         w = World.getInstance();
-        collision = new Collision();
+        collision = new Collision(getAdvancedBoundingBox(), w.getCollideable());
     }
 
     public void setBounciness(float bounciness) {
@@ -125,12 +126,6 @@ public abstract class PhysicsObject extends GameObject {
 
     }
 
-    public void updateCollision() {
-        collision.setLeft(touchesLeft());
-        collision.setRight(touchesRight());
-        collision.setUp(touchesUp());
-        collision.setDown(touchesDown());
-    }
 
     public void applySpeed() {
         if (currentSpeed.getX() > 0) {
@@ -170,28 +165,13 @@ public abstract class PhysicsObject extends GameObject {
         getCurrentSpeed().add(speed);
     }
 
-    private boolean touchesDown() {
-        return w.getCollideable().intersects(advancedBoundingBox.getDown());
-    }
-
-    private boolean touchesUp() {
-        return w.getCollideable().intersects(advancedBoundingBox.getUp());
-    }
-
-    private boolean touchesRight() {
-        return w.getCollideable().intersects(advancedBoundingBox.getRight());
-    }
-
-    private boolean touchesLeft() {
-        return w.getCollideable().intersects(advancedBoundingBox.getLeft());
-    }
-
 
     @Override
     public void update() {
         calculateGravity();
         applySpeed();
-        updateCollision();
+        collision.update();
+
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.game.gameworld;
 
+import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
 import java.awt.*;
@@ -9,7 +10,8 @@ public class Bullet extends PhysicsObject {
     private int maxLifetime;
 
     public Bullet(Vector2f position, Vector2f speed) {
-        super(position, new Vector2f(1f, 1f), -1);
+        super(new BoundingBox(position, new Vector2f(5f, 5f)), -1);
+        getAdvancedBoundingBox().setMargin(1);
         setMaxFallingSpeed(0f);
         maxLifetime = 60;
         lifetime = 0;
@@ -30,6 +32,9 @@ public class Bullet extends PhysicsObject {
     public void paint(Graphics g) {
         if (World.getInstance().DEBUG_DRAW) {
             super.paint(g);
+        } else {
+            Rectangle r = toIntRectangle();
+            g.fillRect(r.x, r.y, r.width, r.height);
         }
     }
 }

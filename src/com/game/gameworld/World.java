@@ -5,7 +5,6 @@ import com.game.event.Event;
 import com.game.generics.Collideable;
 import com.game.generics.Renderable;
 import com.game.generics.Updateable;
-import com.helper.Vector2f;
 
 import java.util.*;
 
@@ -13,9 +12,8 @@ import java.util.*;
  * Contains all the world objects and is renderable for the renderer. No Gamelogic involved
  */
 public class World implements Updateable {
-    private Map<Integer, PhysicsObject> dynamics;
     private Map<Integer, Player> playerMap;
-    private Map<Integer, GameObject> statics;
+    private Map<Integer, GameObject> objects;
     private Map<Integer, Renderable> renderables;
     private int targetID;
 
@@ -32,6 +30,8 @@ public class World implements Updateable {
     private double currentTime;
     private double lastTime;
     private final double timeStep = 1000;
+
+    private Accessor accessor;
 
     public void setLoaded(boolean loaded) {
         isLoaded = loaded;
@@ -53,18 +53,6 @@ public class World implements Updateable {
         return World.instance;
     }
 
-    public void addTestScene() {
-        Random ra = new Random();
-        for (int i = 0; i < 1; i++) {
-            float size = 16f;
-            Vector2f r = new Vector2f(size, size);
-            Player p = new Player(new Vector2f(0f, -100f), r);
-            //p.setMaxFallingSpeed(ra.nextFloat() * 20f + 2f);
-            p.setBounciness(0);
-            addObject(p);
-        }
-    }
-
     public void setTarget(GameObject target) {
         //this.target = (Player) target;
     }
@@ -77,16 +65,15 @@ public class World implements Updateable {
         return playerMap.get(targetID);
     }
 
+    public Accessor getAccessor() {
+        return accessor;
+    }
+
     public World() {
-        /*statics = new ArrayList<>();
-        dynamics = new ArrayList<>();
-        removedObjects = new ArrayList<>();
-        players = new ArrayList<>();
-        events = new ArrayList<>();*/
+        accessor = new Accessor();
         isLoaded = false;
-        dynamics = new HashMap<>();
         playerMap = new HashMap<>();
-        statics = new HashMap<>();
+        objects = new HashMap<>();
         renderables = new HashMap<>();
         // TODO: DELETE
         removedObjects = new ArrayList<>();
@@ -101,20 +88,14 @@ public class World implements Updateable {
      * @return The added Gameobject, so it will work further
      */
     public GameObject addObject(GameObject g) {
-        System.out.println(String.format("Added %s with ID %d.", g.getClass().getName(), g.getMyID()));
-        if (g instanceof PhysicsObject) {
-            dynamics.put(g.getMyID(), (PhysicsObject) g);
-            if (g instanceof Player) {
-                Player p = (Player) g;
-                playerMap.put(g.getMyID(), p);
-            }
-        } else {
-            statics.put(g.getMyID(), g);
+        System.out.println(String.format("Added %s with ID %d", g.getClass().getName(), g.getID()));
+        objects.put(g.getID(), g);
+        if (g instanceof Player) { ;
+            playerMap.put(g.getID(), (Player)g);
+        } else if(g instanceof Item) {
+
         }
-        renderables.putAll(dynamics);
-        renderables.putAll(playerMap);
-        renderables.putAll(statics);
-        System.out.println(renderables.size());
+        renderables.putAll(objects);
         return g;
     }
 
@@ -133,8 +114,8 @@ public class World implements Updateable {
      * @param id GameObject ID
      * @return GameObject with ID, null if not existant
      */
-    public GameObject getObject(int id) {
-        return dynamics.get(id);
+    private GameObject getObject(int id) {
+        return objects.get(id);
     }
 
     /**
@@ -143,8 +124,8 @@ public class World implements Updateable {
      * @param id GameObject ID
      * @return true if exists, false if not
      */
-    public boolean existsObject(int id) {
-        return dynamics.containsKey(id);
+    private boolean existsObject(int id) {
+        return objects.containsKey(id);
     }
 
     /**
@@ -152,26 +133,20 @@ public class World implements Updateable {
      *
      * @param id GameObject ID
      */
-    public void removeObject(int id) {
+    private void removeObject(int id) {
+        System.out.println("REMOVE ATTEMPT " + id);
         removedObjects.add(id);
-    }
-
-    /**
-     * Add Object to Remove List
-     *
-     * @param g GameObject
-     */
-    public void removeObject(GameObject g) {
-        removedObjects.add(g.getMyID());
     }
 
     /**
      * Remove all objects in Remove list and clear the list
      */
-    public void removeObjects() {
+    private void removeObjects() {
         if (removedObjects.isEmpty()) return;
         for (Integer i : removedObjects) {
-            dynamics.remove(i);
+            System.out.println("Removing Object with ID " + i);
+            objects.remove(i);
+            playerMap.remove(i);
             renderables.remove(i);
         }
         removedObjects.clear();
@@ -190,10 +165,6 @@ public class World implements Updateable {
         return level;
     }
 
-    public Map<Integer, PhysicsObject> getDynamics() {
-        return dynamics;
-    }
-
     public Map<Integer, Renderable> getRenderables() {
         return renderables;
     }
@@ -203,8 +174,8 @@ public class World implements Updateable {
      *
      * @return
      */
-    public Map<Integer, GameObject> getStatics() {
-        return statics;
+    public Map<Integer, GameObject> getObjects() {
+        return objects;
     }
 
     public Map<Integer, Player> getPlayers() {
@@ -231,7 +202,9 @@ public class World implements Updateable {
 
     @Override
     public void update() {
-        for (PhysicsObject gameObject : getDynamics().values()) {
+        // Remove Objects..
+        removeObjects();
+        for (GameObject gameObject : getObjects().values()) {
             gameObject.update();
         }
         currentTime = System.currentTimeMillis() - lastTime;
@@ -240,5 +213,30 @@ public class World implements Updateable {
             lastTime = System.currentTimeMillis();
         }
         executeEvents();
+    }
+
+    /**
+     * Class for accessing data
+     */
+    public class Accessor {
+        public GameObject get(int id) {
+            return getObject(id);
+        }
+
+        public Collection<GameObject> get() {
+            return objects.values();
+        }
+
+        public GameObject add(GameObject g) {
+            return addObject(g);
+        }
+
+        public void remove(int id) {
+            removeObject(id);
+        }
+
+        public boolean exists(int id) {
+            return existsObject(id);
+        }
     }
 }

@@ -11,11 +11,16 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
     private Vector2f position;
     private Vector2f size;
     private Rectangle intRectangle;
+    private Object intersectsObject;
 
     public BoundingBox(Vector2f position, Vector2f size) {
         this.position = position;
         this.size = size;
         this.intRectangle = new Rectangle(Math.round(getX()), Math.round(getY()), Math.round(getWidth()), Math.round(getHeight()));
+    }
+
+    public BoundingBox(float x, float y, float width, float height) {
+        this(new Vector2f(x, y), new Vector2f(width, height));
     }
 
     @Override
@@ -42,6 +47,14 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
     @Override
     public boolean intersects(BoundingBox other) {
         return toRectangle().intersects(other.toRectangle());
+    }
+
+    @Override
+    public Object intersectsObject(BoundingBox other) {
+        if(intersects(other)) {
+            return this;
+        }
+        return null;
     }
 
     public Rectangle.Float toRectangle() {

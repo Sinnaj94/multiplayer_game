@@ -67,6 +67,16 @@ public class Chunk implements Collideable, Renderable {
     }
 
     @Override
+    public Object intersectsObject(BoundingBox collideable) {
+        for (Tile t : tiles) {
+            if (t.intersects(collideable)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public BoundingBox createIntersection(BoundingBox collideable) {
         return null;
     }

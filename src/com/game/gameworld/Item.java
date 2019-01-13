@@ -1,40 +1,36 @@
 package com.game.gameworld;
 
 import com.game.collectable.Collectable;
+import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
 import java.awt.*;
 
-public class Item extends GameObject implements Collectable {
-    public Item(Vector2f position, Vector2f size) {
-        super(position, size);
+public class Item extends PhysicsObject implements Collectable {
+    public Item(Vector2f position) {
+        this(new BoundingBox(position, new Vector2f(16f, 16f)));
     }
 
-    public Item(Vector2f position) {
-        super(position, new Vector2f(16f, 16f));
+    public Item(BoundingBox prototype) {
+        super(prototype);
     }
+
+    public Item(BoundingBox prototype, int id) {
+        super(prototype, id);
+    }
+
+
 
     @Override
     public void give(Player p) {
-        if (p.addItem(this)) {
-            World.getInstance().removeObject(getMyID());
-        }
+        /*if (p.addItem(this)) {
+            World.getInstance().removeObject(getID());
+        }*/
     }
 
     @Override
     public void update() {
         super.update();
-        updateTouchedItems();
-    }
-
-    private void updateTouchedItems() {
-        for (PhysicsObject p : World.getInstance().getPlayers().values()) {
-            if (p instanceof Player) {
-                if (p.intersects(getBoundingBox())) {
-                    give((Player) p);
-                }
-            }
-        }
     }
 
     @Override
@@ -42,7 +38,7 @@ public class Item extends GameObject implements Collectable {
         if (World.getInstance().DEBUG_DRAW) {
             super.paint(g);
         } else {
-            g.drawRect(toIntRectangle().x, toIntRectangle().y, toIntRectangle().width, toIntRectangle().height);
+            g.fillRect(toIntRectangle().x, toIntRectangle().y, toIntRectangle().width, toIntRectangle().height);
         }
     }
 

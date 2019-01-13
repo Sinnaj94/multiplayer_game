@@ -26,7 +26,7 @@ public class Client {
         manager.register(MessageType.EVENT, new EventMessageHandler());
         //manager.register(MessageType.MOVE, new MoveMessageHandler());
         manager.register(MessageType.COMMAND, new CommandMessageHandler());
-        // Receive the ChatMessages
+        // Thread for the Manager start
         new Thread(WorkingThread.getInstance()).start();
         Thread ta = new Thread(manager);
         ta.start();

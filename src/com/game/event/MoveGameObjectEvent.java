@@ -12,7 +12,7 @@ public class MoveGameObjectEvent extends Event {
     @Override
     public void execute(World w) {
         //System.out.println("MOVING");
-        w.getObject(getGameObject().getMyID()).setPosition(getGameObject().getPosition());
+        w.getAccessor().get(getGameObject().getID()).setPosition(getGameObject().getPosition());
     }
 
     @Override

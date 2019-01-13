@@ -6,6 +6,7 @@ import com.game.input.Command;
 import com.game.input.Command.CommandType;
 import com.game.input.JumpCommand;
 import com.game.input.MoveCommand;
+import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
 import java.io.DataInputStream;
@@ -27,7 +28,7 @@ public class MyDataInputStream extends DataInputStream {
         int id = readInt();
         Vector2f position = readVector2f();
         Vector2f size = readVector2f();
-        return new SynchronizedGameObject(position, size, id);
+        return new SynchronizedGameObject(new BoundingBox(position, size), id);
     }
 
     public Vector2f readVector2f() throws IOException {

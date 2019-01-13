@@ -2,6 +2,7 @@ package com.game.gameworld;
 
 import com.game.tiles.PlayerTilesetFactory;
 import com.game.tiles.TilesetFactory;
+import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
 import java.awt.*;
@@ -31,37 +32,33 @@ public class Player extends PhysicsObject {
         return life;
     }
 
-    public Player(Vector2f position, Vector2f size) {
-        super(position, size);
+    public Player(String username) {
+        this(new BoundingBox(new Vector2f(0f, 0f), new Vector2f(32f, 32f)), username);
+    }
+
+    public Player(BoundingBox prototype, String username) {
+        super(prototype);
+        buildAttributes(username);
+    }
+
+    public Player(BoundingBox prototype, int id, String username) {
+        super(prototype, id);
+        buildAttributes(username);
+    }
+
+    private void buildAttributes(String username) {
+        setUsername(username);
         r = new Random();
         inventory = new Inventory();
         jumpAcceleration = -5f;
         life = 5;
         tilesetFactory = new PlayerTilesetFactory();
-    }
-
-
-    public Player() {
-        this(new Vector2f(0f, 0f), new Vector2f(32f, 32f));
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public Player(String username) {
-        this();
-        this.username = username;
-    }
-
-    public Player(Vector2f position, Vector2f size, int id) {
-        super(position, size, id);
-        r = new Random();
-        inventory = new Inventory();
-        jumpAcceleration = -5f;
-        life = 5;
-        tilesetFactory = new PlayerTilesetFactory();
-    }
 
 
     public void jump() {
@@ -125,7 +122,7 @@ public class Player extends PhysicsObject {
         }
         jumpRequested = false;
         applySpeed();
-        updateCollision();
+        getCollision().update();
     }
 
     private boolean canJump() {

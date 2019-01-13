@@ -16,7 +16,7 @@ public class Level implements Renderable, Collideable {
     //private Floor floor;
     private OldTilesetFactory t;
     private Map<Integer, Chunk> chunkMap;
-
+    private Object intersectsObject;
     public Level(String levelPath, String tilesetImageSrc) {
         // TODO: Get Level from String
         t = new OldTilesetFactory(tilesetImageSrc);
@@ -40,11 +40,11 @@ public class Level implements Renderable, Collideable {
     }
 
     @Override
-    public boolean intersects(BoundingBox collideable) {
+    public boolean intersects(BoundingBox other) {
         // TODO
-        int roundedX = (int) Math.floor(collideable.getX() / World.CHUNK_SIZE);
-        int right = (int) Math.floor((collideable.getX() + World.CHUNK_SIZE) / World.CHUNK_SIZE);
-        int left = (int) Math.floor((collideable.getX() - World.CHUNK_SIZE) / World.CHUNK_SIZE);
+        int roundedX = (int) Math.floor(other.getX() / World.CHUNK_SIZE);
+        int right = (int) Math.floor((other.getX() + World.CHUNK_SIZE) / World.CHUNK_SIZE);
+        int left = (int) Math.floor((other.getX() - World.CHUNK_SIZE) / World.CHUNK_SIZE);
         if (!chunkMap.containsKey(right)) {
             Chunk c = new Chunk(right);
             c.build();
@@ -61,7 +61,16 @@ public class Level implements Renderable, Collideable {
             c.build();
             chunkMap.put(roundedX, c);
         }
-        return chunkMap.get(roundedX).intersects(collideable);
+        return chunkMap.get(roundedX).intersects(other);
+    }
+
+    @Override
+    public Object intersectsObject(BoundingBox other) {
+        int roundedX = (int) Math.floor(other.getX() / World.CHUNK_SIZE);
+        if(intersects(other)) {
+            return chunkMap.get(roundedX);
+        }
+        return null;
     }
 
     @Override

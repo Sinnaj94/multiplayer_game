@@ -1,5 +1,6 @@
 package com.game.gameworld;
 
+import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
 import java.awt.*;
@@ -13,8 +14,8 @@ public class SynchronizedGameObject extends GameObject {
     private final int FACTOR = 40;
     private double averageRefresh;
 
-    public SynchronizedGameObject(Vector2f position, Vector2f size, int id) {
-        super(position, size, id);
+    public SynchronizedGameObject(BoundingBox prototype, int id) {
+        super(prototype, id);
         lastPosition = new Vector2f(getPosition().getX(), getPosition().getY());
         distance = new Vector2f(0f, 0f);
         delta = new Vector2f(0f, 0f);

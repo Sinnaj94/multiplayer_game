@@ -82,7 +82,6 @@ public class Renderer implements Runnable {
                 float adx = (float)(dx/length);
                 float ady = (float)(dy/length);
                 Vector2f direction = new Vector2f(adx, ady);
-                System.out.println(direction);
                 world.getTarget().shoot(direction);
             }
 

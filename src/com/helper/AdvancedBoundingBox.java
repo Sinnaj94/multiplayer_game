@@ -8,14 +8,22 @@ public class AdvancedBoundingBox {
         return margin;
     }
 
+    public void setMargin(float margin) {
+        this.margin = margin;
+    }
+
     private float margin;
 
     public AdvancedBoundingBox(BoundingBox main) {
-        this.main = main;
-        margin = 6;
-        down = new BoundingBox(new Vector2f(0f, 0f), new Vector2f(margin, margin));
-
+        this(main, 5);
     }
+
+    public AdvancedBoundingBox(BoundingBox main, float margin) {
+        this.main = main;
+        this.margin = margin;
+        down = new BoundingBox(new Vector2f(0f, 0f), new Vector2f(margin, margin));
+    }
+
 
     public BoundingBox getRight() {
         return new BoundingBox(new Vector2f(main.getX() + main.getWidth(), main.getY()), new Vector2f(margin, main.getHeight()));
