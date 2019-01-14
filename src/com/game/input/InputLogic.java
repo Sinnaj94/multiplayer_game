@@ -1,5 +1,8 @@
 package com.game.input;
 
+import com.game.event.player.Command;
+import com.game.event.player.JumpCommand;
+import com.game.event.player.MoveCommand;
 import com.game.gameworld.World;
 
 import javax.swing.*;

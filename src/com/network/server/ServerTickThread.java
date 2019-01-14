@@ -1,6 +1,6 @@
 package com.network.server;
 
-import com.game.event.MoveGameObjectEvent;
+import com.game.event.gameobject.MoveGameObjectEvent;
 import com.game.gameworld.GameObject;
 import com.game.gameworld.World;
 import com.network.common.EventMessage;
@@ -28,7 +28,7 @@ public class ServerTickThread implements Runnable {
 
     private void tick() {
         for(GameObject g:accessor.get()) {
-            m.send(new EventMessage(new MoveGameObjectEvent(g)));
+            m.send(new EventMessage(new MoveGameObjectEvent(g.getID(), g.getPosition())));
         }
     }
 }

@@ -1,4 +1,6 @@
-package com.game.input;
+package com.game.event.player;
+
+import com.game.gameworld.World;
 
 public class JumpCommand extends Command {
     public JumpCommand(int id) {
@@ -6,8 +8,8 @@ public class JumpCommand extends Command {
     }
 
     @Override
-    public void execute() {
-        getPlayer().jump();
+    public void execute(World.Accessor accessor) {
+        accessor.addEvent(new JumpEvent(getId()));
     }
 
 

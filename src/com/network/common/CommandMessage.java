@@ -1,6 +1,6 @@
 package com.network.common;
 
-import com.game.input.Command;
+import com.game.event.player.Command;
 
 public class CommandMessage implements NetworkMessage {
     private Command c;

@@ -1,4 +1,6 @@
-package com.game.input;
+package com.game.event.player;
+
+import com.game.gameworld.World;
 
 public class MoveCommand extends Command {
     private boolean left;
@@ -19,8 +21,8 @@ public class MoveCommand extends Command {
 
 
     @Override
-    public void execute() {
-        getPlayer().move(left, move);
+    public void execute(World.Accessor accessor) {
+        accessor.addEvent(new MoveEvent(getId(), left, move));
     }
 
     @Override

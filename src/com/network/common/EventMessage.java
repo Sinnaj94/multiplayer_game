@@ -1,6 +1,7 @@
 package com.network.common;
 
 import com.game.event.Event;
+import com.game.event.gameobject.GameObjectEvent;
 
 public class EventMessage implements NetworkMessage {
     private Event event;
@@ -9,8 +10,8 @@ public class EventMessage implements NetworkMessage {
         return event;
     }
 
-    public EventMessage(Event event) {
-        this.event = event;
+    public EventMessage(Event gameObjectEvent) {
+        this.event = gameObjectEvent;
     }
 
     @Override

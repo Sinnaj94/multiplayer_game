@@ -1,13 +1,19 @@
-package com.game.event;
+package com.game.event.gameobject;
 
+import com.game.event.EventType;
 import com.game.gameworld.GameObject;
 import com.game.gameworld.World;
+import com.helper.BoundingBox;
 
-public class AddGameObjectEvent extends Event {
-    private boolean isMainPlayer;
+public class AddGameObjectEvent extends GameObjectEvent {
+    public GameObject getGameObject() {
+        return gameObject;
+    }
 
+    private GameObject gameObject;
     public AddGameObjectEvent(GameObject gameObject) {
-        super(gameObject);
+        super(gameObject.getID());
+        this.gameObject = gameObject;
     }
 
     @Override
@@ -19,9 +25,5 @@ public class AddGameObjectEvent extends Event {
     @Override
     public EventType getEventType() {
         return EventType.ADD;
-    }
-
-    public boolean isMainPlayer() {
-        return isMainPlayer;
     }
 }

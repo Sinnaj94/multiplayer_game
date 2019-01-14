@@ -1,11 +1,10 @@
 package com.network.server;
 
-import com.game.event.AddGameObjectEvent;
 import com.game.event.Event;
-import com.game.event.MoveGameObjectEvent;
+import com.game.event.gameobject.AddGameObjectEvent;
+import com.game.event.gameobject.GameObjectEvent;
 import com.game.gameworld.*;
-import com.helper.BoundingBox;
-import com.helper.Vector2f;
+import com.game.render.Renderer;
 import com.network.common.*;
 
 import java.io.DataInputStream;
@@ -115,7 +114,7 @@ public class Server implements Runnable {
 
     private void sync() {
         for(Manager manager: managers.values()) {
-            for(Event event : accessor.getEventList()) {
+            for(Event event : accessor.getSynchronizedEvents()) {
                 manager.send(new EventMessage(event));
             }
         }

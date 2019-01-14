@@ -1,13 +1,13 @@
 package com.game.gameworld;
 
 import com.game.Level;
-import com.game.event.AddGameObjectEvent;
 import com.game.event.Event;
-import com.game.event.RemoveGameObjectEvent;
+import com.game.event.gameobject.AddGameObjectEvent;
+import com.game.event.gameobject.GameObjectEvent;
+import com.game.event.gameobject.RemoveGameObjectEvent;
 import com.game.generics.Collideable;
 import com.game.generics.Renderable;
 import com.game.generics.Updateable;
-import com.helper.Vector2f;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -24,7 +24,7 @@ public class World implements Updateable {
     private Map<Player, Item> playerItemCollisions;
     private int targetID;
 
-    private BlockingQueue<Event> events;
+    private BlockingQueue<Event> gameObjectEvents;
 
 
     private List<Integer> removedObjects;
@@ -86,7 +86,7 @@ public class World implements Updateable {
         objects = new HashMap<>();
         renderables = new HashMap<>();
         itemMap = new HashMap<>();
-        events = new ArrayBlockingQueue<Event>(100);
+        gameObjectEvents = new ArrayBlockingQueue<Event>(100);
 
         playerItemCollisions = new HashMap<>();
         // TODO: DELETE
@@ -191,10 +191,6 @@ public class World implements Updateable {
         return null;
     }
 
-    public void addEvent(Event e) {
-        events.add(e);
-    }
-
     private void removeObjects() {
         if (removedObjects.isEmpty()) return;
         for (Integer i : removedObjects) {
@@ -208,12 +204,12 @@ public class World implements Updateable {
     }
 
     public void executeEvents() {
-        // Execute all events and then delete
-        if (events.isEmpty()) return;
-        for (Event e : events) {
+        // Execute all gameObjectEvents and then delete
+        if (gameObjectEvents.isEmpty()) return;
+        for (Event e : gameObjectEvents) {
             e.execute(this);
         }
-        events.clear();
+        gameObjectEvents.clear();
     }
 
     @Override
@@ -253,25 +249,23 @@ public class World implements Updateable {
      * Class for accessing data
      */
     public class Accessor {
-        private List<Event> eventList;
+        private List<Event> synchronizedEvents;
 
-
-
-        private void addEvent(Event e) {
-            eventList.add(e);
-            events.add(e);
+        public void addEvent(Event e) {
+            synchronizedEvents.add(e);
+            gameObjectEvents.add(e);
         }
 
-        public List<Event> getEventList() {
-            return eventList;
+        public List<Event> getSynchronizedEvents() {
+            return synchronizedEvents;
         }
 
         public void clearEvents() {
-            eventList.clear();
+            synchronizedEvents.clear();
         }
 
         public Accessor() {
-            eventList = new ArrayList<>();
+            synchronizedEvents = new ArrayList<>();
         }
         public GameObject get(int id) {
             return getObject(id);
@@ -283,16 +277,15 @@ public class World implements Updateable {
 
         public GameObject add(GameObject g) {
             addEvent(new AddGameObjectEvent(g));
-            //return addObject(g);
             return g;
         }
 
         public void remove(int id) {
-            addEvent(new RemoveGameObjectEvent(objects.get(id)));
+            addEvent(new RemoveGameObjectEvent(id));
         }
 
         public Player addPlayer(String username) {
-            Event e = new AddGameObjectEvent(new Player(username));
+            AddGameObjectEvent e = new AddGameObjectEvent(new Player(username));
             addEvent(e);
             return (Player)e.getGameObject();
         }
@@ -305,32 +298,4 @@ public class World implements Updateable {
             return existsObject(id);
         }
     }
-
-    /*private class EventThread implements Runnable {
-        private BlockingQueue<Event> events;
-        public EventThread() {
-            events = new ArrayBlockingQueue<Event>(100);
-        }
-
-        public void addEvent(Event event) {
-            try {
-                System.out.println("ADDING EVENT");
-                events.put(event);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void run() {
-            while(true) {
-                try {
-                    Event e = events.take();
-                    e.execute(World.getInstance());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }*/
 }

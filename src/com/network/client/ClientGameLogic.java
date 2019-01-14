@@ -1,8 +1,8 @@
 package com.network.client;
 
-import com.game.gameworld.Renderer;
+import com.game.render.Renderer;
 import com.game.gameworld.World;
-import com.game.input.Command;
+import com.game.event.player.Command;
 import com.game.input.InputLogic;
 
 import java.io.IOException;

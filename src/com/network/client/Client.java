@@ -1,6 +1,6 @@
 package com.network.client;
 
-import com.game.input.Command;
+import com.game.event.player.Command;
 import com.network.common.*;
 
 import java.io.DataOutputStream;

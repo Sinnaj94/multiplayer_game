@@ -1,6 +1,6 @@
 package com.network.server;
 
-import com.game.gameworld.Renderer;
+import com.game.render.Renderer;
 
 import javax.swing.*;
 import java.awt.*;

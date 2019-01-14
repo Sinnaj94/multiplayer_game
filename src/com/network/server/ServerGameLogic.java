@@ -3,16 +3,15 @@ package com.network.server;
 import com.game.event.Event;
 import com.game.gameworld.Item;
 import com.game.gameworld.Player;
-import com.game.gameworld.Renderer;
+import com.game.render.Renderer;
 import com.game.gameworld.World;
-import com.game.input.Command;
+import com.game.event.player.Command;
 import com.helper.Vector2f;
 import com.network.common.EventMessage;
 import com.network.common.Manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +64,7 @@ public class ServerGameLogic implements Runnable {
 
     private void syncEventsToManagers() {
         for(Manager m:server.getManagers().values()) {
-            for(Event e:accessor.getEventList()) {
+            for(Event e:accessor.getSynchronizedEvents()) {
                 m.getAccessor().addMessage(new EventMessage(e));
             }
         }

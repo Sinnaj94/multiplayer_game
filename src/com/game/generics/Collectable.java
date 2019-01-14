@@ -1,4 +1,4 @@
-package com.game.collectable;
+package com.game.generics;
 
 import com.game.gameworld.Player;
 

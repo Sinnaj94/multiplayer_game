@@ -1,7 +1,7 @@
 package com.game.event;
 
 public enum EventType {
-    ADD((byte) 0), MOVE((byte) 1), REMOVE((byte) 2);
+    ADD((byte) 0), MOVE((byte) 1), REMOVE((byte) 2), PLAYERJUMP((byte) 3), PLAYERMOVE((byte)4);
     private byte id;
 
     EventType(byte id) {

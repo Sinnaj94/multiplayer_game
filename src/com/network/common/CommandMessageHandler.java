@@ -1,7 +1,8 @@
 package com.network.common;
 
 import com.game.gameworld.Player;
-import com.game.input.Command;
+import com.game.event.player.Command;
+import com.game.gameworld.World;
 import com.network.stream.MyDataInputStream;
 import com.network.stream.MyDataOutputStream;
 
@@ -50,11 +51,11 @@ public class CommandMessageHandler implements NetworkMessageHandler<CommandMessa
     @Override
     public void handle(CommandMessage commandMessage) {
         // Send the Command Message to all clients (the ones that registered...)
-        if (managers.size() > 0) {
+        /*if (managers.size() > 0) {
             for (Manager.Accessor accessor : managers) {
                 accessor.addMessage(commandMessage);
             }
-        }
-        commandMessage.getCommand().execute();
+        }*/
+        commandMessage.getCommand().execute(World.getInstance().getAccessor());
     }
 }

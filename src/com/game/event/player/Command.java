@@ -1,20 +1,20 @@
-package com.game.input;
+package com.game.event.player;
 
 import com.game.gameworld.Player;
 import com.game.gameworld.World;
 
 public abstract class Command {
-    public Player getPlayer() {
-        return player;
+    public int getId() {
+        return id;
     }
 
-    private Player player;
-
+    int id;
     public Command(int id) {
-        this.player = (Player) World.getInstance().getAccessor().get(id);
+        this.id = id;
     }
 
-    public abstract void execute();
+    // TODO: Auslagern
+    public abstract void execute(World.Accessor w);
 
     public abstract CommandType getCommandType();
 

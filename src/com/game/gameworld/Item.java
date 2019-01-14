@@ -1,6 +1,6 @@
 package com.game.gameworld;
 
-import com.game.collectable.Collectable;
+import com.game.generics.Collectable;
 import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
