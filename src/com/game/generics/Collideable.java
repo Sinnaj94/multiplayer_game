@@ -2,12 +2,12 @@ package com.game.generics;
 
 import com.helper.BoundingBox;
 
-public interface Collideable {
-    boolean intersects(BoundingBox other);
+public interface Collideable  {
 
-    Object intersectsObject(BoundingBox other);
+    abstract boolean intersects(BoundingBox other);
 
-    BoundingBox createIntersection(BoundingBox collideable);
+    abstract BoundingBox createIntersection(BoundingBox collideable);
 
-    BoundingBox getBoundingBox();
+    abstract BoundingBox getBoundingBox();
+
 }

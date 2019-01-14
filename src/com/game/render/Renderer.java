@@ -9,12 +9,15 @@ import com.helper.Vector2i;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 
 public class Renderer implements Runnable {
     private static final World world=World.getInstance();
+    private World.Accessor accessor;
     private Vector2i size;
     private JFrame jFrame;
     private Canvas canvas;
@@ -37,10 +40,12 @@ public class Renderer implements Runnable {
     private LoadingScreen loadingScreen;
     private Object token;
     public Renderer(String windowName) {
+        accessor = World.getInstance().getAccessor();
         this.running = true;
         // TODO: Umschreiben
         jFrame = new JFrame(windowName);
         panel = (JPanel) jFrame.getContentPane();
+        panel.setLayout(new GridLayout(0, 2));
         panel.setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
         panel.setLayout(null);
         camera = new Camera(new Vector2i(0, 0), SIZE);
@@ -50,11 +55,8 @@ public class Renderer implements Runnable {
         sky = new Sky(SIZE);
         panel.add(canvas);
         zoom = 1;
-        // TODO
-
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.pack();
-        jFrame.setResizable(false);
         jFrame.setVisible(true);
 
         canvas.createBufferStrategy(2);
@@ -63,6 +65,21 @@ public class Renderer implements Runnable {
         panel.requestFocus();
         canvas.addMouseListener(new MyMouseListener());
         loadingScreen = new LoadingScreen();
+
+        panel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Vector2i s = new Vector2i(e.getComponent().getSize().width, e.getComponent().getSize().height);
+                camera.setSize(s);
+                sky = new Sky(s);
+                canvas.setSize(e.getComponent().getSize());
+            }
+        });
+    }
+
+
+    public static void main(String[] args) {
+        new Renderer("Das ist ein Test");
     }
 
     public void addToken(Object token) {
@@ -77,8 +94,8 @@ public class Renderer implements Runnable {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            if (World.getInstance().getTarget() != null) {
-                GameObject t = World.getInstance().getTarget();
+            if (accessor.getTarget() != null) {
+                GameObject t = accessor.getTarget();
                 double dx = e.getX() + camera.getPosition().getX() - t.getX() - (t.getSize().getX() / 2);
                 double dy = e.getY() + camera.getPosition().getY() - t.getY() - (t.getSize().getX() / 2);
                 double length = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
@@ -144,9 +161,8 @@ public class Renderer implements Runnable {
      *
      * @param g Graphics object
      */
-    double test;
     private void render(Graphics g) {
-        GameObject o = World.getInstance().getTarget();
+        GameObject o = accessor.getTarget();
         if(o!=null) {
             camera.observe(World.getInstance().getTarget());
             UI.paint(g, (Player)o);
@@ -156,7 +172,7 @@ public class Renderer implements Runnable {
         g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
         world.getLevel().paint(g2);
         // After that render the GameObjects.
-        for (Renderable r : world.getRenderables().values()) {
+        for (Renderable r : accessor.getRenderables().values()) {
             r.paint(g2);
         }
     }

@@ -12,6 +12,11 @@ public class Item extends PhysicsObject implements Collectable {
     }
 
     private boolean given;
+
+    public Item() {
+        this(new Vector2f(0f,0f));
+    }
+
     public Item(Vector2f position) {
         this(new BoundingBox(position, new Vector2f(16f, 16f)));
     }
@@ -19,11 +24,13 @@ public class Item extends PhysicsObject implements Collectable {
     public Item(BoundingBox prototype) {
         super(prototype);
         given = false;
+
     }
 
     public Item(BoundingBox prototype, int id) {
         super(prototype, id);
         given = false;
+
     }
 
 

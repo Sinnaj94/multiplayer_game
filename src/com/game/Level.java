@@ -43,8 +43,27 @@ public class Level implements Renderable, Collideable {
     public boolean intersects(BoundingBox other) {
         // TODO
         int roundedX = (int) Math.floor(other.getX() / World.CHUNK_SIZE);
+        int roundedRight = (int) Math.floor((other.getX() + other.getWidth()) / World.CHUNK_SIZE);
         int right = (int) Math.floor((other.getX() + World.CHUNK_SIZE) / World.CHUNK_SIZE);
         int left = (int) Math.floor((other.getX() - World.CHUNK_SIZE) / World.CHUNK_SIZE);
+        if(roundedX == roundedRight) {
+            return chunkMap.get(roundedX).intersects(other);
+        }
+        return chunkMap.get(roundedX).intersects(other) || chunkMap.get(roundedRight).intersects(other);
+    }
+
+    /*@Override
+    public Object intersectsObject(BoundingBox other) {
+        int roundedX = (int) Math.floor(other.getX() / World.CHUNK_SIZE);
+        if(intersects(other)) {
+            return chunkMap.get(roundedX);
+        }
+        return null;
+    }*/
+
+    private void updateMap(int roundedX) {
+        int left = roundedX -1;
+        int right = roundedX + 1;
         if (!chunkMap.containsKey(right)) {
             Chunk c = new Chunk(right);
             c.build();
@@ -61,21 +80,17 @@ public class Level implements Renderable, Collideable {
             c.build();
             chunkMap.put(roundedX, c);
         }
-        return chunkMap.get(roundedX).intersects(other);
     }
 
     @Override
-    public Object intersectsObject(BoundingBox other) {
+    public BoundingBox createIntersection(BoundingBox other) {
         int roundedX = (int) Math.floor(other.getX() / World.CHUNK_SIZE);
-        if(intersects(other)) {
-            return chunkMap.get(roundedX);
+        int roundedRight = (int) Math.floor((other.getX() + other.getWidth()) / World.CHUNK_SIZE);
+        updateMap(roundedX);
+        if(chunkMap.get(roundedX).intersects(other)) {
+            return chunkMap.get(roundedX).createIntersection(other);
         }
-        return null;
-    }
-
-    @Override
-    public BoundingBox createIntersection(BoundingBox collideable) {
-        return null;
+        return chunkMap.get(roundedRight).createIntersection(other);
     }
 
     @Override

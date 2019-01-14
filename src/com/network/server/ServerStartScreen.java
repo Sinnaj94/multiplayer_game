@@ -1,5 +1,6 @@
 package com.network.server;
 
+import com.game.gameworld.World;
 import com.game.render.Renderer;
 
 import javax.swing.*;
@@ -67,6 +68,7 @@ public class ServerStartScreen extends JFrame {
                     System.err.println("Could not determine IP.");
                 }
                 try {
+                    // Actual Logic
                     serverGameLogic = new ServerGameLogic(_port);
                     serverThread = new Thread(serverGameLogic);
                     if(render.isSelected()) {
@@ -74,6 +76,7 @@ public class ServerStartScreen extends JFrame {
                     }
                     serverThread.start();
                     trigger.setEnabled(false);
+                    new AdminPanel(World.getInstance().getAccessor());
                 } catch (IOException e1) {
                     if (e1 instanceof BindException) {
                         System.out.println(e1.getMessage());

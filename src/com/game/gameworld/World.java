@@ -165,12 +165,8 @@ public class World implements Updateable {
         return level;
     }
 
-    public Collideable getCollideable() {
+    private Collideable getCollideable() {
         return level;
-    }
-
-    public Map<Integer, Renderable> getRenderables() {
-        return renderables;
     }
 
     /**
@@ -178,17 +174,8 @@ public class World implements Updateable {
      *
      * @return
      */
-    public Map<Integer, GameObject> getObjects() {
+    private Map<Integer, GameObject> getObjects() {
         return objects;
-    }
-
-    public Map<Integer, Player> getPlayers() {
-        return playerMap;
-    }
-
-
-    public List<PhysicsObject> getPhysicsObjects() {
-        return null;
     }
 
     private void removeObjects() {
@@ -203,7 +190,7 @@ public class World implements Updateable {
         removedObjects.clear();
     }
 
-    public void executeEvents() {
+    private void executeEvents() {
         // Execute all gameObjectEvents and then delete
         if (gameObjectEvents.isEmpty()) return;
         for (Event e : gameObjectEvents) {
@@ -289,6 +276,24 @@ public class World implements Updateable {
             addEvent(e);
             return (Player)e.getGameObject();
         }
+
+        public GameObject getTarget() {
+            return World.this.getTarget();
+        }
+
+        public void setTarget(int id) {
+            World.this.setTargetID(id);
+        }
+
+        public Collideable getLevel() {
+            return level;
+        }
+
+        public Map<Integer, Renderable> getRenderables() {
+            return renderables;
+        }
+
+
 
         public Map<Player, Item> getPlayerItemCollisions() {
             return playerItemCollisions;

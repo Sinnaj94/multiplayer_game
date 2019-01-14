@@ -7,6 +7,11 @@ import com.network.stream.MyDataOutputStream;
 import java.io.IOException;
 
 public class ConfigMessageHandler implements NetworkMessageHandler<ConfigMessage> {
+    private World.Accessor accessor;
+    public ConfigMessageHandler() {
+        accessor = World.getInstance().getAccessor();
+    }
+
     @Override
     public void sendMessage(ConfigMessage networkMessage, MyDataOutputStream dos) {
         try {
@@ -39,7 +44,7 @@ public class ConfigMessageHandler implements NetworkMessageHandler<ConfigMessage
         if(!networkMessage.isSuccessfulConnect()) {
             System.exit(-1);
         } else {
-            World.getInstance().setTargetID(networkMessage.getPlayerID());
+            accessor.setTarget(networkMessage.getPlayerID());
         }
     }
 }

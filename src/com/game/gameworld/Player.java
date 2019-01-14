@@ -33,7 +33,11 @@ public class Player extends PhysicsObject {
     }
 
     public Player(String username) {
-        this(new BoundingBox(new Vector2f(0f, 0f), new Vector2f(32f, 32f)), username);
+        this(username, new Vector2f(0f, -200f));
+    }
+
+    public Player(String username, Vector2f position) {
+        this(new BoundingBox(position, new Vector2f(22f, 32f)), username);
     }
 
     public Player(BoundingBox prototype, String username) {
@@ -66,7 +70,7 @@ public class Player extends PhysicsObject {
     }
 
     public boolean shoot(Vector2f direction) {
-        performShoot(direction);
+        //performShoot(direction);
         return false;
     }
 
@@ -121,16 +125,16 @@ public class Player extends PhysicsObject {
             accelerate(new Vector2f(0f, jumpAcceleration));
         }
         jumpRequested = false;
-        applySpeed();
-        getCollision().update();
+        translate(getCurrentSpeed().getX(), getCurrentSpeed().getY());
+        getCollisionCache().update();
     }
 
     private boolean canJump() {
-        return getCollision().isDown();
+        return getCollisionCache().is(Direction.DOWN);
     }
 
     public PlayerState getPlayerState() {
-        if(!getCollision().isDown()) {
+        if(!getCollisionCache().is(Direction.DOWN)) {
             if(getCurrentSpeed().getY() > 0) {
                 return PlayerState.FALLING;
             }
@@ -151,8 +155,9 @@ public class Player extends PhysicsObject {
             super.paint(g);
         } else {
             // TODO
+
             BufferedImage image = tilesetFactory.getAnimationFrame(getPlayerState(), facesLeft);
-            g.drawImage(image, r.x - 5, r.y -5 , r.width +10, r.height + 10, null);
+            g.drawImage(image, r.x -6, r.y -2 , r.width + 12, r.height + 5, null);
             tilesetFactory.update();
         }
         if (bullet != null) {

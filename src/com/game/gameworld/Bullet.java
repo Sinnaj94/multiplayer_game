@@ -19,7 +19,8 @@ public class Bullet extends PhysicsObject {
     }
 
     public boolean dies() {
-        return lifetime > maxLifetime || getCollision().collides();
+        //return lifetime > maxLifetime || getCollision().collides();
+        return false;
     }
 
     @Override

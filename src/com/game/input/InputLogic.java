@@ -19,11 +19,11 @@ public class InputLogic {
     }
 
     private Queue<Command> commandQueue;
-    private World w;
     private int commandCount;
+    private World.Accessor accessor;
 
     public InputLogic(JComponent component) {
-        w = World.getInstance();
+        accessor = World.getInstance().getAccessor();
         commandQueue = new ArrayDeque<>();
         //myKeyListener = new MyKeyListener();
         //component.addKeyListener(myKeyListener);
@@ -80,7 +80,7 @@ public class InputLogic {
         public void actionPerformed(ActionEvent e) {
             // TODO: Auslagern
             //World.getInstance().getPlayers().get(0).move(direction.getX());
-            MoveCommand c = new MoveCommand(World.getInstance().getTarget().getID(), left, move);
+            MoveCommand c = new MoveCommand(accessor.getTarget().getID(), left, move);
             // ALSO do the update // TODO fix
             commandQueue.add(c);
         }
@@ -89,7 +89,7 @@ public class InputLogic {
     public class JumpAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JumpCommand c = new JumpCommand(World.getInstance().getTarget().getID());
+            JumpCommand c = new JumpCommand(accessor.getTarget().getID());
             commandQueue.add(c);
             //World.getInstance().getPlayers().get(0).jump();
         }

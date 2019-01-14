@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventMessageHandler implements NetworkMessageHandler<EventMessage> {
-    private List<MyDataOutputStream> outputStreams;
+    private World.Accessor accessor;
 
     public EventMessageHandler() {
-        outputStreams = new ArrayList<>();
+        accessor = World.getInstance().getAccessor();
     }
 
     @Override
@@ -31,10 +31,6 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
             e.printStackTrace();
         }
         // TODO
-    }
-
-    public void addMyDataOutputStream(MyDataOutputStream myDataOutputStream) {
-        outputStreams.add(myDataOutputStream);
     }
 
     @Override
@@ -51,7 +47,7 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
     @Override
     public void handle(EventMessage eventMessage) {
         if(eventMessage.getEvent()!=null) {
-            World.getInstance().getAccessor().addEvent(eventMessage.getEvent());
+            accessor.addEvent(eventMessage.getEvent());
         }
     }
 }

@@ -18,7 +18,11 @@ public class MoveGameObjectEvent extends GameObjectEvent {
 
     @Override
     public void execute(World w) {
-        w.getAccessor().get(getID()).setPosition(getPosition());
+        try {
+            w.getAccessor().get(getID()).setPosition(getPosition());
+        } catch (NullPointerException e) {
+            System.out.println("Object doesnt exist yet.");
+        }
     }
 
     @Override

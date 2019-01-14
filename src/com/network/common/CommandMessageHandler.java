@@ -14,9 +14,11 @@ public class CommandMessageHandler implements NetworkMessageHandler<CommandMessa
     private Command command;
     private Player player;
     private List<Manager.Accessor> managers;
+    private World.Accessor accessor;
 
     public CommandMessageHandler() {
         managers = new ArrayList<>();
+        accessor = World.getInstance().getAccessor();
     }
 
     public void setPlayer(Player player) {
@@ -50,12 +52,6 @@ public class CommandMessageHandler implements NetworkMessageHandler<CommandMessa
 
     @Override
     public void handle(CommandMessage commandMessage) {
-        // Send the Command Message to all clients (the ones that registered...)
-        /*if (managers.size() > 0) {
-            for (Manager.Accessor accessor : managers) {
-                accessor.addMessage(commandMessage);
-            }
-        }*/
-        commandMessage.getCommand().execute(World.getInstance().getAccessor());
+        commandMessage.getCommand().execute(accessor);
     }
 }

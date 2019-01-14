@@ -23,6 +23,22 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
         this(new Vector2f(x, y), new Vector2f(width, height));
     }
 
+    public float top() {
+        return position.getY();
+    }
+
+    public float left() {
+        return position.getX();
+    }
+
+    public float bottom() {
+        return position.getY() + size.getY();
+    }
+
+    public float right() {
+        return position.getX() + size.getX();
+    }
+
     @Override
     public BoundingBox getBoundingBox() {
         return this;
@@ -49,13 +65,13 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
         return toRectangle().intersects(other.toRectangle());
     }
 
-    @Override
+    /*@Override
     public Object intersectsObject(BoundingBox other) {
         if(intersects(other)) {
             return this;
         }
         return null;
-    }
+    }*/
 
     public Rectangle.Float toRectangle() {
         return new Rectangle.Float(getX(), getY(), getWidth(), getHeight());
@@ -123,5 +139,9 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
         g.setColor(Color.red);
         g.drawLine(r.x, r.y, r.x + r.width, r.y + r.height);
         g.drawLine(r.x + r.width, r.y, r.x, r.y + r.height);
+    }
+
+    public String toString() {
+        return String.format("Boundingbox - Position = %s, Scale = %s", getPosition(), getSize());
     }
 }

@@ -10,6 +10,7 @@ import com.helper.Vector2f;
 import com.network.common.EventMessage;
 import com.network.common.Manager;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ServerGameLogic implements Runnable {
         updateCount = 0;
         requestedCommands = new ArrayList<>();
         accessor = world.getAccessor();
-        accessor.add(new Item(new Vector2f(200f, -20f)));
+        accessor.add(new Item(new Vector2f(200f, -200f)));
     }
 
     @Override
@@ -97,7 +98,9 @@ public class ServerGameLogic implements Runnable {
             int port = Integer.parseInt(args[0]);
             ServerGameLogic serverGameLogic = new ServerGameLogic(port);
             new Thread(serverGameLogic).start();
-            new Thread(new Renderer("server_view")).start();
+            Renderer r = new Renderer("server_view");
+            new Thread(r).start();
+            new AdminPanel(World.getInstance().getAccessor());
         } catch (IOException e) {
             System.out.println("Connection not possible.");
         }
