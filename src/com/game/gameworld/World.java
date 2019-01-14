@@ -86,7 +86,7 @@ public class World implements Updateable {
         objects = new HashMap<>();
         renderables = new HashMap<>();
         itemMap = new HashMap<>();
-        gameObjectEvents = new ArrayBlockingQueue<Event>(100);
+        gameObjectEvents = new ArrayBlockingQueue<Event>(1000);
 
         playerItemCollisions = new HashMap<>();
         // TODO: DELETE
@@ -236,30 +236,34 @@ public class World implements Updateable {
      * Class for accessing data
      */
     public class Accessor {
-        private List<Event> synchronizedEvents;
+        private BlockingQueue<Event> synchronizedEvents;
 
         public void addEvent(Event e) {
             synchronizedEvents.add(e);
             gameObjectEvents.add(e);
         }
 
-        public List<Event> getSynchronizedEvents() {
+        public void addLocalEvent(Event e) {
+            gameObjectEvents.add(e);
+        }
+
+        public BlockingQueue<Event> getSynchronizedEvents() {
             return synchronizedEvents;
         }
 
-        public void clearEvents() {
-            synchronizedEvents.clear();
-        }
-
         public Accessor() {
-            synchronizedEvents = new ArrayList<>();
+            synchronizedEvents = new ArrayBlockingQueue<Event>(1000);
         }
         public GameObject get(int id) {
             return getObject(id);
         }
 
-        public Collection<GameObject> get() {
-            return objects.values();
+        public List<GameObject> get() {
+            return new ArrayList<>(objects.values());
+        }
+
+        public List<Player> getPlayers() {
+            return new ArrayList<>(playerMap.values());
         }
 
         public GameObject add(GameObject g) {

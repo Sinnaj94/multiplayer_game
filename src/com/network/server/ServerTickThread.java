@@ -6,6 +6,8 @@ import com.game.gameworld.World;
 import com.network.common.EventMessage;
 import com.network.common.Manager;
 
+import java.util.Iterator;
+
 public class ServerTickThread implements Runnable {
     private Manager m;
     private World.Accessor accessor;
@@ -19,7 +21,7 @@ public class ServerTickThread implements Runnable {
         while(!m.inactive) {
             try {
                 tick();
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -27,7 +29,9 @@ public class ServerTickThread implements Runnable {
     }
 
     private void tick() {
-        for(GameObject g:accessor.get()) {
+        Iterator<GameObject> iterator = accessor.get().iterator();
+        while (iterator.hasNext()){
+            GameObject g = iterator.next();
             m.send(new EventMessage(new MoveGameObjectEvent(g.getID(), g.getPosition())));
         }
     }

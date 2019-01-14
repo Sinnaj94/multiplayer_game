@@ -47,7 +47,7 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
     @Override
     public void handle(EventMessage eventMessage) {
         if(eventMessage.getEvent()!=null) {
-            accessor.addEvent(eventMessage.getEvent());
+            accessor.addLocalEvent(eventMessage.getEvent());
         }
     }
 }

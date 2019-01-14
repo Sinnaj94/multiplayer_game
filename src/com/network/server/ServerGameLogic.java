@@ -1,5 +1,6 @@
 package com.network.server;
 
+import com.game.ai.PlayerAI;
 import com.game.event.Event;
 import com.game.gameworld.Item;
 import com.game.gameworld.Player;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 
 public class ServerGameLogic implements Runnable {
@@ -40,6 +42,7 @@ public class ServerGameLogic implements Runnable {
         requestedCommands = new ArrayList<>();
         accessor = world.getAccessor();
         accessor.add(new Item(new Vector2f(200f, -200f)));
+        new PlayerAI(accessor.add(new Player("AI")).getID(), accessor);
     }
 
     @Override
@@ -63,13 +66,19 @@ public class ServerGameLogic implements Runnable {
         server.stop();
     }
 
+    // FIXME sync events to all managers => ConcurrentModificationException
     private void syncEventsToManagers() {
-        for(Manager m:server.getManagers().values()) {
-            for(Event e:accessor.getSynchronizedEvents()) {
-                m.getAccessor().addMessage(new EventMessage(e));
+        BlockingQueue<Event> queue = accessor.getSynchronizedEvents();
+        while(!queue.isEmpty()) {
+            try {
+                Event event = queue.take();
+                for(Manager m:server.getManagers().values()) {
+                    m.send(new EventMessage(event));
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
-        accessor.clearEvents();
     }
 
     public void stop() {

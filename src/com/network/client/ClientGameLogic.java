@@ -30,6 +30,8 @@ public class ClientGameLogic implements Runnable {
         while (true) {
             synchronized (World.getInstance()) {
                 update();
+                // flush away the
+                World.getInstance().getAccessor().getSynchronizedEvents().clear();
                 World.getInstance().notifyAll();
             }
             try {

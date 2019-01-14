@@ -156,7 +156,7 @@ public class Player extends PhysicsObject {
         } else {
             // TODO
 
-            BufferedImage image = tilesetFactory.getAnimationFrame(getPlayerState(), facesLeft);
+            BufferedImage image = tilesetFactory.getAnimationFrame(getPlayerState(), isFacesLeft());
             g.drawImage(image, r.x -6, r.y -2 , r.width + 12, r.height + 5, null);
             tilesetFactory.update();
         }
@@ -174,6 +174,7 @@ public class Player extends PhysicsObject {
     public String getUsername() {
         return username;
     }
+    
 
     public class Inventory {
         List<Item> items;

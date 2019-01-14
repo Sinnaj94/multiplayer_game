@@ -113,12 +113,17 @@ public class Server implements Runnable {
     }
 
     private void sync() {
-        for(Manager manager: managers.values()) {
-            for(Event event : accessor.getSynchronizedEvents()) {
-                manager.send(new EventMessage(event));
+        BlockingQueue<Event> queue = accessor.getSynchronizedEvents();
+        while(!queue.isEmpty()) {
+            try {
+                Event event = queue.take();
+                for(Manager m:getManagers().values()) {
+                    m.send(new EventMessage(event));
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
-        accessor.clearEvents();
     }
 
 

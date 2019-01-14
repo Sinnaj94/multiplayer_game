@@ -16,6 +16,11 @@ public abstract class PhysicsObject extends GameObject {
     private World w;
     private World.Accessor accessor;
 
+    public boolean isFacesLeft() {
+        return facesLeft;
+    }
+
+    private boolean facesLeft;
     public void setMaxFallingSpeed(float maxFallingSpeed) {
         this.maxFallingSpeed = maxFallingSpeed;
     }
@@ -153,6 +158,7 @@ public abstract class PhysicsObject extends GameObject {
         }
 
         if(x > 0) {
+            facesLeft = false;
             if(!collisionCache.is(Direction.RIGHT)) {
                 super.translate(x, 0f);
             } else {
@@ -167,6 +173,7 @@ public abstract class PhysicsObject extends GameObject {
                 }
             }
         } else if(x < 0) {
+            facesLeft = true;
             if(!collisionCache.is(Direction.LEFT)) {
                 super.translate(x, 0f);
             } else {
