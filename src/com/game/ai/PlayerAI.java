@@ -14,7 +14,6 @@ public class PlayerAI {
     private World.Accessor accessor;
     private int followed;
     private float tolerance;
-    private Sensors sensors;
     public PlayerAI(int id, World.Accessor accessor) {
         this.accessor = accessor;
         this.id = id;
@@ -31,7 +30,6 @@ public class PlayerAI {
                     }
                     GameObject follow = accessor.get(followed);
                     GameObject me = accessor.get(id);
-                    sensors = new Sensors(accessor.get(id).getBoundingBox());
                     if(follow != null) {
                         if(follow.getPosition().getX() > me.getPosition().getX() + 32) {
                             goLeft();
