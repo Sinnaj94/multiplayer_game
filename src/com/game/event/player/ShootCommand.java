@@ -4,6 +4,9 @@ import com.game.gameworld.Player;
 import com.game.gameworld.World;
 import com.helper.Vector2f;
 
+/**
+ * Shoot command
+ */
 public class ShootCommand extends Command {
     public Vector2f getDirection() {
         return direction;

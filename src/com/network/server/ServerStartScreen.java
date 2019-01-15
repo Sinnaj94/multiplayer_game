@@ -72,11 +72,12 @@ public class ServerStartScreen extends JFrame {
                     serverGameLogic = new ServerGameLogic(_port);
                     serverThread = new Thread(serverGameLogic);
                     if(render.isSelected()) {
-                        new Renderer("Server");
+                        Renderer r = new Renderer("Server");
+                        r.addComponent(new AdminPanel(World.getInstance().getAccessor()));
+
                     }
                     serverThread.start();
                     trigger.setEnabled(false);
-                    new AdminPanel(World.getInstance().getAccessor());
                 } catch (IOException e1) {
                     if (e1 instanceof BindException) {
                         System.out.println(e1.getMessage());

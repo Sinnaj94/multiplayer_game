@@ -5,6 +5,9 @@ import com.game.gameworld.GameObject;
 import com.game.gameworld.Player;
 import com.game.gameworld.World;
 
+/**
+ * Move event - Move the Player
+ */
 public class MoveEvent extends PlayerEvent {
     public boolean isLeft() {
         return left;

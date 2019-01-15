@@ -5,6 +5,9 @@ import com.game.event.gameobject.AddGameObjectEvent;
 import com.game.gameworld.*;
 import com.helper.Vector2f;
 
+/**
+ * Shoot event
+ */
 public class ShootEvent extends PlayerEvent {
     public Vector2f getDirection() {
         return direction;

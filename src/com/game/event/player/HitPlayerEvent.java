@@ -4,6 +4,9 @@ import com.game.event.EventType;
 import com.game.gameworld.Player;
 import com.game.gameworld.World;
 
+/**
+ * Hurt the Player. Ouch!
+ */
 public class HitPlayerEvent extends PlayerEvent {
 
     public HitPlayerEvent(int id) {

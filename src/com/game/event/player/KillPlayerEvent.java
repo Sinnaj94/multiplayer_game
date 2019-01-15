@@ -4,6 +4,9 @@ import com.game.event.EventType;
 import com.game.gameworld.Player;
 import com.game.gameworld.World;
 
+/**
+ * Kill the Player
+ */
 public class KillPlayerEvent extends PlayerEvent {
     public KillPlayerEvent(int id) {
         super(id);

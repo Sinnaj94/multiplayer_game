@@ -5,6 +5,9 @@ import com.game.gameworld.Item;
 import com.game.gameworld.Player;
 import com.game.gameworld.World;
 
+/**
+ * Assign Item to Player
+ */
 public class GiveItemEvent extends PlayerEvent {
     public int getItemID() {
         return itemID;

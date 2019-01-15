@@ -5,12 +5,20 @@ import com.game.gameworld.GameObject;
 import com.game.gameworld.World;
 import com.helper.BoundingBox;
 
+/**
+ * Event for adding an Object
+ */
 public class AddGameObjectEvent extends GameObjectEvent {
     public GameObject getGameObject() {
         return gameObject;
     }
 
     private GameObject gameObject;
+
+    /**
+     * Constructor
+     * @param gameObject Add actual gameObject
+     */
     public AddGameObjectEvent(GameObject gameObject) {
         super(gameObject.getID());
         this.gameObject = gameObject;

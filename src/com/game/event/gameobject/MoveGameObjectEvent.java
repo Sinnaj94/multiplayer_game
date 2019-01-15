@@ -5,12 +5,21 @@ import com.game.gameworld.GameObject;
 import com.game.gameworld.World;
 import com.helper.Vector2f;
 
+/**
+ * Move object Event
+ */
 public class MoveGameObjectEvent extends GameObjectEvent {
     public Vector2f getPosition() {
         return position;
     }
 
     private Vector2f position;
+
+    /**
+     *
+     * @param id GameObject ID
+     * @param position new Position
+     */
     public MoveGameObjectEvent(int id, Vector2f position) {
         super(id);
         this.position = position;

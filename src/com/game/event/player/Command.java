@@ -3,6 +3,9 @@ package com.game.event.player;
 import com.game.gameworld.Player;
 import com.game.gameworld.World;
 
+/**
+ * Command that can be sent from the client to the server
+ */
 public abstract class Command {
     public int getId() {
         return id;
@@ -13,7 +16,10 @@ public abstract class Command {
         this.id = id;
     }
 
-    // TODO: Auslagern
+    /**
+     * Execute the Command on the Current World
+     * @param w the World
+     */
     public abstract void execute(World.Accessor w);
 
     public abstract CommandType getCommandType();

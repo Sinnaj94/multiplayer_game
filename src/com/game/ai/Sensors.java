@@ -11,8 +11,17 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Sensors for the AI so it can "see"
+ *
+ */
 public class Sensors implements Updateable, Renderable {
     private Map<SensorPosition, Sensor> sensorMap;
+
+    /**
+     * Constructor
+     * @param prototype Boundingbox of the Object
+     */
     public Sensors(BoundingBox prototype) {
         sensorMap = new HashMap<>();
         sensorMap.put(SensorPosition.ABYSSLEFT, new Sensor(prototype, SensorPosition.ABYSSLEFT));
@@ -40,6 +49,9 @@ public class Sensors implements Updateable, Renderable {
     }
 
 
+    /**
+     * Single Sensor implementation
+     */
     public class Sensor implements Updateable, Renderable {
         public BoundingBox getBox() {
             return box;

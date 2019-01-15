@@ -5,6 +5,9 @@ import com.game.gameworld.GameObject;
 import com.game.gameworld.Player;
 import com.game.gameworld.World;
 
+/**
+ * Jump Event -- Sent from Client
+ */
 public class JumpEvent extends PlayerEvent {
     public JumpEvent(int id) {
         super(id);

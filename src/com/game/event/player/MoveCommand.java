@@ -2,6 +2,9 @@ package com.game.event.player;
 
 import com.game.gameworld.World;
 
+/**
+ * Move Request
+ */
 public class MoveCommand extends Command {
     private boolean left;
     private boolean move;

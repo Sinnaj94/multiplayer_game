@@ -15,7 +15,9 @@ import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
-
+/**
+ * AI Player class - the Artificial intelligence
+ */
 public class AIPlayer extends Player {
     private Sensors sensors;
     private World.Accessor accessor;
@@ -138,6 +140,7 @@ public class AIPlayer extends Player {
         }
     }
 
+    // Stop the player
     private void stop() {
         accessor.addEvent(new MoveEvent(getID(), true, false));
         accessor.addEvent(new MoveEvent(getID(), false, false));
