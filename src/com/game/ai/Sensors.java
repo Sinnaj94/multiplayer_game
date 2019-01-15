@@ -1,6 +1,7 @@
 package com.game.ai;
 
 import com.game.gameworld.GameObject;
+import com.game.generics.Collideable;
 import com.game.generics.Renderable;
 import com.game.generics.Updateable;
 import com.helper.BoundingBox;
@@ -16,6 +17,8 @@ public class Sensors implements Updateable, Renderable {
         sensorMap = new HashMap<>();
         sensorMap.put(SensorPosition.ABYSSLEFT, new Sensor(prototype, SensorPosition.ABYSSLEFT));
         sensorMap.put(SensorPosition.ABYSSRIGHT, new Sensor(prototype, SensorPosition.ABYSSRIGHT));
+        sensorMap.put(SensorPosition.WALLLEFT, new Sensor(prototype, SensorPosition.WALLLEFT));
+        sensorMap.put(SensorPosition.WALLRIGHT, new Sensor(prototype, SensorPosition.WALLRIGHT));
     }
 
     @Override
@@ -28,12 +31,16 @@ public class Sensors implements Updateable, Renderable {
     @Override
     public void paint(Graphics g) {
         for(Sensor sensor : sensorMap.values()) {
-            sensor.getBox().paint(g);
+            sensor.paint(g);
         }
     }
 
+    public boolean is(SensorPosition key, Collideable other) {
+        return sensorMap.get(key).intersects(other);
+    }
 
-    public class Sensor implements Updateable {
+
+    public class Sensor implements Updateable, Renderable {
         public BoundingBox getBox() {
             return box;
         }
@@ -54,11 +61,26 @@ public class Sensors implements Updateable, Renderable {
                 case ABYSSRIGHT:
                     box = new BoundingBox(other.right() + 5, other.bottom(), 5, 10);
                     break;
+                case WALLLEFT:
+                    box = new BoundingBox(other.left() - 20, other.top(), 10, other.getHeight() - 10);
+                    break;
+                case WALLRIGHT:
+                    box = new BoundingBox(other.right() + 10, other.top(), 10, other.getHeight() - 4);
+                    break;
             }
+        }
+
+        @Override
+        public void paint(Graphics g) {
+            box.paint(g);
+        }
+
+        public boolean intersects(Collideable other) {
+            return other.intersects(box);
         }
     }
 
     public enum SensorPosition {
-        ABYSSLEFT, ABYSSRIGHT
+        ABYSSLEFT, ABYSSRIGHT, WALLLEFT, WALLRIGHT
     }
 }

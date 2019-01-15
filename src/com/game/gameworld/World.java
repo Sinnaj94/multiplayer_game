@@ -18,6 +18,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class World implements Updateable {
     private Map<Integer, Player> playerMap;
+    private Map<Integer, AIPlayer> aiPlayerMap;
     private Map<Integer, Item> itemMap;
     private Map<Integer, GameObject> objects;
     private Map<Integer, Renderable> renderables;
@@ -71,8 +72,8 @@ public class World implements Updateable {
         this.targetID = objectID;
     }
 
-    public Player getTarget() {
-        return playerMap.get(targetID);
+    public GameObject getTarget() {
+        return objects.get(targetID);
     }
 
     public Accessor getAccessor() {
@@ -83,6 +84,7 @@ public class World implements Updateable {
         accessor = new Accessor();
         isLoaded = false;
         playerMap = new HashMap<>();
+        aiPlayerMap = new HashMap<>();
         objects = new HashMap<>();
         renderables = new HashMap<>();
         itemMap = new HashMap<>();
@@ -103,8 +105,12 @@ public class World implements Updateable {
     public GameObject addObject(GameObject g) {
         System.out.println(String.format("Added %s with ID %d", g.getClass().getName(), g.getID()));
         objects.put(g.getID(), g);
-        if (g instanceof Player) { ;
-            playerMap.put(g.getID(), (Player)g);
+        if (g instanceof Player) {
+            if(g instanceof AIPlayer) {
+                aiPlayerMap.put(g.getID(), (AIPlayer)g);
+            } else {
+                playerMap.put(g.getID(), (Player)g);
+            }
         } else if(g instanceof Item) {
             itemMap.put(g.getID(), (Item)g);
         }
@@ -184,6 +190,7 @@ public class World implements Updateable {
             System.out.println("Removing Object with ID " + i);
             objects.remove(i);
             playerMap.remove(i);
+            aiPlayerMap.remove(i);
             itemMap.remove(i);
             renderables.remove(i);
         }
@@ -289,7 +296,7 @@ public class World implements Updateable {
             World.this.setTargetID(id);
         }
 
-        public Collideable getLevel() {
+        public Level getLevel() {
             return level;
         }
 

@@ -1,7 +1,7 @@
 package com.game.gameworld;
 
 public enum GameObjectType {
-    GAMEOBJECT((byte)0), PHYSICSOBJECT((byte)1), PLAYER((byte)2), ITEM((byte)3);
+    GAMEOBJECT((byte)0), PHYSICSOBJECT((byte)1), PLAYER((byte)2), ITEM((byte)3), AIPLAYER((byte)4);
     byte id;
 
     GameObjectType(byte id) {

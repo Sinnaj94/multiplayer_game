@@ -7,6 +7,7 @@ import com.game.event.gameobject.GameObjectEvent;
 import com.game.event.gameobject.MoveGameObjectEvent;
 import com.game.event.player.MoveEvent;
 import com.game.event.player.PlayerEvent;
+import com.game.gameworld.AIPlayer;
 import com.game.gameworld.GameObject;
 import com.game.event.player.Command;
 import com.game.event.player.Command.CommandType;
@@ -86,6 +87,11 @@ public class MyDataOutputStream extends DataOutputStream {
                         Player p = (Player)g.getGameObject();
                         // Username
                         writeUTF(p.getUsername());
+                        break;
+                    case AIPLAYER:
+                        AIPlayer ai = (AIPlayer)g.getGameObject();
+                        writeUTF(ai.getUsername());
+                        break;
                 }
                 break;
             case MOVE:

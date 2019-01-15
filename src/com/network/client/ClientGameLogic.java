@@ -21,8 +21,7 @@ public class ClientGameLogic implements Runnable {
     public ClientGameLogic(String ip, int port, String name) throws IOException {
         client = new Client(ip, port, name);
         renderer = new Renderer("Client");
-        new Thread(renderer).start();
-        inputLogic = new InputLogic(renderer.getPanel());
+        inputLogic = new InputLogic(renderer.getRenderPanel());
     }
 
     @Override

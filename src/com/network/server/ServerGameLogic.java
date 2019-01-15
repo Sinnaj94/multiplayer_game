@@ -1,7 +1,8 @@
 package com.network.server;
 
-import com.game.ai.PlayerAI;
+import com.game.ai.AIThread;
 import com.game.event.Event;
+import com.game.gameworld.AIPlayer;
 import com.game.gameworld.Item;
 import com.game.gameworld.Player;
 import com.game.render.Renderer;
@@ -11,7 +12,6 @@ import com.helper.Vector2f;
 import com.network.common.EventMessage;
 import com.network.common.Manager;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class ServerGameLogic implements Runnable {
         requestedCommands = new ArrayList<>();
         accessor = world.getAccessor();
         accessor.add(new Item(new Vector2f(200f, -200f)));
-        new PlayerAI(accessor.add(new Player("AI")).getID(), accessor);
+        new AIThread(accessor.add(new AIPlayer("AI")).getID(), accessor);
     }
 
     @Override
@@ -108,8 +108,7 @@ public class ServerGameLogic implements Runnable {
             ServerGameLogic serverGameLogic = new ServerGameLogic(port);
             new Thread(serverGameLogic).start();
             Renderer r = new Renderer("server_view");
-            new Thread(r).start();
-            new AdminPanel(World.getInstance().getAccessor());
+            r.addComponent(new AdminPanel(World.getInstance().getAccessor()));
         } catch (IOException e) {
             System.out.println("Connection not possible.");
         }

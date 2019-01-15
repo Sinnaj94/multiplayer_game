@@ -14,6 +14,16 @@ import java.util.Random;
 public class Player extends PhysicsObject {
     private BufferedImage bufferedImage;
     private float jumpAcceleration;
+
+    public void setAiPlayer(boolean aiPlayer) {
+        this.aiPlayer = aiPlayer;
+    }
+
+    public boolean isAiPlayer() {
+        return aiPlayer;
+    }
+
+    private boolean aiPlayer;
     Random r;
     private Bullet bullet;
     private boolean jumpRequested;
@@ -57,6 +67,7 @@ public class Player extends PhysicsObject {
         jumpAcceleration = -5f;
         life = 5;
         tilesetFactory = new PlayerTilesetFactory();
+        aiPlayer = false;
     }
 
     public void setUsername(String username) {
@@ -194,6 +205,11 @@ public class Player extends PhysicsObject {
             }
             return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        return username;
     }
 
 

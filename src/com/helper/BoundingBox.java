@@ -19,6 +19,10 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
         this.intRectangle = new Rectangle(Math.round(getX()), Math.round(getY()), Math.round(getWidth()), Math.round(getHeight()));
     }
 
+    public BoundingBox(BoundingBox box) {
+        this(box.getPosition(), box.getSize());
+    }
+
     public BoundingBox(float x, float y, float width, float height) {
         this(new Vector2f(x, y), new Vector2f(width, height));
     }
@@ -143,5 +147,12 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
 
     public String toString() {
         return String.format("Boundingbox - Position = %s, Scale = %s", getPosition(), getSize());
+    }
+
+    /**
+     * @return The distance of both middles of the objects
+     */
+    public double distanceTo(BoundingBox other) {
+        return Math.sqrt(Math.pow(getX() - other.getX(), 2) + Math.pow(getY() - other.getY(), 2));
     }
 }

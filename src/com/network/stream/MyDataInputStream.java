@@ -77,6 +77,9 @@ public class MyDataInputStream extends DataInputStream {
                     case PLAYER:
                         String username = readUTF();
                         return new AddGameObjectEvent(new Player(temp, gameObjectID, username));
+                    case AIPLAYER:
+                        String name = readUTF();
+                        return new AddGameObjectEvent(new AIPlayer(temp, gameObjectID, name));
                     case ITEM:
                         return new AddGameObjectEvent(new Item(temp, gameObjectID));
                     default:

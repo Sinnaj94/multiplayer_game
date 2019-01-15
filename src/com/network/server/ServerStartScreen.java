@@ -72,7 +72,7 @@ public class ServerStartScreen extends JFrame {
                     serverGameLogic = new ServerGameLogic(_port);
                     serverThread = new Thread(serverGameLogic);
                     if(render.isSelected()) {
-                        new Thread(new Renderer("Test")).start();
+                        new Renderer("Server");
                     }
                     serverThread.start();
                     trigger.setEnabled(false);
