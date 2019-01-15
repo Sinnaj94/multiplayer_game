@@ -15,6 +15,11 @@ public class Player extends PhysicsObject {
     private BufferedImage bufferedImage;
     private float jumpAcceleration;
 
+    public boolean isDead() {
+        return isDead;
+    }
+
+    private boolean isDead;
     public void setAiPlayer(boolean aiPlayer) {
         this.aiPlayer = aiPlayer;
     }
@@ -23,20 +28,53 @@ public class Player extends PhysicsObject {
         return aiPlayer;
     }
 
+    public void reset() {
+        isDead = false;
+        setPosition(0, 0);
+        life = 5;
+    }
+
     private boolean aiPlayer;
     Random r;
-    private Bullet bullet;
     private boolean jumpRequested;
     private Inventory inventory;
     private float movingSpeed;
-    private Camera camera;
-    private int test;
     private boolean moveLeft;
     private boolean moveRight;
     private String username;
     private int life;
     private PlayerTilesetFactory tilesetFactory;
     private boolean facesLeft;
+    private Vector2f shootDirection;
+    private boolean shoot;
+
+    public boolean isShoot() {
+        return shoot;
+    }
+
+    public Vector2f getShootDirection() {
+        return shootDirection;
+    }
+
+    public void setShoot(Vector2f direction) {
+        shootDirection = direction;
+        this.shoot = true;
+    }
+
+    public void shot() {
+        this.shoot = false;
+    }
+
+    private Bullet bullet;
+    public float getWalkingSpeed() {
+        return walkingSpeed;
+    }
+
+    public void setWalkingSpeed(float walkingSpeed) {
+        this.walkingSpeed = walkingSpeed;
+    }
+
+    private float walkingSpeed;
     private float animationStep;
     public int getLife() {
         return life;
@@ -60,14 +98,29 @@ public class Player extends PhysicsObject {
         buildAttributes(username);
     }
 
+    public float getJumpAcceleration() {
+        return jumpAcceleration;
+    }
+
+    public void setJumpAcceleration(float jumpAcceleration) {
+        this.jumpAcceleration = jumpAcceleration;
+    }
+
+    public void setTilesetFactory(PlayerTilesetFactory tilesetFactory) {
+        this.tilesetFactory = tilesetFactory;
+    }
+
     private void buildAttributes(String username) {
         setUsername(username);
         r = new Random();
         inventory = new Inventory();
         jumpAcceleration = -5f;
         life = 5;
-        tilesetFactory = new PlayerTilesetFactory();
+        tilesetFactory = new PlayerTilesetFactory("res/tilesets/person_tiles.json");
         aiPlayer = false;
+        walkingSpeed = 3f;
+        shoot = false;
+        isDead = false;
     }
 
     public void setUsername(String username) {
@@ -80,30 +133,15 @@ public class Player extends PhysicsObject {
         jumpRequested = true;
     }
 
-    public boolean shoot(Vector2f direction) {
-        //performShoot(direction);
-        return false;
-    }
-
     public boolean addItem(Item i) {
         return inventory.addItem(i);
-
     }
 
-    private void performShoot(Vector2f direction) {
-        if(bullet == null) {
-            bullet = new Bullet(new Vector2f(getPosition().getX() + getSize().getX()/2, getPosition().getY() + getSize().getX() / 2), direction);
-        }
+    public boolean canTake() {
+        return !inventory.isFull();
     }
 
 
-    public void move(float direction) {
-        if (direction > 0 && movingSpeed <= 0) {
-            this.movingSpeed += direction * 3f;
-        } else if (direction < 0 && movingSpeed >= 0) {
-            this.movingSpeed += direction * 3f;
-        }
-    }
 
     public void move(boolean left, boolean move) {
         if(left) {
@@ -118,18 +156,12 @@ public class Player extends PhysicsObject {
     @Override
     public void update() {
         calculateGravity();
-        if (bullet != null) {
-            bullet.update();
-            if(bullet.dies()) {
-                bullet = null;
-            }
-        }
         float moveSpeed = 0;
         if(moveLeft) {
-            moveSpeed-=3;
+            moveSpeed-=walkingSpeed;
         }
         if(moveRight) {
-            moveSpeed+=3;
+            moveSpeed+=walkingSpeed;
         }
         move(new Vector2f(moveSpeed, 0f));
         if (jumpRequested && canJump()) {
@@ -171,9 +203,6 @@ public class Player extends PhysicsObject {
             g.drawImage(image, r.x -6, r.y -2 , r.width + 12, r.height + 5, null);
             tilesetFactory.update();
         }
-        if (bullet != null) {
-            bullet.paint(g);
-        }
         g.setColor(Color.black);
         g.drawString(username, r.x, r.y - 20);
         animationStep+=.05;
@@ -182,10 +211,23 @@ public class Player extends PhysicsObject {
         }
     }
 
+    public void hit(int damage) {
+        //accelerate(new Vector2f(0f, -1f));
+        damage(damage);
+    }
+
+    private void damage(int damage) {
+        if(life - damage >= 0) {
+            life-=damage;
+            if(life == 0) {
+                isDead = true;
+            }
+        }
+    }
+
     public String getUsername() {
         return username;
     }
-    
 
     public class Inventory {
         List<Item> items;
@@ -193,23 +235,28 @@ public class Player extends PhysicsObject {
         private int index;
 
         public Inventory() {
+            index = 0;
             capacity = 3;
             items = new ArrayList<>();
         }
 
         public boolean addItem(Item i) {
-            if (index < capacity) {
+            if (!isFull()) {
                 items.add(i);
                 index++;
                 return true;
             }
             return false;
         }
+
+        public boolean isFull() {
+            return index >= capacity;
+        }
     }
 
     @Override
     public String toString() {
-        return username;
+        return String.format("%s (%s) - %d", getGameObjectType(), username, getID());
     }
 
 

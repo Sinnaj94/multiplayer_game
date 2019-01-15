@@ -24,8 +24,19 @@ public class Vector2f extends Vector2<Float, Vector2f> {
         addY(v.getY());
     }
 
-    public void multiply(Float f) {
-        this.multiply(new Vector2f(f, f));
+    public Vector2f multiply(Float f) {
+        return this.multiply(new Vector2f(f, f));
+    }
+
+    public float length() {
+        return (float)Math.sqrt(Math.pow(getX(), 2) + Math.pow(getY(), 2));
+    }
+
+    public Vector2f normalize() {
+        float length = length();
+        setX(getX() / length);
+        setY(getY() / length);
+        return this;
     }
 
     @Override
@@ -35,9 +46,10 @@ public class Vector2f extends Vector2<Float, Vector2f> {
     }
 
     @Override
-    public void multiply(Vector2f v) {
+    public Vector2f multiply(Vector2f v) {
         setX(getX() * v.getY());
         setY(getY() * v.getY());
+        return this;
     }
 
     public Vector2f distanceTo(Vector2f other) {

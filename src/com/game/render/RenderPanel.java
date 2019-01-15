@@ -3,28 +3,36 @@ package com.game.render;
 import com.game.UI;
 import com.game.gameworld.*;
 import com.game.generics.Renderable;
+import com.helper.Vector2f;
 import com.helper.Vector2i;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 
 public class RenderPanel extends JPanel implements Runnable {
     private World.Accessor accessor;
     private Sky sky;
     final Vector2i SIZE = new Vector2i(500, 500);
     private Camera camera;
+    private float zoom;
     public volatile boolean running = true;
 
     public RenderPanel() {
         super();
         accessor = World.getInstance().getAccessor();
         sky = new Sky(SIZE);
+        zoom = 1;
         camera = new Camera(SIZE);
         setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
         setMaximumSize(new Dimension(SIZE.getX(), SIZE.getY()));
         setSize(new Dimension(SIZE.getX(), SIZE.getY()));
     }
 
+    public void zoom(float delta) {
+        zoom+=delta;
+    }
 
 
     @Override
@@ -39,10 +47,28 @@ public class RenderPanel extends JPanel implements Runnable {
         sky.paint(g);
         Graphics2D g2 = (Graphics2D) g.create();
         g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
+        if(zoom!=1) {
+            g2.scale(zoom, zoom);
+        }
         accessor.getLevel().paint(g2);
         // After that render the GameObjects.
-        for (Renderable r : accessor.getRenderables().values()) {
-            r.paint(g2);
+        Iterator<Renderable> i = accessor.getRenderables().values().iterator();
+        try {
+            while(i.hasNext()) {
+                Renderable r = i.next();
+                if(r != o) {
+                    r.paint(g2);
+                }
+            }
+        } catch(ConcurrentModificationException e) {
+
+        }
+
+        if(o!=null) {
+            o.paint(g2);
+        }
+        if(o instanceof Player) {
+            UI.paint(g, (Player)o);
         }
     }
 

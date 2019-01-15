@@ -1,20 +1,39 @@
 package com.game.gameworld;
 
+import com.game.ai.AIState;
 import com.game.ai.Sensors;
 import com.game.event.player.JumpEvent;
 import com.game.event.player.MoveEvent;
 import com.game.factories.PlayerFactory;
+import com.game.tiles.PlayerTilesetFactory;
 import com.helper.BoundingBox;
 import com.helper.Vector2f;
 import com.sun.corba.se.impl.orbutil.graph.Graph;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Random;
 
 
 public class AIPlayer extends Player {
     private Sensors sensors;
     private World.Accessor accessor;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    private boolean active;
+
+    public void setAiState(AIState aiState) {
+        this.aiState = aiState;
+    }
+
+    private AIState aiState;
     public AIPlayer(String username) {
         super(username);
         buildAttributes();
@@ -22,11 +41,6 @@ public class AIPlayer extends Player {
 
     public AIPlayer(String username, Vector2f position) {
         super(username, position);
-        buildAttributes();
-    }
-
-    public AIPlayer(BoundingBox prototype, String username) {
-        super(prototype, username);
         buildAttributes();
     }
 
@@ -38,6 +52,9 @@ public class AIPlayer extends Player {
     private void buildAttributes() {
         sensors = new Sensors(getBoundingBox());
         accessor = World.getInstance().getAccessor();
+        aiState = AIState.FOLLOW;
+        setTilesetFactory(new PlayerTilesetFactory("res/tilesets/enemy_tiles.json"));
+        setActive(true);
     }
 
     private Player determineFollowedPlayer() {
@@ -74,18 +91,24 @@ public class AIPlayer extends Player {
     }
 
     public void think() {
-        Player p = determineFollowedPlayer();
-        if(p!=null) {
-            if(p.getPosition().getX() > getPosition().getX() + 16) {
-                smartFollowRight();
-            } else if(p.getPosition().getX() < getPosition().getX() - 16) {
-                smartFollowLeft();
+        switch(aiState) {
+            case FOLLOW:
+                Player p = determineFollowedPlayer();
+                if(p!=null) {
+                    if(p.getPosition().getX() > getPosition().getX() + 16) {
+                        smartFollowRight();
+                    } else if(p.getPosition().getX() < getPosition().getX() - 16) {
+                        smartFollowLeft();
 
-            } else {
-                stop();
-            }
-        } else {
+                    } else {
+                        stop();
+                    }
+                } else {
 
+                }
+                break;
+            case JUMP:
+                aiJump();
         }
     }
 
@@ -96,7 +119,7 @@ public class AIPlayer extends Player {
 
     private void smartFollowLeft() {
         if(sensors.is(Sensors.SensorPosition.WALLLEFT, accessor.getLevel()) || !sensors.is(Sensors.SensorPosition.ABYSSLEFT, accessor.getLevel())) {
-            accessor.addEvent(new JumpEvent(getID()));
+            aiJump();
         }
         accessor.addEvent(new MoveEvent(getID(), false, false));
         accessor.addEvent(new MoveEvent(getID(), true, true));
@@ -104,9 +127,15 @@ public class AIPlayer extends Player {
 
     private void smartFollowRight() {
         if(sensors.is(Sensors.SensorPosition.WALLRIGHT, accessor.getLevel()) || !sensors.is(Sensors.SensorPosition.ABYSSRIGHT, accessor.getLevel())) {
-            accessor.addEvent(new JumpEvent(getID()));
+            aiJump();
         }
         accessor.addEvent(new MoveEvent(getID(), true, false));
         accessor.addEvent(new MoveEvent(getID(), false, true));
+    }
+
+    private void aiJump() {
+        if(getCollisionCache().is(Direction.DOWN)) {
+            accessor.addEvent(new JumpEvent(getID()));
+        }
     }
 }

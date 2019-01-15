@@ -5,15 +5,9 @@ import com.game.event.EventType;
 import com.game.event.gameobject.AddGameObjectEvent;
 import com.game.event.gameobject.GameObjectEvent;
 import com.game.event.gameobject.MoveGameObjectEvent;
-import com.game.event.player.MoveEvent;
-import com.game.event.player.PlayerEvent;
-import com.game.gameworld.AIPlayer;
-import com.game.gameworld.GameObject;
-import com.game.event.player.Command;
+import com.game.event.player.*;
+import com.game.gameworld.*;
 import com.game.event.player.Command.CommandType;
-import com.game.event.player.MoveCommand;
-import com.game.gameworld.GameObjectType;
-import com.game.gameworld.Player;
 import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
@@ -54,10 +48,16 @@ public class MyDataOutputStream extends DataOutputStream {
     public void writeCommand(Command c) throws IOException {
         writeByte(c.getCommandType().getID());
         writeInt(c.getId());
-        if (c.getCommandType().getID() == CommandType.MOVE.getID()) {
-            MoveCommand mC = (MoveCommand)c;
-            writeBoolean(mC.getLeft());
-            writeBoolean(mC.getMove());
+        switch (c.getCommandType()) {
+            case MOVE:
+                MoveCommand mC = (MoveCommand)c;
+                writeBoolean(mC.getLeft());
+                writeBoolean(mC.getMove());
+                break;
+            case SHOOT:
+                ShootCommand sc = (ShootCommand)c;
+                writeVector2f(sc.getDirection());
+                break;
         }
     }
 
@@ -87,10 +87,19 @@ public class MyDataOutputStream extends DataOutputStream {
                         Player p = (Player)g.getGameObject();
                         // Username
                         writeUTF(p.getUsername());
+                        writeFloat(p.getWalkingSpeed());
+                        writeFloat(p.getJumpAcceleration());
                         break;
                     case AIPLAYER:
                         AIPlayer ai = (AIPlayer)g.getGameObject();
                         writeUTF(ai.getUsername());
+                        writeFloat(ai.getWalkingSpeed());
+                        writeFloat(ai.getJumpAcceleration());
+                        break;
+                    case BULLET:
+                        Bullet bullet = (Bullet)g.getGameObject();
+                        writeVector2f(bullet.getInitialSpeed());
+                        writeInt(bullet.getPlayerID());
                         break;
                 }
                 break;
@@ -108,6 +117,16 @@ public class MyDataOutputStream extends DataOutputStream {
                 writeBoolean(pm.isMove());
                 break;
             case PLAYERJUMP:
+                break;
+            case ITEMGIVE:
+                writeInt(((GiveItemEvent)event).getItemID());
+                break;
+            case HITPLAYER:
+                break;
+            case KILLPLAYER:
+                break;
+            case SHOOT:
+                writeVector2f(((ShootEvent)event).getDirection());
                 break;
         }
     }

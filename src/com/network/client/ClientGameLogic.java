@@ -1,5 +1,6 @@
 package com.network.client;
 
+import com.game.input.MouseLogic;
 import com.game.render.Renderer;
 import com.game.gameworld.World;
 import com.game.event.player.Command;
@@ -22,6 +23,7 @@ public class ClientGameLogic implements Runnable {
         client = new Client(ip, port, name);
         renderer = new Renderer("Client");
         inputLogic = new InputLogic(renderer.getRenderPanel());
+        renderer.addMouseListener(new MouseLogic(renderer.getRenderPanel()));
     }
 
     @Override

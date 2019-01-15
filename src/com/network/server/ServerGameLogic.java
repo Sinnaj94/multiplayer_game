@@ -2,12 +2,12 @@ package com.network.server;
 
 import com.game.ai.AIThread;
 import com.game.event.Event;
-import com.game.gameworld.AIPlayer;
-import com.game.gameworld.Item;
-import com.game.gameworld.Player;
+import com.game.event.player.HitPlayerEvent;
+import com.game.event.player.KillPlayerEvent;
+import com.game.gameworld.*;
 import com.game.render.Renderer;
-import com.game.gameworld.World;
 import com.game.event.player.Command;
+import com.helper.BoundingBox;
 import com.helper.Vector2f;
 import com.network.common.EventMessage;
 import com.network.common.Manager;
@@ -41,8 +41,6 @@ public class ServerGameLogic implements Runnable {
         updateCount = 0;
         requestedCommands = new ArrayList<>();
         accessor = world.getAccessor();
-        accessor.add(new Item(new Vector2f(200f, -200f)));
-        new AIThread(accessor.add(new AIPlayer("AI")).getID(), accessor);
     }
 
     @Override
@@ -66,7 +64,6 @@ public class ServerGameLogic implements Runnable {
         server.stop();
     }
 
-    // FIXME sync events to all managers => ConcurrentModificationException
     private void syncEventsToManagers() {
         BlockingQueue<Event> queue = accessor.getSynchronizedEvents();
         while(!queue.isEmpty()) {
@@ -91,13 +88,37 @@ public class ServerGameLogic implements Runnable {
 
 
     /**
-     * This is where the calculations happen.
+     * This is where the Server-Site-Calculations happen.
      */
     private void update() {
         world.update();
         // Collisions
         for(Map.Entry<Player, Item> entry : accessor.getPlayerItemCollisions().entrySet()) {
-            entry.getValue().give(entry.getKey());
+            //entry.getValue().give(entry.getKey());
+            if(entry.getValue().canTake(entry.getKey())) {
+                entry.getValue().assign(entry.getKey());
+            }
+        }
+        for(Player player: accessor.getAllPlayers()) {
+            if(player.isDead() || player.getPosition().getY() > World.DEATHZONE) {
+                accessor.addEvent(new KillPlayerEvent(player.getID()));
+            }
+            if(player.isShoot()) {
+                accessor.add(new Bullet(player.getMiddle(), player.getShootDirection(), player.getID()));
+                player.shot();
+            }
+        }
+        for(Map.Entry<Bullet, Player> entry: accessor.getBulletPlayerCollisions().entrySet()) {
+            if(entry.getKey().getPlayerID() != entry.getValue().getID()) {
+                accessor.addEvent(new HitPlayerEvent(entry.getValue().getID()));
+                accessor.remove(entry.getKey().getID());
+            }
+        }
+        for(Bullet b : accessor.getBullets()) {
+            // Collision with map
+            if(b.getCollisionCache().collides()) {
+                accessor.remove(b.getID());
+            }
         }
         updateCount++;
     }
@@ -108,6 +129,7 @@ public class ServerGameLogic implements Runnable {
             ServerGameLogic serverGameLogic = new ServerGameLogic(port);
             new Thread(serverGameLogic).start();
             Renderer r = new Renderer("server_view");
+            r.addMapControl();
             r.addComponent(new AdminPanel(World.getInstance().getAccessor()));
         } catch (IOException e) {
             System.out.println("Connection not possible.");

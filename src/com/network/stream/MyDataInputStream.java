@@ -9,6 +9,7 @@ import com.game.event.player.*;
 import com.game.gameworld.*;
 import com.game.event.player.Command.CommandType;
 import com.helper.BoundingBox;
+import com.helper.Vector2;
 import com.helper.Vector2f;
 
 import java.io.DataInputStream;
@@ -57,6 +58,9 @@ public class MyDataInputStream extends DataInputStream {
                 boolean move = readBoolean();
                 MoveCommand m = new MoveCommand(id, left, move);
                 return m;
+            case SHOOT:
+                Vector2f direction = readVector2f();
+                return new ShootCommand(id, direction);
         }
         return null;
     }
@@ -76,12 +80,22 @@ public class MyDataInputStream extends DataInputStream {
                 switch(objectType) {
                     case PLAYER:
                         String username = readUTF();
-                        return new AddGameObjectEvent(new Player(temp, gameObjectID, username));
+                        Player player = new Player(temp, gameObjectID, username);
+                        player.setWalkingSpeed(readFloat());
+                        player.setJumpAcceleration(readFloat());
+                        return new AddGameObjectEvent(player);
                     case AIPLAYER:
                         String name = readUTF();
-                        return new AddGameObjectEvent(new AIPlayer(temp, gameObjectID, name));
+                        AIPlayer aiPlayer = new AIPlayer(temp, gameObjectID, name);
+                        aiPlayer.setWalkingSpeed(readFloat());
+                        aiPlayer.setJumpAcceleration(readFloat());
+                        return new AddGameObjectEvent(aiPlayer);
                     case ITEM:
                         return new AddGameObjectEvent(new Item(temp, gameObjectID));
+                    case BULLET:
+                        Vector2f speed = readVector2f();
+                        int playerID = readInt();
+                        return new AddGameObjectEvent(new Bullet(temp, gameObjectID, speed, playerID));
                     default:
                         return new AddGameObjectEvent(new SynchronizedGameObject(temp, gameObjectID));
                 }
@@ -96,6 +110,16 @@ public class MyDataInputStream extends DataInputStream {
                 boolean left = readBoolean();
                 boolean right = readBoolean();
                 return new MoveEvent(gameObjectID, left, right);
+            case ITEMGIVE:
+                int itemID = readInt();
+                return new GiveItemEvent(gameObjectID, itemID);
+            case HITPLAYER:
+                return new HitPlayerEvent(gameObjectID);
+            case KILLPLAYER:
+                return new KillPlayerEvent(gameObjectID);
+            case SHOOT:
+                Vector2f direction = readVector2f();
+                return new ShootEvent(gameObjectID, direction);
         }
         return null;
     }

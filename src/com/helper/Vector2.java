@@ -33,7 +33,7 @@ public abstract class Vector2<Number, Vector2> {
 
     public abstract void setVector(Vector2 v);
 
-    public abstract void multiply(Vector2 v);
+    public abstract Vector2 multiply(Vector2 v);
 
     @Override
     public String toString() {

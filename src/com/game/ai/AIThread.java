@@ -7,26 +7,28 @@ import com.game.gameworld.*;
 import java.util.List;
 
 public class AIThread {
+    private volatile boolean running=true;
     private int id;
-    private World.Accessor accessor;
-    private int followed;
-    private float tolerance;
+    private int tries;
     public AIThread(int id, World.Accessor accessor) {
-        this.accessor = accessor;
         this.id = id;
-        followed = -1;
-        tolerance = 32;
         System.out.println(accessor.get(id));
         new Thread(() -> {
             try {
-                while(true) {
+                while(running) {
+                    Thread.sleep(200);
                     try {
                         AIPlayer a = (AIPlayer)accessor.get(id);
                         a.think();
                     } catch(NullPointerException e) {
-                        System.out.println("AI is not getting the object.");
+                        tries++;
+                        if(tries > 4) {
+                            running = false;
+
+                        } else {
+                            System.out.println("AI is not getting the object. Trying again.");
+                        }
                     }
-                    Thread.sleep(200);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

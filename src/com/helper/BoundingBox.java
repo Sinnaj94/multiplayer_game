@@ -155,4 +155,8 @@ public class BoundingBox implements Collideable, Placeable<Float, Vector2f>, Ren
     public double distanceTo(BoundingBox other) {
         return Math.sqrt(Math.pow(getX() - other.getX(), 2) + Math.pow(getY() - other.getY(), 2));
     }
+
+    public Vector2f getMiddle() {
+        return new Vector2f(getPosition().getX() + getSize().getX() / 2, getPosition().getY() + getSize().getY() / 2);
+    }
 }

@@ -18,7 +18,6 @@ public class AddGameObjectEvent extends GameObjectEvent {
 
     @Override
     public void execute(World w) {
-        // TODO: auslagern
         w.addObject(getGameObject());
     }
 

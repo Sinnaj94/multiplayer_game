@@ -7,6 +7,11 @@ import com.helper.Vector2f;
 import java.awt.*;
 
 public class Item extends PhysicsObject implements Collectable {
+    public int getPlayerID() {
+        return playerID;
+    }
+
+    int playerID;
     public boolean isGiven() {
         return given;
     }
@@ -30,16 +35,25 @@ public class Item extends PhysicsObject implements Collectable {
     public Item(BoundingBox prototype, int id) {
         super(prototype, id);
         given = false;
-
     }
 
+
+    @Override
+    public boolean canTake(Player p) {
+        return p.canTake();
+    }
+
+
+    public void assign(Player p) {
+        System.out.println("Assigned");
+        given = true;
+        playerID = p.getID();
+    }
 
 
     @Override
     public void give(Player p) {
-        if (p.addItem(this)) {
-            given = true;
-        }
+        p.addItem(this);
     }
 
     @Override
@@ -52,7 +66,10 @@ public class Item extends PhysicsObject implements Collectable {
         if (World.getInstance().DEBUG_DRAW) {
             super.paint(g);
         } else {
-            g.fillRect(toIntRectangle().x, toIntRectangle().y, toIntRectangle().width, toIntRectangle().height);
+            g.setColor(Color.MAGENTA);
+            Rectangle r = toIntRectangle();
+            //g.fillRect(toIntRectangle().x, toIntRectangle().y, toIntRectangle().width, toIntRectangle().height);
+            g.fillOval(r.x, r.y, r.width, r.height);
         }
     }
 

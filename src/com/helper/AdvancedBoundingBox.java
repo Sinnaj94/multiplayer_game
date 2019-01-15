@@ -26,20 +26,20 @@ public class AdvancedBoundingBox {
 
 
     public BoundingBox getRight() {
-        return new BoundingBox(new Vector2f(main.getX() + main.getWidth(), main.getY() +2f), new Vector2f(margin, main.getHeight() -4f));
+        return new BoundingBox(new Vector2f(main.getX() + main.getWidth(), main.getY()), new Vector2f(margin, main.getHeight()));
     }
 
     public BoundingBox getLeft() {
-        return new BoundingBox(new Vector2f(main.getX() - margin, main.getY() + 2f), new Vector2f(margin, main.getHeight() -4f ));
+        return new BoundingBox(new Vector2f(main.getX() - margin, main.getY()), new Vector2f(margin, main.getHeight()));
     }
 
     public BoundingBox getUp() {
-        return new BoundingBox(new Vector2f(main.getX() + 2f, main.getY() - margin), new Vector2f(main.getWidth() -4f, margin));
+        return new BoundingBox(new Vector2f(main.getX(), main.getY() - margin), new Vector2f(main.getWidth(), margin));
     }
 
     public BoundingBox getDown() {
-        down.getBoundingBox().setPosition(main.getX() + 2f, main.getY() + main.getHeight());
-        down.getBoundingBox().setSize(new Vector2f(main.getWidth() - 4f, margin));
+        down.getBoundingBox().setPosition(main.getX(), main.getY() + main.getHeight());
+        down.getBoundingBox().setSize(new Vector2f(main.getWidth(), margin));
         return down;
     }
 }

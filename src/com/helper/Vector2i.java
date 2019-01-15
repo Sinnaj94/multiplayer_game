@@ -26,9 +26,10 @@ public class Vector2i extends Vector2<Integer, Vector2i> {
     }
 
     @Override
-    public void multiply(Vector2i v) {
+    public Vector2i multiply(Vector2i v) {
         setX(getX() * v.getX());
         setY(getY() * v.getY());
+        return this;
     }
 
     @Override

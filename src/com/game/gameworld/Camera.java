@@ -4,7 +4,6 @@ import com.helper.Vector2i;
 
 public class Camera {
     private Vector2i position;
-
     public void setSize(Vector2i size) {
         this.size = size;
     }

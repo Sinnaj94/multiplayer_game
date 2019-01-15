@@ -28,8 +28,9 @@ public class Vector2d extends Vector2<Double, Vector2d> {
     }
 
     @Override
-    public void multiply(Vector2d v) {
+    public Vector2d multiply(Vector2d v) {
         setX(getX() * v.getY());
         setY(getY() * v.getY());
+        return this;
     }
 }

@@ -5,6 +5,7 @@ import com.game.event.Event;
 import com.game.event.gameobject.AddGameObjectEvent;
 import com.game.event.gameobject.GameObjectEvent;
 import com.game.event.gameobject.RemoveGameObjectEvent;
+import com.game.event.player.GiveItemEvent;
 import com.game.generics.Collideable;
 import com.game.generics.Renderable;
 import com.game.generics.Updateable;
@@ -22,7 +23,10 @@ public class World implements Updateable {
     private Map<Integer, Item> itemMap;
     private Map<Integer, GameObject> objects;
     private Map<Integer, Renderable> renderables;
+    private Map<Integer, Bullet> bullets;
     private Map<Player, Item> playerItemCollisions;
+    private Map<AIPlayer, Item> aiPlayerItemCollisions;
+    private Map<Bullet, Player> bulletPlayerCollisions;
     private int targetID;
 
     private BlockingQueue<Event> gameObjectEvents;
@@ -33,6 +37,7 @@ public class World implements Updateable {
     public static final int TILE_SIZE = 64;
     public static final int CHUNK_TILES = 8;
     public static final int CHUNK_SIZE = TILE_SIZE * CHUNK_TILES;
+    public static int DEATHZONE = TILE_SIZE * CHUNK_TILES + TILE_SIZE;
     private Level level;
     private static World instance;
     private Time time;
@@ -88,9 +93,11 @@ public class World implements Updateable {
         objects = new HashMap<>();
         renderables = new HashMap<>();
         itemMap = new HashMap<>();
-        gameObjectEvents = new ArrayBlockingQueue<Event>(1000);
-
+        bullets = new HashMap<>();
+        gameObjectEvents = new ArrayBlockingQueue<Event>(100000);
         playerItemCollisions = new HashMap<>();
+        aiPlayerItemCollisions = new HashMap<>();
+        bulletPlayerCollisions = new HashMap<>();
         // TODO: DELETE
         removedObjects = new ArrayList<>();
         time = new Time();
@@ -113,6 +120,8 @@ public class World implements Updateable {
             }
         } else if(g instanceof Item) {
             itemMap.put(g.getID(), (Item)g);
+        } else if(g instanceof Bullet) {
+            bullets.put(g.getID(), (Bullet)g);
         }
         renderables.putAll(objects);
         return g;
@@ -149,20 +158,6 @@ public class World implements Updateable {
     }
 
     /**
-     * Remove all objects in Remove list and clear the list
-     */
-    /*private void removeObjects() {
-        if (removedObjects.isEmpty()) return;
-        for (Integer i : removedObjects) {
-            System.out.println("Removing Object with ID " + i);
-            objects.remove(i);
-            playerMap.remove(i);
-            renderables.remove(i);
-        }
-        removedObjects.clear();
-    }*/
-
-    /**
      * Returns the current level
      *
      * @return
@@ -193,6 +188,7 @@ public class World implements Updateable {
             aiPlayerMap.remove(i);
             itemMap.remove(i);
             renderables.remove(i);
+            bullets.remove(i);
         }
         removedObjects.clear();
     }
@@ -207,6 +203,7 @@ public class World implements Updateable {
     }
 
     @Override
+    @SuppressWarnings("Duplicates")
     public void update() {
         // Remove Objects.. Clean up!
         executeEvents();
@@ -217,10 +214,29 @@ public class World implements Updateable {
         }
         // Update Collisions
         playerItemCollisions.clear();
+        aiPlayerItemCollisions.clear();
         for(Item item:itemMap.values()) {
             for(Player player:playerMap.values()) {
                 if (player.getBoundingBox().intersects(item.getBoundingBox())) {
                     playerItemCollisions.put(player, item);
+                }
+            }
+            for(AIPlayer aiPlayer:aiPlayerMap.values()) {
+                if (aiPlayer.getBoundingBox().intersects(item.getBoundingBox())) {
+                    aiPlayerItemCollisions.put(aiPlayer, item);
+                }
+            }
+        }
+        bulletPlayerCollisions.clear();
+        for(Bullet b:bullets.values()) {
+            for(Player player:playerMap.values()) {
+                if (player.getBoundingBox().intersects(b.getBoundingBox())) {
+                    bulletPlayerCollisions.put(b, player);
+                }
+            }
+            for(AIPlayer aiPlayer:aiPlayerMap.values()) {
+                if (aiPlayer.getBoundingBox().intersects(b.getBoundingBox())) {
+                    bulletPlayerCollisions.put(b, aiPlayer);
                 }
             }
         }
@@ -228,7 +244,9 @@ public class World implements Updateable {
         // Update found Items (remove them) :P
         for(Item item:itemMap.values()) {
             if(item.isGiven()) {
-                accessor.remove(item.getID());
+                //accessor.remove(item.getID());
+                accessor.addEvent(new GiveItemEvent(item.playerID, item.getID()));
+                accessor.addEvent(new RemoveGameObjectEvent(item.getID()));
             }
         }
 
@@ -259,7 +277,7 @@ public class World implements Updateable {
         }
 
         public Accessor() {
-            synchronizedEvents = new ArrayBlockingQueue<Event>(1000);
+            synchronizedEvents = new ArrayBlockingQueue<Event>(100000);
         }
         public GameObject get(int id) {
             return getObject(id);
@@ -273,19 +291,35 @@ public class World implements Updateable {
             return new ArrayList<>(playerMap.values());
         }
 
+        public List<Player> getAllPlayers() {
+            List<Player> r = new ArrayList<>();
+            r.addAll(aiPlayerMap.values());
+            r.addAll(playerMap.values());
+            return r;
+        }
+
         public GameObject add(GameObject g) {
             addEvent(new AddGameObjectEvent(g));
             return g;
         }
 
-        public void remove(int id) {
+        public int remove(int id) {
             addEvent(new RemoveGameObjectEvent(id));
+            return id;
         }
 
         public Player addPlayer(String username) {
             AddGameObjectEvent e = new AddGameObjectEvent(new Player(username));
             addEvent(e);
             return (Player)e.getGameObject();
+        }
+
+        public Map<Bullet, Player> getBulletPlayerCollisions() {
+            return bulletPlayerCollisions;
+        }
+
+        public Collection<Bullet> getBullets() {
+            return bullets.values();
         }
 
         public GameObject getTarget() {
@@ -307,7 +341,10 @@ public class World implements Updateable {
 
 
         public Map<Player, Item> getPlayerItemCollisions() {
-            return playerItemCollisions;
+            Map<Player, Item> _return = new HashMap<>();
+            _return.putAll(playerItemCollisions);
+            _return.putAll(aiPlayerItemCollisions);
+            return _return;
         }
 
         public boolean exists(int id) {

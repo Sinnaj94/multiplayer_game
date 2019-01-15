@@ -13,8 +13,8 @@ public class PlayerTilesetFactory extends TilesetFactory implements Updateable {
      * OldTilesetFactory constructor. Returns several Images from a given JSON-Sourcefile
      *
      */
-    public PlayerTilesetFactory() {
-        super("res/tilesets/person_tiles.json");
+    public PlayerTilesetFactory(String resource) {
+        super(resource);
         animationStep = 10;
     }
 

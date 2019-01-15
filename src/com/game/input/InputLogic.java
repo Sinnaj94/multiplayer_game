@@ -3,7 +3,10 @@ package com.game.input;
 import com.game.event.player.Command;
 import com.game.event.player.JumpCommand;
 import com.game.event.player.MoveCommand;
+import com.game.event.player.ShootCommand;
 import com.game.gameworld.World;
+import com.helper.Vector2;
+import com.helper.Vector2f;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -39,12 +42,16 @@ public class InputLogic {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "Released.right");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "Jump");
 
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S,0,false), "Shoot");
+
         actionMap.put("Pressed.left", requestLeft());
         actionMap.put("Released.left", requestLeftStop());
         actionMap.put("Pressed.right", requestRight());
         actionMap.put("Released.right", requestRightStop());
 
         actionMap.put("Jump", jumpRequest());
+
+        actionMap.put("Shoot", shootRequest());
     }
 
 
@@ -66,6 +73,10 @@ public class InputLogic {
 
     private Action jumpRequest() {
         return new JumpAction();
+    }
+
+    private Action shootRequest() {
+        return new ShootAction(new Vector2f(-1f, 0f));
     }
 
     public class MoveAction extends AbstractAction {
@@ -92,6 +103,20 @@ public class InputLogic {
             JumpCommand c = new JumpCommand(accessor.getTarget().getID());
             commandQueue.add(c);
             //World.getInstance().getPlayers().get(0).jump();
+        }
+    }
+
+    public class ShootAction extends AbstractAction {
+        private Vector2f direction;
+
+        public ShootAction(Vector2f direction){
+            this.direction = direction;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            ShootCommand c = new ShootCommand(accessor.getTarget().getID(), direction);
+            commandQueue.add(c);
         }
     }
 }

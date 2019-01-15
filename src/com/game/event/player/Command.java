@@ -19,7 +19,7 @@ public abstract class Command {
     public abstract CommandType getCommandType();
 
     public enum CommandType {
-        JUMP((byte) 0), MOVE((byte) 1);
+        JUMP((byte) 0), MOVE((byte) 1), SHOOT((byte)2);
         private byte b;
 
         CommandType(byte b) {

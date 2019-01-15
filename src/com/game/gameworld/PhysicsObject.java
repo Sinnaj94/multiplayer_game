@@ -250,6 +250,15 @@ public abstract class PhysicsObject extends GameObject {
             collisions.put(Direction.UP, map.createIntersection(bb.getUp()));
             collisions.put(Direction.DOWN, map.createIntersection(bb.getDown()));
         }
+
+        public boolean collides() {
+            for(BoundingBox b: collisions.values()) {
+                if(b!=null) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public enum Direction {

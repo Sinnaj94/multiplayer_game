@@ -1,10 +1,18 @@
 package com.game.factories;
 
+import com.game.ai.AIState;
 import com.game.gameworld.AIPlayer;
 import com.game.gameworld.Player;
 import com.helper.Vector2f;
 
+import java.util.Random;
+
 public class AIPlayerFactory extends PlayerFactory {
+    private Random r;
+    public AIPlayerFactory() {
+        r = new Random();
+    }
+
     @Override
     public AIPlayer spawn() {
         return spawn(new Vector2f(0f, 0f));
@@ -12,6 +20,9 @@ public class AIPlayerFactory extends PlayerFactory {
 
     @Override
     public AIPlayer spawn(Vector2f position) {
-        return new AIPlayer("enemy", position);
+        AIPlayer ai = new AIPlayer("", position);
+        ai.setWalkingSpeed(r.nextFloat() * 1 + 3);
+        ai.setJumpAcceleration(-(r.nextFloat() * 1 + 4));
+        return ai;
     }
 }
