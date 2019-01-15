@@ -42,7 +42,6 @@ public class InputLogic {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "Released.right");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "Jump");
 
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S,0,false), "Shoot");
 
         actionMap.put("Pressed.left", requestLeft());
         actionMap.put("Released.left", requestLeftStop());
@@ -51,7 +50,6 @@ public class InputLogic {
 
         actionMap.put("Jump", jumpRequest());
 
-        actionMap.put("Shoot", shootRequest());
     }
 
 
@@ -75,9 +73,6 @@ public class InputLogic {
         return new JumpAction();
     }
 
-    private Action shootRequest() {
-        return new ShootAction(new Vector2f(-1f, 0f));
-    }
 
     public class MoveAction extends AbstractAction {
         private boolean left;
@@ -103,20 +98,6 @@ public class InputLogic {
             JumpCommand c = new JumpCommand(accessor.getTarget().getID());
             commandQueue.add(c);
             //World.getInstance().getPlayers().get(0).jump();
-        }
-    }
-
-    public class ShootAction extends AbstractAction {
-        private Vector2f direction;
-
-        public ShootAction(Vector2f direction){
-            this.direction = direction;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ShootCommand c = new ShootCommand(accessor.getTarget().getID(), direction);
-            commandQueue.add(c);
         }
     }
 }

@@ -47,6 +47,7 @@ public class Player extends PhysicsObject {
     private boolean facesLeft;
     private Vector2f shootDirection;
     private boolean shoot;
+    private int cooldownTime;
 
     public boolean isShoot() {
         return shoot;
@@ -63,6 +64,11 @@ public class Player extends PhysicsObject {
 
     public void shot() {
         this.shoot = false;
+        cooldownTime = 100;
+    }
+
+    public boolean canShoot() {
+        return cooldownTime == 0;
     }
 
     private Bullet bullet;
@@ -170,6 +176,9 @@ public class Player extends PhysicsObject {
         jumpRequested = false;
         translate(getCurrentSpeed().getX(), getCurrentSpeed().getY());
         getCollisionCache().update();
+        if(cooldownTime > 0) {
+            cooldownTime--;
+        }
     }
 
     private boolean canJump() {

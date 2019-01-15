@@ -19,11 +19,13 @@ public class ClientGameLogic implements Runnable {
     private Renderer renderer;
     private InputLogic inputLogic;
     private final Object token = new Object();
+    private MouseLogic mouseLogic;
     public ClientGameLogic(String ip, int port, String name) throws IOException {
         client = new Client(ip, port, name);
         renderer = new Renderer("Client");
         inputLogic = new InputLogic(renderer.getRenderPanel());
-        renderer.addMouseListener(new MouseLogic(renderer.getRenderPanel()));
+        mouseLogic = new MouseLogic(renderer.getRenderPanel());
+        renderer.addMouseListener(mouseLogic);
     }
 
     @Override
@@ -46,6 +48,12 @@ public class ClientGameLogic implements Runnable {
     public void update() {
         while (!inputLogic.getCommandQueue().isEmpty()) {
             Command command = inputLogic.getCommandQueue().poll();
+            if (command != null) {
+                client.sendCommand(command);
+            }
+        }
+        while (!mouseLogic.getCommandQueue().isEmpty()) {
+            Command command = mouseLogic.getCommandQueue().poll();
             if (command != null) {
                 client.sendCommand(command);
             }

@@ -19,8 +19,10 @@ public class ShootEvent extends PlayerEvent {
     @Override
     public void execute(World w) {
         Player p = (Player)w.getAccessor().get(getID());
-        direction.normalize().multiply(10f);
-        p.setShoot(direction);
+        if(p.canShoot()) {
+            direction.normalize().multiply(10f);
+            p.setShoot(direction);
+        }
     }
 
     @Override

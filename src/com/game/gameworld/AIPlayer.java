@@ -4,6 +4,7 @@ import com.game.ai.AIState;
 import com.game.ai.Sensors;
 import com.game.event.player.JumpEvent;
 import com.game.event.player.MoveEvent;
+import com.game.event.player.ShootEvent;
 import com.game.factories.PlayerFactory;
 import com.game.tiles.PlayerTilesetFactory;
 import com.helper.BoundingBox;
@@ -93,22 +94,47 @@ public class AIPlayer extends Player {
     public void think() {
         switch(aiState) {
             case FOLLOW:
-                Player p = determineFollowedPlayer();
-                if(p!=null) {
-                    if(p.getPosition().getX() > getPosition().getX() + 16) {
-                        smartFollowRight();
-                    } else if(p.getPosition().getX() < getPosition().getX() - 16) {
-                        smartFollowLeft();
-
-                    } else {
-                        stop();
-                    }
-                } else {
-
-                }
+                follow();
+                break;
+            case ATTACK:
+                attack();
                 break;
             case JUMP:
                 aiJump();
+                break;
+            case ATTACKJUMP:
+                follow();
+                attack();
+                break;
+        }
+    }
+
+    private void follow() {
+        Player p = determineFollowedPlayer();
+        if(p!=null) {
+            if(p.getPosition().getX() > getPosition().getX() + 16) {
+                smartFollowRight();
+            } else if(p.getPosition().getX() < getPosition().getX() - 16) {
+                smartFollowLeft();
+
+            } else {
+                stop();
+            }
+        } else {
+
+        }
+    }
+
+    private void attack() {
+        Player p = determineFollowedPlayer();
+        if(p!=null) {
+            if(((Player)accessor.get(getID())).canShoot()) {
+                //accessor.addEvent(new ShootEvent(getID(), new Vector2f(0f, -1f)));
+                Vector2f a = (accessor.get(getID())).getMiddle();
+                Vector2f b = p.getMiddle();
+                Vector2f d = new Vector2f( b.getX() - a.getX(),  b.getY() - a.getY());
+                accessor.addEvent(new ShootEvent(getID(), d));
+            }
         }
     }
 

@@ -15,6 +15,11 @@ public class RenderPanel extends JPanel implements Runnable {
     private World.Accessor accessor;
     private Sky sky;
     final Vector2i SIZE = new Vector2i(500, 500);
+
+    public Camera getCamera() {
+        return camera;
+    }
+
     private Camera camera;
     private float zoom;
     public volatile boolean running = true;
