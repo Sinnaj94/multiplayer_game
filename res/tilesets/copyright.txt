@@ -1,0 +1,6 @@
+All Image Resources from OPENGAMEART
+
+person_sprite_sheet.png:
+https://opengameart.org/sites/default/files/person_sprite_sheet.png
+forest_tiles.png:
+https://opengameart.org/sites/default/files/forest_tiles.png
