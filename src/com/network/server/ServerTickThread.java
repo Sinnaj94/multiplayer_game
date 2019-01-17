@@ -32,7 +32,7 @@ public class ServerTickThread implements Runnable {
     }
 
     private void tick() {
-        Iterator<GameObject> iterator = accessor.get().iterator();
+        Iterator<GameObject> iterator = accessor.getTicked().iterator();
         while (iterator.hasNext()){
             GameObject g = iterator.next();
             m.send(new EventMessage(new MoveGameObjectEvent(g.getID(), g.getPosition())));

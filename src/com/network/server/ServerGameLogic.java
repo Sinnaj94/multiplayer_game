@@ -94,7 +94,10 @@ public class ServerGameLogic implements Runnable {
             }
         }
         for(Player player: accessor.getAllPlayers()) {
-            if((player.isDead() || player.getPosition().getY() > World.DEATHZONE) && !player.isResetRequested()) {
+            if(player.getPosition().getY() > World.DEATHZONE) {
+                accessor.addEvent(new HitPlayerEvent(player.getID()));
+            }
+            if((player.isDead()) && !player.isResetRequested()) {
                 accessor.addEvent(new KillPlayerEvent(player.getID()));
             }
             if(player.isShoot()) {

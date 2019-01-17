@@ -243,8 +243,6 @@ public class Player extends PhysicsObject {
         if (World.getInstance().DEBUG_DRAW) {
             super.paint(g);
         } else {
-            // TODO
-
             BufferedImage image = tilesetFactory.getAnimationFrame(getPlayerState(), isFacesLeft());
             g.drawImage(image, r.x -6, r.y -2 , r.width + 12, r.height + 5, null);
         }
@@ -256,21 +254,13 @@ public class Player extends PhysicsObject {
         }
     }
 
-    public void hit(int damage) {
-        //accelerate(new Vector2f(0f, -1f));
-        damage(damage);
+    public void addHealth(int health) {
+        life += health;
+    }
 
-        new Thread(() -> {
-            setTilesetFactory(ResourceSingleton.getInstance().getDamage());
-            try {
-                Thread.sleep(400);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if(getLife() > 0) {
-                setTilesetFactory(ResourceSingleton.getInstance().getPlayers());
-            }
-        }).start();
+    public void hit(int damage) {
+        accelerate(new Vector2f(0f, -.1f));
+        damage(damage);
     }
 
     private void damage(int damage) {

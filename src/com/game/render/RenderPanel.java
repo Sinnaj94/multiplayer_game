@@ -14,7 +14,7 @@ import java.util.Iterator;
 public class RenderPanel extends JPanel implements Runnable {
     private World.Accessor accessor;
     final Vector2i SIZE = new Vector2i(500, 500);
-
+    private Sky sky;
     public Camera getCamera() {
         return camera;
     }
@@ -23,6 +23,7 @@ public class RenderPanel extends JPanel implements Runnable {
     private float zoom;
     public volatile boolean running = true;
     private UI ui;
+    private double step;
 
     public RenderPanel() {
         super();
@@ -33,6 +34,8 @@ public class RenderPanel extends JPanel implements Runnable {
         setMaximumSize(new Dimension(SIZE.getX(), SIZE.getY()));
         setSize(new Dimension(SIZE.getX(), SIZE.getY()));
         ui = new UI();
+        sky = new Sky(SIZE);
+
     }
 
     public void zoom(float delta) {
@@ -46,13 +49,15 @@ public class RenderPanel extends JPanel implements Runnable {
         if(o!=null) {
             camera.observe(World.getInstance().getTarget());
         }
+        if(step % 20 == 0) {
+            sky.randomize();
+        }
+        sky.paint(g);
         Graphics2D g2 = (Graphics2D) g.create();
         g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
         if(zoom!=1) {
             g2.scale(zoom, zoom);
         }
-        g.setColor(new Color(0xf87ceeb));
-        g.fillRect(0,0, SIZE.getX(), SIZE.getY());
         accessor.getLevel().paint(g2);
         // After that render the GameObjects.
         Iterator<Renderable> i = accessor.getRenderables().values().iterator();
@@ -73,6 +78,7 @@ public class RenderPanel extends JPanel implements Runnable {
         if(o instanceof Player) {
             ui.paint(g, (Player)o);
         }
+        step++;
     }
 
     @Override

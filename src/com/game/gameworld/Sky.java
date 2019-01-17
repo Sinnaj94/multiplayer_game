@@ -1,24 +1,26 @@
 package com.game.gameworld;
 
 import com.game.generics.Renderable;
+import com.helper.Vector2f;
 import com.helper.Vector2i;
 
 import java.awt.*;
+import java.util.Random;
 
 public class Sky implements Renderable {
     private ColorRect[] test;
     private int steps;
+    private Random r;
     private Vector2i size;
-    private float brightness;
     public Sky(Vector2i size) {
-        steps = 30;
-        build(steps, size);
+        steps = 20;
+        this.size = size;
+        r = new Random();
+        build(steps);
     }
 
-    private void build(int steps, Vector2i size) {
+    private void build(int steps) {
         test = new ColorRect[steps];
-        this.size = size;
-        this.steps = steps;
         for(int i = 0; i < steps; i++) {
             float percentage = (float)i / steps;
             int y = (int)Math.floor(percentage * (float)size.getY());
@@ -27,16 +29,8 @@ public class Sky implements Renderable {
         }
     }
 
-    public void setBrightness(float brightness) {
-        if(brightness != this.brightness) {
-            System.out.println(brightness);
-            this.brightness = brightness;
-            build(steps, size);
-        }
-    }
-
     private Color getColor(float percentage) {
-        int val = (int)Math.ceil(155 * (1-percentage) + (brightness * 100));
+        int val = (int)Math.ceil(155 * (1-percentage) + 100);
         return new Color(val/2,val,val);
     }
 
@@ -48,6 +42,10 @@ public class Sky implements Renderable {
                 test[i].paint(g);
             }
         }
+    }
+
+    public void randomize() {
+        build(steps);
     }
 
     private class ColorRect implements Renderable {

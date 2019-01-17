@@ -42,7 +42,9 @@ public class Bullet extends PhysicsObject {
     @Override
     public void paint(Graphics g) {
         Rectangle r = toIntRectangle();
-        g.setColor(Color.blue);
-        g.fillRect(r.x, r.y, r.width, r.height);
+        g.setColor(Color.orange);
+        g.fillOval(r.x, r.y, r.width, r.height);
+        g.setColor(Color.white);
+        g.drawOval(r.x, r.y, r.width, r.height);
     }
 }

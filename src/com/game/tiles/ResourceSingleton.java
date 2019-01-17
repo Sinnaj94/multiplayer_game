@@ -2,6 +2,10 @@ package com.game.tiles;
 
 import com.game.generics.Updateable;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
 public class ResourceSingleton implements Updateable {
     private static ResourceSingleton instance;
 
@@ -26,6 +30,12 @@ public class ResourceSingleton implements Updateable {
     }
 
     private PlayerTilesetFactory dead;
+
+    public BufferedImage getHeart() {
+        return heart;
+    }
+
+    private BufferedImage heart;
     public static ResourceSingleton getInstance() {
         if(instance == null) {
             instance = new ResourceSingleton();
@@ -38,7 +48,11 @@ public class ResourceSingleton implements Updateable {
         enemies = new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/enemy_tiles.json"));
         dead = new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/dead_tiles.json"));
         damage = new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/damage_tiles.json"));
-
+        try {
+            heart = ImageIO.read(getClass().getClassLoader().getResourceAsStream("images/heart.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void update() {

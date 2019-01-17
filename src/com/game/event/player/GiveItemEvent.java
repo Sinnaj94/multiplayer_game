@@ -21,7 +21,7 @@ public class GiveItemEvent extends PlayerEvent {
 
     @Override
     public void execute(World w) {
-        ((Player)w.getAccessor().get(getID())).addItem((Item) w.getAccessor().get(getItemID()));
+        ((Player)w.getAccessor().get(getID())).addHealth(1);
     }
 
     @Override

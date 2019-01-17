@@ -1,6 +1,7 @@
 package com.game.gameworld;
 
 import com.game.generics.Collectable;
+import com.game.tiles.ResourceSingleton;
 import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
@@ -65,10 +66,8 @@ public class Item extends PhysicsObject implements Collectable {
         if (World.getInstance().DEBUG_DRAW) {
             super.paint(g);
         } else {
-            g.setColor(Color.MAGENTA);
             Rectangle r = toIntRectangle();
-            //g.fillRect(toIntRectangle().x, toIntRectangle().y, toIntRectangle().width, toIntRectangle().height);
-            g.fillOval(r.x, r.y, r.width, r.height);
+            g.drawImage(ResourceSingleton.getInstance().getHeart(), r.x, r.y, r.width, r.height, null);
         }
     }
 

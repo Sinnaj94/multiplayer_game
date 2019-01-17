@@ -294,6 +294,14 @@ public class World implements Updateable {
             return new ArrayList<>(objects.values());
         }
 
+        public List<GameObject> getTicked() {
+            ArrayList<GameObject> list = new ArrayList<GameObject>();
+            list.addAll(playerMap.values());
+            list.addAll(aiPlayerMap.values());
+            list.addAll(itemMap.values());
+            return list;
+        }
+
         public List<Player> getPlayers() {
             return new ArrayList<>(playerMap.values());
         }

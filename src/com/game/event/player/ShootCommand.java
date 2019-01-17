@@ -26,7 +26,9 @@ public class ShootCommand extends Command {
 
     @Override
     public void execute(World.Accessor w) {
-        w.addEvent(new ShootEvent(getId(), getDirection()));
+        if(!((Player)w.get(getId())).isResetRequested()) {
+            w.addEvent(new ShootEvent(getId(), getDirection()));
+        }
     }
 
     @Override
