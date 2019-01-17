@@ -1,5 +1,5 @@
 {
-  "src": "res/tilesets/enemy_sprite_sheet.png",
+  "src": "tilesets/enemy_sprite_sheet.png",
   "object_size": 16,
   "animations": {
     "idle_left": [

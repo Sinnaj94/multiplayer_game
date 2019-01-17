@@ -6,6 +6,8 @@ import com.network.stream.MyDataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -20,6 +22,12 @@ public class Manager<T extends NetworkMessage> implements Runnable {
     public volatile boolean inactive = false;
     private String name;
     private Accessor accessor;
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    private Socket socket;
 
     public MyDataInputStream getDis() {
         return dis;
@@ -36,16 +44,30 @@ public class Manager<T extends NetworkMessage> implements Runnable {
     public Manager(InputStream is, OutputStream os) {
         System.out.println("Adding a new Manager.");
         map = new HashMap<>();
-        dis = new MyDataInputStream(is);
-        dos = new MyDataOutputStream(os);
+        registerStreams(is, os);
         this.clientID = MANAGER_ID++;
         accessor = new Accessor();
         new Thread(accessor).start();
-
     }
 
+    public void writeUsername(String username) {
+        try {
+            dos.writeUTF(username);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void registerStreams(InputStream is, OutputStream os) {
+        dis = new MyDataInputStream(is);
+        dos = new MyDataOutputStream(os);
+    }
+
+
     public void register(MessageType messageType, NetworkMessageHandler<T> handler) {
-        map.put(messageType, handler);
+        if(!inactive) {
+            map.put(messageType, handler);
+        }
     }
 
     public void send(T message) {
@@ -57,27 +79,25 @@ public class Manager<T extends NetworkMessage> implements Runnable {
         while (!inactive) {
             try {
                 byte b = dis.readByte();
-                MessageType current = MessageType.getMessageTypeByByte(b);
-                NetworkMessageHandler n = map.get(current);
-                // FIXME : Sometimes I get a Null Pointer here (Network?)
-                try {
-                    n.handle(n.getNetworkMessage(dis));
-                } catch (NullPointerException a) {
-                    System.out.println("ERROR");
-                    System.out.println("b: " + b + " cu: " +current);
-                    System.out.println(n);
-                }
 
+                MessageType current = MessageType.getMessageTypeByByte(b);
+                System.out.println(current);
+                NetworkMessageHandler n = map.get(current);
+                n.handle(n.getNetworkMessage(dis));
             } catch (IOException e) {
-                inactive = true;
-                try {
-                    dis.close();
-                    dos.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+                close();
             }
         }
+    }
+
+    private void close() {
+        System.out.println("SOCKET CLOSED");
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        inactive = true;
     }
 
     @Override
@@ -88,12 +108,13 @@ public class Manager<T extends NetworkMessage> implements Runnable {
     public class Accessor implements Runnable {
         BlockingQueue<T> messages;
         public Accessor() {
-            messages = new ArrayBlockingQueue<T>(60);
+            messages = new ArrayBlockingQueue<>(100000);
         }
 
         public void addMessage(T message) {
             try {
                 messages.put(message);
+                System.out.println(messages.size());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -104,7 +125,11 @@ public class Manager<T extends NetworkMessage> implements Runnable {
             while(!inactive) {
                 try {
                     T m = messages.take();
-                    map.get(m.getMessageType()).sendMessage(m, dos);
+                    try {
+                        map.get(m.getMessageType()).sendMessage(m, dos);
+                    } catch(IOException e) {
+                        close();
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

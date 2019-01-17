@@ -20,6 +20,9 @@ public class ServerTickThread implements Runnable {
     public void run() {
         while(!m.inactive) {
             try {
+                synchronized (ServerGameLogic.tickToken) {
+                    ServerGameLogic.tickToken.wait();
+                }
                 tick();
                 Thread.sleep(100);
             } catch (InterruptedException e) {

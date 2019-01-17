@@ -61,6 +61,10 @@ public class MyDataOutputStream extends DataOutputStream {
         }
     }
 
+    /**
+     * @param event Write an Event over the OutputStream
+     * @throws IOException
+     */
     public void writeEvent(Event event) throws IOException {
         EventType eventType = event.getEventType();
 

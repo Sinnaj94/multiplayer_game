@@ -30,24 +30,15 @@ public class CommandMessageHandler implements NetworkMessageHandler<CommandMessa
     }
 
     @Override
-    public void sendMessage(CommandMessage commandMessage, MyDataOutputStream dos) {
-        try {
-            dos.writeByte(MessageType.COMMAND.getID());
-            dos.writeCommand(commandMessage.getCommand());
-        } catch (IOException e) {
-
-        }
+    public void sendMessage(CommandMessage commandMessage, MyDataOutputStream dos) throws IOException {
+        dos.writeByte(MessageType.COMMAND.getID());
+        dos.writeCommand(commandMessage.getCommand());
     }
 
     @Override
-    public CommandMessage getNetworkMessage(MyDataInputStream dis) {
-        try {
-            Command command = dis.readCommand();
-            return new CommandMessage(command);
-        } catch (IOException e) {
-
-        }
-        return null;
+    public CommandMessage getNetworkMessage(MyDataInputStream dis) throws IOException {
+        Command command = dis.readCommand();
+        return new CommandMessage(command);
     }
 
     @Override

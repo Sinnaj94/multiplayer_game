@@ -12,6 +12,7 @@ import com.helper.Vector2f;
 import com.sun.corba.se.impl.orbutil.graph.Graph;
 
 import java.awt.*;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Random;
 
@@ -56,7 +57,7 @@ public class AIPlayer extends Player {
         sensors = new Sensors(getBoundingBox());
         accessor = World.getInstance().getAccessor();
         aiState = AIState.FOLLOW;
-        setTilesetFactory(new PlayerTilesetFactory("res/tilesets/enemy_tiles.json"));
+        setTilesetFactory(new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/enemy_tiles.json")));
         setActive(true);
     }
 
@@ -142,24 +143,36 @@ public class AIPlayer extends Player {
 
     // Stop the player
     private void stop() {
-        accessor.addEvent(new MoveEvent(getID(), true, false));
-        accessor.addEvent(new MoveEvent(getID(), false, false));
+        if(isMoveLeft()) {
+            accessor.addEvent(new MoveEvent(getID(), true, false));
+        }
+        if(isMoveRight()) {
+            accessor.addEvent(new MoveEvent(getID(), false, false));
+        }
     }
 
     private void smartFollowLeft() {
         if(sensors.is(Sensors.SensorPosition.WALLLEFT, accessor.getLevel()) || !sensors.is(Sensors.SensorPosition.ABYSSLEFT, accessor.getLevel())) {
             aiJump();
         }
-        accessor.addEvent(new MoveEvent(getID(), false, false));
-        accessor.addEvent(new MoveEvent(getID(), true, true));
+        if(isMoveRight()) {
+            accessor.addEvent(new MoveEvent(getID(), false, false));
+        }
+        if(!isMoveLeft()) {
+            accessor.addEvent(new MoveEvent(getID(), true, true));
+        }
     }
 
     private void smartFollowRight() {
         if(sensors.is(Sensors.SensorPosition.WALLRIGHT, accessor.getLevel()) || !sensors.is(Sensors.SensorPosition.ABYSSRIGHT, accessor.getLevel())) {
             aiJump();
         }
-        accessor.addEvent(new MoveEvent(getID(), true, false));
-        accessor.addEvent(new MoveEvent(getID(), false, true));
+        if(isMoveLeft()) {
+            accessor.addEvent(new MoveEvent(getID(), true, false));
+        }
+        if(!isMoveRight()) {
+            accessor.addEvent(new MoveEvent(getID(), false, true));
+        }
     }
 
     private void aiJump() {

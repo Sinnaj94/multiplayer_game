@@ -8,6 +8,7 @@ import com.game.tiles.OldTilesetFactory;
 import com.helper.BoundingBox;
 
 import java.awt.*;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,11 +18,12 @@ public class Level implements Renderable, Collideable {
     private OldTilesetFactory t;
     private Map<Integer, Chunk> chunkMap;
     private Object intersectsObject;
-    public Level(String levelPath, String tilesetImageSrc) {
+    public Level(String tilesetPath) {
         // TODO: Get Level from String
-        t = new OldTilesetFactory(tilesetImageSrc);
+        t = new OldTilesetFactory(getClass().getClassLoader().getResourceAsStream(tilesetPath));
+
         chunkMap = new HashMap<>();
-        chunkMap.put(0, new Chunk(0));
+        chunkMap.put(0, new Chunk(0, t));
         this.levelPath = levelPath;
         build();
     }
@@ -65,18 +67,18 @@ public class Level implements Renderable, Collideable {
         int left = roundedX -1;
         int right = roundedX + 1;
         if (!chunkMap.containsKey(right)) {
-            Chunk c = new Chunk(right);
+            Chunk c = new Chunk(right, t);
             c.build();
             chunkMap.put(right, c);
         }
         if (!chunkMap.containsKey(left)) {
-            Chunk c = new Chunk(left);
+            Chunk c = new Chunk(left, t);
             c.build();
             chunkMap.put(left, c);
             //System.out.println(chunkMap.get(left) == chunkMap.get(roundedX));
         }
         if (!chunkMap.containsKey(roundedX)) {
-            Chunk c = new Chunk(roundedX);
+            Chunk c = new Chunk(roundedX, t);
             c.build();
             chunkMap.put(roundedX, c);
         }

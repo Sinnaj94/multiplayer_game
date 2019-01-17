@@ -7,6 +7,7 @@ import com.helper.Vector2f;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -40,6 +41,15 @@ public class Player extends PhysicsObject {
     private Inventory inventory;
     private float movingSpeed;
     private boolean moveLeft;
+
+    public boolean isMoveLeft() {
+        return moveLeft;
+    }
+
+    public boolean isMoveRight() {
+        return moveRight;
+    }
+
     private boolean moveRight;
     private String username;
     private int life;
@@ -122,7 +132,7 @@ public class Player extends PhysicsObject {
         inventory = new Inventory();
         jumpAcceleration = -5f;
         life = 5;
-        tilesetFactory = new PlayerTilesetFactory("res/tilesets/person_tiles.json");
+        tilesetFactory = new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/person_tiles.json"));
         aiPlayer = false;
         walkingSpeed = 3f;
         shoot = false;

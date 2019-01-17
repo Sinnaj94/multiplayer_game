@@ -16,19 +16,17 @@ public class Client {
 
     public Client(String ip, int port, String name) throws IOException {
         socket = new Socket();
-        socket.connect(new InetSocketAddress(ip, port), 1000);
-        DataOutputStream d = new DataOutputStream(socket.getOutputStream());
-        d.writeUTF(name);
-        running = true;
 
+        socket.connect(new InetSocketAddress(ip, port), 1000);
         manager = new Manager(socket.getInputStream(), socket.getOutputStream());
         manager.register(MessageType.CONFIG, new ConfigMessageHandler());
         manager.register(MessageType.EVENT, new EventMessageHandler());
         //manager.register(MessageType.MOVE, new MoveMessageHandler());
         manager.register(MessageType.COMMAND, new CommandMessageHandler());
         // Thread for the Manager start
-        Thread ta = new Thread(manager);
-        ta.start();
+        new Thread(manager).start();
+        manager.writeUsername(name);
+        running = true;
     }
 
     public void sendCommand(Command c) {

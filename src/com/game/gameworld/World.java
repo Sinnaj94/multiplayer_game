@@ -6,10 +6,13 @@ import com.game.event.gameobject.AddGameObjectEvent;
 import com.game.event.gameobject.GameObjectEvent;
 import com.game.event.gameobject.RemoveGameObjectEvent;
 import com.game.event.player.GiveItemEvent;
+import com.game.factories.GameObjectFactory;
 import com.game.generics.Collideable;
 import com.game.generics.Renderable;
 import com.game.generics.Updateable;
+import com.helper.Vector2f;
 
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -34,7 +37,7 @@ public class World implements Updateable {
 
     private List<Integer> removedObjects;
     public final boolean DEBUG_DRAW = false;
-    public static final int TILE_SIZE = 64;
+    public static final int TILE_SIZE = 32;
     public static final int CHUNK_TILES = 8;
     public static final int CHUNK_SIZE = TILE_SIZE * CHUNK_TILES;
     public static int DEATHZONE = TILE_SIZE * CHUNK_TILES + TILE_SIZE;
@@ -101,7 +104,7 @@ public class World implements Updateable {
         // TODO: DELETE
         removedObjects = new ArrayList<>();
         time = new Time();
-        level = new Level("test.png", "res/tilesets/forest_tiles.json");
+        level = new Level("tilesets/forest_tiles.json");
     }
 
     /**
@@ -153,7 +156,6 @@ public class World implements Updateable {
      * @param id GameObject ID
      */
     public void removeObject(int id) {
-        System.out.println("REMOVE ATTEMPT " + id);
         removedObjects.add(id);
     }
 
@@ -182,7 +184,6 @@ public class World implements Updateable {
     private void removeObjects() {
         if (removedObjects.isEmpty()) return;
         for (Integer i : removedObjects) {
-            System.out.println("Removing Object with ID " + i);
             objects.remove(i);
             playerMap.remove(i);
             aiPlayerMap.remove(i);
@@ -261,7 +262,7 @@ public class World implements Updateable {
      * Class for accessing data
      */
     public class Accessor {
-        private BlockingQueue<Event> synchronizedEvents;
+        private Queue<Event> synchronizedEvents;
 
         public void addEvent(Event e) {
             synchronizedEvents.add(e);
@@ -272,12 +273,12 @@ public class World implements Updateable {
             gameObjectEvents.add(e);
         }
 
-        public BlockingQueue<Event> getSynchronizedEvents() {
+        public Queue<Event> getSynchronizedEvents() {
             return synchronizedEvents;
         }
 
         public Accessor() {
-            synchronizedEvents = new ArrayBlockingQueue<Event>(100000);
+            synchronizedEvents = new ArrayDeque<>();
         }
         public GameObject get(int id) {
             return getObject(id);
@@ -301,6 +302,12 @@ public class World implements Updateable {
         public GameObject add(GameObject g) {
             addEvent(new AddGameObjectEvent(g));
             return g;
+        }
+
+        public void addMultiple(GameObjectFactory factory, Vector2f position, int amount) {
+            for(int i = 0; i < amount; i++) {
+                addEvent(new AddGameObjectEvent(factory.spawn(position)));
+            }
         }
 
         public int remove(int id) {
@@ -338,7 +345,15 @@ public class World implements Updateable {
             return renderables;
         }
 
-
+        public void removePlayerByName(String name) {
+            // Search for the Player via Name
+            for(Player p:getPlayers()) {
+                if(p.getUsername().equals(name)) {
+                    System.out.println("Removing Player with ID " + p.getID());
+                    addEvent(new RemoveGameObjectEvent(p.getID()));
+                }
+            }
+        }
 
         public Map<Player, Item> getPlayerItemCollisions() {
             Map<Player, Item> _return = new HashMap<>();

@@ -10,6 +10,7 @@ import com.helper.SimplexNoise;
 import com.helper.Vector2f;
 
 import java.awt.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -19,6 +20,7 @@ public class Chunk implements Collideable, Renderable {
     private Tile[][] tilesArray;
     Random r;
     private List<BoundingBox> collisionGroup;
+    private OldTilesetFactory t;
 
     public int getId() {
         return id;
@@ -26,15 +28,15 @@ public class Chunk implements Collideable, Renderable {
 
     private int id;
 
-    public Chunk(int id) {
+    public Chunk(int id, OldTilesetFactory t) {
         this.id = id;
+        this.t = t;
         tiles = new ArrayList<>();
         tilesArray = new Tile[World.CHUNK_TILES][World.CHUNK_TILES];
         r = new Random(id);
     }
 
     public void build() {
-        OldTilesetFactory t = new OldTilesetFactory("res/tilesets/forest_tiles.json");
         int size = World.TILE_SIZE;
         SimplexNoise s = new SimplexNoise(0);
         for (int x = 0; x < World.CHUNK_TILES; x++) {

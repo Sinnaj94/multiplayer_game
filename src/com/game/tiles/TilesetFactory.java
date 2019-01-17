@@ -7,9 +7,10 @@ import org.json.simple.parser.ParseException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 
 public class TilesetFactory {
@@ -30,14 +31,14 @@ public class TilesetFactory {
      * OldTilesetFactory constructor. Returns several Images from a given JSON-Sourcefile
      *
      */
-    public TilesetFactory(String jsonSource) {
+    public TilesetFactory(InputStream jsonSource) {
         try {
             // Storing them in a HashMap
             animationMap = new HashMap<>();
             JSONParser jsonParser = new JSONParser();
 
-            JSONObject obj = (JSONObject)jsonParser.parse(new FileReader(jsonSource));
-            image = ImageIO.read(new File((String) obj.get("src")));
+            JSONObject obj = (JSONObject)jsonParser.parse(new InputStreamReader(jsonSource));
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream((String) obj.get("src")));
             int playerSize = (int)(long)obj.get("object_size");
             JSONObject animations = (JSONObject)obj.get("animations");
             Iterator iterator = animations.keySet().iterator();
@@ -58,6 +59,7 @@ public class TilesetFactory {
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
+            System.exit(-1);
         }
     }
 

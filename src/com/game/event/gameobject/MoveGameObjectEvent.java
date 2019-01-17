@@ -30,7 +30,7 @@ public class MoveGameObjectEvent extends GameObjectEvent {
         try {
             w.getAccessor().get(getID()).setPosition(getPosition());
         } catch (NullPointerException e) {
-            System.out.println("Object doesnt exist yet.");
+            System.out.println(String.format("Object %d doesnt exist yet.", getID()));
         }
     }
 

@@ -16,19 +16,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 
 
 public class ServerGameLogic implements Runnable {
     List<Command> requestedCommands;
-    private Object token;
+    public static final Object tickToken = new Object();
     public static int UPDATESPERSECOND = 60;
     private static ServerGameLogic instance;
     private World world;
     private Server server;
     private final int UPDATE_RATE = 10;
     private final int CLIENT_UPDATE_RATE = 40;
-    private long updateCount;
     private long lastTime;
     private Renderer renderer;
     public volatile boolean exit = false;
@@ -38,7 +38,6 @@ public class ServerGameLogic implements Runnable {
         server = new Server(port);
         new Thread(server).start();
         world = World.getInstance();
-        updateCount = 0;
         requestedCommands = new ArrayList<>();
         accessor = world.getAccessor();
     }
@@ -65,15 +64,11 @@ public class ServerGameLogic implements Runnable {
     }
 
     private void syncEventsToManagers() {
-        BlockingQueue<Event> queue = accessor.getSynchronizedEvents();
+        Queue<Event> queue = accessor.getSynchronizedEvents();
         while(!queue.isEmpty()) {
-            try {
-                Event event = queue.take();
-                for(Manager m:server.getManagers().values()) {
-                    m.send(new EventMessage(event));
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            Event event = queue.poll();
+            for(Manager m:server.getManagers().values()) {
+                m.send(new EventMessage(event));
             }
         }
     }
@@ -91,7 +86,6 @@ public class ServerGameLogic implements Runnable {
      * This is where the Server-Site-Calculations happen.
      */
     private void update() {
-        world.update();
         // Collisions
         for(Map.Entry<Player, Item> entry : accessor.getPlayerItemCollisions().entrySet()) {
             //entry.getValue().give(entry.getKey());
@@ -120,7 +114,10 @@ public class ServerGameLogic implements Runnable {
                 accessor.remove(b.getID());
             }
         }
-        updateCount++;
+        world.update();
+        synchronized (tickToken) {
+            tickToken.notifyAll();
+        }
     }
 
     public static void main(String[] args) {

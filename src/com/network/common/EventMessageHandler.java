@@ -11,6 +11,7 @@ import com.network.stream.MyDataInputStream;
 import com.network.stream.MyDataOutputStream;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,26 +23,15 @@ public class EventMessageHandler implements NetworkMessageHandler<EventMessage> 
     }
 
     @Override
-    public void sendMessage(EventMessage eventMessage, MyDataOutputStream dos) {
-        try {
-            dos.writeByte(MessageType.EVENT.getID());
-            dos.writeEvent(eventMessage.getEvent());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // TODO
+    public void sendMessage(EventMessage eventMessage, MyDataOutputStream dos) throws IOException {
+        dos.writeByte(MessageType.EVENT.getID());
+        dos.writeEvent(eventMessage.getEvent());
     }
 
     @Override
-    public EventMessage getNetworkMessage(MyDataInputStream dis) {
-        try {
-            Event e = dis.readEvent();
-            return new EventMessage(e);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public EventMessage getNetworkMessage(MyDataInputStream dis) throws IOException {
+        Event e = dis.readEvent();
+        return new EventMessage(e);
     }
 
     @Override

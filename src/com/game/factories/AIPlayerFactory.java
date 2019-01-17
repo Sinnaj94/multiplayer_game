@@ -23,7 +23,7 @@ public class AIPlayerFactory extends PlayerFactory {
         AIPlayer ai = new AIPlayer("", position);
         ai.setWalkingSpeed(r.nextFloat() * 1 + 3);
         ai.setJumpAcceleration(-(r.nextFloat() * 1 + 4));
-        ai.setAiState(AIState.ATTACKJUMP);
+        ai.setAiState(AIState.FOLLOW);
         return ai;
     }
 }

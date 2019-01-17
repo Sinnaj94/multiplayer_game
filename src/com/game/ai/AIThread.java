@@ -16,7 +16,6 @@ public class AIThread {
     public AIThread(int id, World.Accessor accessor) {
         // Assign the Current id
         this.id = id;
-        System.out.println(accessor.get(id));
         new Thread(() -> {
             try {
                 while(running) {

@@ -109,15 +109,23 @@ public class AdminPanel extends JPanel {
                 try {
                     float x = Float.parseFloat(xField.getText());
                     float y = Float.parseFloat(yField.getText());
-                    float n = Integer.parseInt(number.getText());
+                    int n = Integer.parseInt(number.getText());
                     //accessor.add((ComboItem)selection.getSelectedItem().);
-                    for(int i = 0; i < n; i++ ) {
-                        GameObject g = ((ComboItem)selection.getSelectedItem()).value.spawn(new Vector2f(x * World.TILE_SIZE, y * World.TILE_SIZE));
-                        accessor.add(g);
-                        if(g instanceof AIPlayer) {
-                            new AIThread(g.getID(), accessor);
+                    new Thread(() -> {
+                        for(int i = 0; i < n; i++ ) {
+                            GameObject g = ((ComboItem)selection.getSelectedItem()).value.spawn(new Vector2f(x * World.TILE_SIZE, y * World.TILE_SIZE));
+                            accessor.add(g);
+                            if(g instanceof AIPlayer) {
+                                new AIThread(g.getID(), accessor);
+                            }
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
                         }
-                    }
+                    }).start();
+
 
 
                     buildComboBox();

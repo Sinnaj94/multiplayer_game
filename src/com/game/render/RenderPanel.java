@@ -23,6 +23,7 @@ public class RenderPanel extends JPanel implements Runnable {
     private Camera camera;
     private float zoom;
     public volatile boolean running = true;
+    private UI ui;
 
     public RenderPanel() {
         super();
@@ -33,6 +34,7 @@ public class RenderPanel extends JPanel implements Runnable {
         setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
         setMaximumSize(new Dimension(SIZE.getX(), SIZE.getY()));
         setSize(new Dimension(SIZE.getX(), SIZE.getY()));
+        ui = new UI();
     }
 
     public void zoom(float delta) {
@@ -45,9 +47,6 @@ public class RenderPanel extends JPanel implements Runnable {
         GameObject o = accessor.getTarget();
         if(o!=null) {
             camera.observe(World.getInstance().getTarget());
-            if(o instanceof Player) {
-                UI.paint(g, (Player)o);
-            }
         }
         sky.paint(g);
         Graphics2D g2 = (Graphics2D) g.create();
@@ -73,7 +72,7 @@ public class RenderPanel extends JPanel implements Runnable {
             o.paint(g2);
         }
         if(o instanceof Player) {
-            UI.paint(g, (Player)o);
+            ui.paint(g, (Player)o);
         }
     }
 

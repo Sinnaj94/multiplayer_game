@@ -1,5 +1,5 @@
 {
-  "src": "res/tilesets/forest_tiles.png",
+  "src": "tilesets/forest_tiles.png",
   "tilesize": 16,
   "floor":
   [

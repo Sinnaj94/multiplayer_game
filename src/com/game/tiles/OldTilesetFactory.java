@@ -8,10 +8,12 @@ import org.json.simple.parser.ParseException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class OldTilesetFactory {
     // Floor tiles
@@ -27,16 +29,18 @@ public class OldTilesetFactory {
      *
      * @param path
      */
-    public OldTilesetFactory(String path) {
+    public OldTilesetFactory(InputStream s) {
         // Getting a JSON Parser
         JSONParser jsonParser = new JSONParser();
         try {
             // Parse the file
-            Object obj = jsonParser.parse(new FileReader(path));
+
+            Object obj = jsonParser.parse(new InputStreamReader(s));
             jobj = (JSONObject) obj;
             r = new Random();
             // Read the OldTilesetFactory Image
-            image = ImageIO.read(new File((String) jobj.get("src")));
+
+            image = ImageIO.read(getClass().getClassLoader().getResourceAsStream((String) jobj.get("src")));
 
             // Set tilesize
             tileSize = (int) (long) jobj.get("tilesize");

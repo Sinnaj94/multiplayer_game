@@ -13,29 +13,20 @@ public class ConfigMessageHandler implements NetworkMessageHandler<ConfigMessage
     }
 
     @Override
-    public void sendMessage(ConfigMessage networkMessage, MyDataOutputStream dos) {
-        try {
-            dos.writeByte(MessageType.CONFIG.getID());
-            dos.writeBoolean(networkMessage.isSuccessfulConnect());
-            dos.writeInt(networkMessage.getPlayerID());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void sendMessage(ConfigMessage networkMessage, MyDataOutputStream dos) throws IOException {
+        dos.writeByte(MessageType.CONFIG.getID());
+        dos.writeBoolean(networkMessage.isSuccessfulConnect());
+        dos.writeInt(networkMessage.getPlayerID());
     }
 
     @Override
-    public ConfigMessage getNetworkMessage(MyDataInputStream dis) {
-        try {
-            boolean successfulConnect = dis.readBoolean();
-            int playerID = dis.readInt();
-            if(!successfulConnect) {
-                return new ConfigMessage();
-            }
-            return new ConfigMessage(playerID);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public ConfigMessage getNetworkMessage(MyDataInputStream dis) throws IOException {
+        boolean successfulConnect = dis.readBoolean();
+        int playerID = dis.readInt();
+        if(!successfulConnect) {
+            return new ConfigMessage();
         }
-        return null;
+        return new ConfigMessage(playerID);
     }
 
     @Override

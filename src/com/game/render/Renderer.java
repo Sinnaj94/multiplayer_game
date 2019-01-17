@@ -25,6 +25,7 @@ public class Renderer extends JFrame {
         this.pack();
         this.setResizable(false);
         this.setVisible(true);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     public void addComponent(JComponent component) {

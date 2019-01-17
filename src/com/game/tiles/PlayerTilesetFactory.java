@@ -4,6 +4,9 @@ import com.game.gameworld.PlayerState;
 import com.game.generics.Updateable;
 
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 
 public class PlayerTilesetFactory extends TilesetFactory implements Updateable {
     private double currentStep;
@@ -13,7 +16,7 @@ public class PlayerTilesetFactory extends TilesetFactory implements Updateable {
      * OldTilesetFactory constructor. Returns several Images from a given JSON-Sourcefile
      *
      */
-    public PlayerTilesetFactory(String resource) {
+    public PlayerTilesetFactory(InputStream resource) {
         super(resource);
         animationStep = 10;
     }
