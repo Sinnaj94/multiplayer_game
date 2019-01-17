@@ -8,13 +8,17 @@ import java.awt.*;
 public class Sky implements Renderable {
     private ColorRect[] test;
     private int steps;
+    private Vector2i size;
+    private float brightness;
     public Sky(Vector2i size) {
-        steps = 20;
+        steps = 30;
         build(steps, size);
     }
 
     private void build(int steps, Vector2i size) {
         test = new ColorRect[steps];
+        this.size = size;
+        this.steps = steps;
         for(int i = 0; i < steps; i++) {
             float percentage = (float)i / steps;
             int y = (int)Math.floor(percentage * (float)size.getY());
@@ -23,8 +27,16 @@ public class Sky implements Renderable {
         }
     }
 
+    public void setBrightness(float brightness) {
+        if(brightness != this.brightness) {
+            System.out.println(brightness);
+            this.brightness = brightness;
+            build(steps, size);
+        }
+    }
+
     private Color getColor(float percentage) {
-        int val = (int)Math.ceil(155 * (1-percentage) + 100);
+        int val = (int)Math.ceil(155 * (1-percentage) + (brightness * 100));
         return new Color(val/2,val,val);
     }
 

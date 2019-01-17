@@ -81,7 +81,6 @@ public class Manager<T extends NetworkMessage> implements Runnable {
                 byte b = dis.readByte();
 
                 MessageType current = MessageType.getMessageTypeByByte(b);
-                System.out.println(current);
                 NetworkMessageHandler n = map.get(current);
                 n.handle(n.getNetworkMessage(dis));
             } catch (IOException e) {
@@ -114,7 +113,6 @@ public class Manager<T extends NetworkMessage> implements Runnable {
         public void addMessage(T message) {
             try {
                 messages.put(message);
-                System.out.println(messages.size());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -45,7 +45,6 @@ public class Item extends PhysicsObject implements Collectable {
 
 
     public void assign(Player p) {
-        System.out.println("Assigned");
         given = true;
         playerID = p.getID();
     }

@@ -75,7 +75,6 @@ public class Level implements Renderable, Collideable {
             Chunk c = new Chunk(left, t);
             c.build();
             chunkMap.put(left, c);
-            //System.out.println(chunkMap.get(left) == chunkMap.get(roundedX));
         }
         if (!chunkMap.containsKey(roundedX)) {
             Chunk c = new Chunk(roundedX, t);

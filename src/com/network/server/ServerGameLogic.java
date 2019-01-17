@@ -44,7 +44,6 @@ public class ServerGameLogic implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Running thread");
         while (!exit) {
             synchronized (World.getInstance()) {
                 if (System.currentTimeMillis() - lastTime > UPDATE_RATE) {
@@ -87,6 +86,7 @@ public class ServerGameLogic implements Runnable {
      */
     private void update() {
         // Collisions
+        world.update();
         for(Map.Entry<Player, Item> entry : accessor.getPlayerItemCollisions().entrySet()) {
             //entry.getValue().give(entry.getKey());
             if(entry.getValue().canTake(entry.getKey())) {
@@ -94,7 +94,7 @@ public class ServerGameLogic implements Runnable {
             }
         }
         for(Player player: accessor.getAllPlayers()) {
-            if(player.isDead() || player.getPosition().getY() > World.DEATHZONE) {
+            if((player.isDead() || player.getPosition().getY() > World.DEATHZONE) && !player.isResetRequested()) {
                 accessor.addEvent(new KillPlayerEvent(player.getID()));
             }
             if(player.isShoot()) {
@@ -114,7 +114,6 @@ public class ServerGameLogic implements Runnable {
                 accessor.remove(b.getID());
             }
         }
-        world.update();
         synchronized (tickToken) {
             tickToken.notifyAll();
         }

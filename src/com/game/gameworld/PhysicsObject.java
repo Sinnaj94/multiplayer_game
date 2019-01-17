@@ -12,7 +12,12 @@ import java.util.Map;
 
 public abstract class PhysicsObject extends GameObject {
     private float friction;
-    private final float GRAVITY = 0.089f;
+
+    public void setGRAVITY(float GRAVITY) {
+        this.GRAVITY = GRAVITY;
+    }
+
+    private float GRAVITY;
     private World w;
     private World.Accessor accessor;
 
@@ -86,6 +91,7 @@ public abstract class PhysicsObject extends GameObject {
 
     private void buildAttributes() {
         advancedBoundingBox = new AdvancedBoundingBox(getBoundingBox());
+        GRAVITY = World.GRAVITY;
         maxRunningSpeed = 2f;
         acceleration = .01f;
         currentSpeed = new Vector2f(0f, 0f);

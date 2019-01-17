@@ -2,19 +2,16 @@ package com.game.gameworld;
 
 import com.game.ai.AIState;
 import com.game.ai.Sensors;
+import com.game.event.gameobject.RemoveGameObjectEvent;
 import com.game.event.player.JumpEvent;
 import com.game.event.player.MoveEvent;
 import com.game.event.player.ShootEvent;
-import com.game.factories.PlayerFactory;
-import com.game.tiles.PlayerTilesetFactory;
+import com.game.tiles.ResourceSingleton;
 import com.helper.BoundingBox;
 import com.helper.Vector2f;
-import com.sun.corba.se.impl.orbutil.graph.Graph;
 
 import java.awt.*;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Random;
 
 /**
  * AI Player class - the Artificial intelligence
@@ -43,6 +40,25 @@ public class AIPlayer extends Player {
         buildAttributes();
     }
 
+    /*@Override
+    public void reset() {
+        if(isDead()) {
+            setTilesetFactory(ResourceSingleton.getInstance().getDead());
+            setCurrentSpeed(new Vector2f(0f, 0f));
+            accelerate(new Vector2f(0f, -1f));
+            setGRAVITY(0f);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Delete");
+                World.getInstance().getAccessor().addLocalEvent(new RemoveGameObjectEvent(getID()));
+            }).start();
+        }
+    }*/
+
     public AIPlayer(String username, Vector2f position) {
         super(username, position);
         buildAttributes();
@@ -57,7 +73,7 @@ public class AIPlayer extends Player {
         sensors = new Sensors(getBoundingBox());
         accessor = World.getInstance().getAccessor();
         aiState = AIState.FOLLOW;
-        setTilesetFactory(new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/enemy_tiles.json")));
+        setTilesetFactory(ResourceSingleton.getInstance().getEnemies());
         setActive(true);
     }
 
@@ -95,21 +111,24 @@ public class AIPlayer extends Player {
     }
 
     public void think() {
-        switch(aiState) {
-            case FOLLOW:
-                follow();
-                break;
-            case ATTACK:
-                attack();
-                break;
-            case JUMP:
-                aiJump();
-                break;
-            case ATTACKJUMP:
-                follow();
-                attack();
-                break;
+        if(!isDead()) {
+            switch(aiState) {
+                case FOLLOW:
+                    follow();
+                    break;
+                case ATTACK:
+                    attack();
+                    break;
+                case JUMP:
+                    aiJump();
+                    break;
+                case ATTACKJUMP:
+                    follow();
+                    attack();
+                    break;
+            }
         }
+
     }
 
     private void follow() {

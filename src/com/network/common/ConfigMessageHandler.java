@@ -31,7 +31,6 @@ public class ConfigMessageHandler implements NetworkMessageHandler<ConfigMessage
 
     @Override
     public void handle(ConfigMessage networkMessage) {
-        System.out.println(networkMessage);
         if(!networkMessage.isSuccessfulConnect()) {
             System.exit(-1);
         } else {

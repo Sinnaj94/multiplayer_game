@@ -7,7 +7,7 @@ public class Time {
 
     public Time() {
         hours = 12;
-        minutes = 00;
+        minutes = 0;
     }
 
     public void tick() {
@@ -26,5 +26,9 @@ public class Time {
     @Override
     public String toString() {
         return String.format("It is %d:%d", hours, minutes);
+    }
+
+    public float decimal() {
+        return (float)hours / 24;
     }
 }

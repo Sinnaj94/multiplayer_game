@@ -3,6 +3,8 @@ package com.game.factories;
 import com.game.ai.AIState;
 import com.game.gameworld.AIPlayer;
 import com.game.gameworld.Player;
+import com.game.tiles.PlayerTilesetFactory;
+import com.game.tiles.TilesetFactory;
 import com.helper.Vector2f;
 
 import java.util.Random;
@@ -21,9 +23,9 @@ public class AIPlayerFactory extends PlayerFactory {
     @Override
     public AIPlayer spawn(Vector2f position) {
         AIPlayer ai = new AIPlayer("", position);
-        ai.setWalkingSpeed(r.nextFloat() * 1 + 3);
-        ai.setJumpAcceleration(-(r.nextFloat() * 1 + 4));
-        ai.setAiState(AIState.FOLLOW);
+        ai.setWalkingSpeed(r.nextFloat() * 1 + 2);
+        ai.setJumpAcceleration(-(r.nextFloat() * 1 + 1));
+        ai.setAiState(AIState.IDLE);
         return ai;
     }
 }

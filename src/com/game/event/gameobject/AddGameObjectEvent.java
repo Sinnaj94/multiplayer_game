@@ -21,7 +21,6 @@ public class AddGameObjectEvent extends GameObjectEvent {
      */
     public AddGameObjectEvent(GameObject gameObject) {
         super(gameObject.getID());
-        System.out.println("I am sending " + gameObject.getID());
         this.gameObject = gameObject;
     }
 

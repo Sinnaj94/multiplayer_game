@@ -44,6 +44,7 @@ public class AdminPanel extends JPanel {
         private JButton remove;
         private JButton watch;
         private JButton hit;
+        private JButton kill;
         public WorldPanel() {
             super();
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

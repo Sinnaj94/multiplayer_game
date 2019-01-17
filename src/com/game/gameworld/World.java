@@ -10,6 +10,7 @@ import com.game.factories.GameObjectFactory;
 import com.game.generics.Collideable;
 import com.game.generics.Renderable;
 import com.game.generics.Updateable;
+import com.game.tiles.ResourceSingleton;
 import com.helper.Vector2f;
 
 import java.net.URISyntaxException;
@@ -31,8 +32,8 @@ public class World implements Updateable {
     private Map<AIPlayer, Item> aiPlayerItemCollisions;
     private Map<Bullet, Player> bulletPlayerCollisions;
     private int targetID;
-
     private BlockingQueue<Event> gameObjectEvents;
+    public static final float GRAVITY = .089f;
 
 
     private List<Integer> removedObjects;
@@ -113,7 +114,6 @@ public class World implements Updateable {
      * @return The added Gameobject, so it will work further
      */
     public GameObject addObject(GameObject g) {
-        System.out.println(String.format("Added %s with ID %d", g.getClass().getName(), g.getID()));
         objects.put(g.getID(), g);
         if (g instanceof Player) {
             if(g instanceof AIPlayer) {
@@ -197,10 +197,13 @@ public class World implements Updateable {
     private void executeEvents() {
         // Execute all gameObjectEvents and then delete
         if (gameObjectEvents.isEmpty()) return;
-        for (Event e : gameObjectEvents) {
-            e.execute(this);
+        while(!gameObjectEvents.isEmpty()) {
+            try {
+                gameObjectEvents.take().execute(this);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        gameObjectEvents.clear();
     }
 
     @Override
@@ -250,12 +253,11 @@ public class World implements Updateable {
                 accessor.addEvent(new RemoveGameObjectEvent(item.getID()));
             }
         }
+        time.tick();
 
-        currentTime = System.currentTimeMillis() - lastTime;
-        if (currentTime >= timeStep) {
-            time.tick();
-            lastTime = System.currentTimeMillis();
-        }
+
+        // Update the frames
+        ResourceSingleton.getInstance().update();
     }
 
     /**
@@ -271,6 +273,10 @@ public class World implements Updateable {
 
         public void addLocalEvent(Event e) {
             gameObjectEvents.add(e);
+        }
+
+        public void removeLocal(int id) {
+            objects.remove(id);
         }
 
         public Queue<Event> getSynchronizedEvents() {
@@ -349,10 +355,13 @@ public class World implements Updateable {
             // Search for the Player via Name
             for(Player p:getPlayers()) {
                 if(p.getUsername().equals(name)) {
-                    System.out.println("Removing Player with ID " + p.getID());
                     addEvent(new RemoveGameObjectEvent(p.getID()));
                 }
             }
+        }
+
+        public float getDecimalTime() {
+            return time.decimal();
         }
 
         public Map<Player, Item> getPlayerItemCollisions() {

@@ -30,7 +30,7 @@ public class AIThread {
                         if(tries > 4) {
                             running = false;
                         } else {
-                            System.out.println("AI is not getting the object. Trying again.");
+
                         }
                     }
                 }

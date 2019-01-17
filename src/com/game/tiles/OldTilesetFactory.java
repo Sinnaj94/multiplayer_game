@@ -52,7 +52,7 @@ public class OldTilesetFactory {
             for (int i = 0; i < floor.size(); i++) {
                 JSONObject current = (JSONObject) floor.get(i);
                 Vector2i position = new Vector2i((int) (long) current.get("x"), (int) (long) current.get("y"));
-                Vector2i size = new Vector2i((int) (long) current.get("width"), (int) (long) current.get("height"));
+                Vector2i size = new Vector2i(tileSize, tileSize);
                 floorTiles[i] = new FloorTile(image, position, size);
             }
 

@@ -13,7 +13,6 @@ import java.util.Iterator;
 
 public class RenderPanel extends JPanel implements Runnable {
     private World.Accessor accessor;
-    private Sky sky;
     final Vector2i SIZE = new Vector2i(500, 500);
 
     public Camera getCamera() {
@@ -28,7 +27,6 @@ public class RenderPanel extends JPanel implements Runnable {
     public RenderPanel() {
         super();
         accessor = World.getInstance().getAccessor();
-        sky = new Sky(SIZE);
         zoom = 1;
         camera = new Camera(SIZE);
         setPreferredSize(new Dimension(SIZE.getX(), SIZE.getY()));
@@ -48,12 +46,13 @@ public class RenderPanel extends JPanel implements Runnable {
         if(o!=null) {
             camera.observe(World.getInstance().getTarget());
         }
-        sky.paint(g);
         Graphics2D g2 = (Graphics2D) g.create();
         g2.translate(-camera.getPosition().getX(), -camera.getPosition().getY());
         if(zoom!=1) {
             g2.scale(zoom, zoom);
         }
+        g.setColor(new Color(0xf87ceeb));
+        g.fillRect(0,0, SIZE.getX(), SIZE.getY());
         accessor.getLevel().paint(g2);
         // After that render the GameObjects.
         Iterator<Renderable> i = accessor.getRenderables().values().iterator();
