@@ -158,6 +158,8 @@ public class Player extends PhysicsObject {
         this.reloadSpeed = reloadSpeed;
     }
 
+    private int visibleDamage;
+
     private void buildAttributes(String username) {
         setUsername(username);
         r = new Random();
@@ -171,6 +173,8 @@ public class Player extends PhysicsObject {
         isDead = false;
         reloadSpeed = 10;
         isResetRequested = false;
+        visibleDamage = 0;
+
     }
 
     public void setUsername(String username) {
@@ -250,7 +254,15 @@ public class Player extends PhysicsObject {
         if (World.getInstance().DEBUG_DRAW) {
             super.paint(g);
         } else {
+            if(visibleDamage > 0) {
+                visibleDamage--;
+                currentTilesetFactory = ResourceSingleton.getInstance().getDamage();
+            } else if(visibleDamage == 0) {
+                currentTilesetFactory = tilesetFactory;
+                visibleDamage = -1;
+            }
             BufferedImage image = currentTilesetFactory.getAnimationFrame(getPlayerState(), isFacesLeft());
+
             g.drawImage(image, r.x -6, r.y -2 , r.width + 12, r.height + 5, null);
         }
         g.setColor(Color.black);
@@ -276,15 +288,7 @@ public class Player extends PhysicsObject {
             if(life == 0) {
                 isDead = true;
             } else {
-                new Thread(() -> {
-                    currentTilesetFactory = ResourceSingleton.getInstance().getDamage();
-                    try {
-                        Thread.sleep(20);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    currentTilesetFactory = tilesetFactory;
-                }).start();
+                visibleDamage = 4;
 
             }
         }
