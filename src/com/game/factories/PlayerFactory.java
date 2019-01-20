@@ -1,9 +1,6 @@
 package com.game.factories;
 
-import com.game.gameworld.AIPlayer;
-import com.game.gameworld.GameObject;
-import com.game.gameworld.Player;
-import com.game.tiles.PlayerTilesetFactory;
+import com.game.gameworld.players.Player;
 import com.helper.Vector2f;
 
 public class PlayerFactory extends GameObjectFactory {

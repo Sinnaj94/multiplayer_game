@@ -1,6 +1,6 @@
 package com.network.common;
 
-import com.game.gameworld.Player;
+import com.game.gameworld.players.Player;
 import com.game.event.player.Command;
 import com.game.gameworld.World;
 import com.network.stream.MyDataInputStream;

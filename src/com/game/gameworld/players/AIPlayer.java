@@ -1,12 +1,12 @@
-package com.game.gameworld;
+package com.game.gameworld.players;
 
 import com.game.ai.AIState;
 import com.game.ai.Sensors;
-import com.game.event.gameobject.RemoveGameObjectEvent;
 import com.game.event.player.JumpEvent;
 import com.game.event.player.MoveEvent;
 import com.game.event.player.ShootEvent;
-import com.game.tiles.ResourceSingleton;
+import com.game.gameworld.GameObjectType;
+import com.game.gameworld.World;
 import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
@@ -40,25 +40,6 @@ public class AIPlayer extends Player {
         buildAttributes();
     }
 
-    /*@Override
-    public void reset() {
-        if(isDead()) {
-            setTilesetFactory(ResourceSingleton.getInstance().getDead());
-            setCurrentSpeed(new Vector2f(0f, 0f));
-            accelerate(new Vector2f(0f, -1f));
-            setGRAVITY(0f);
-            new Thread(() -> {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Delete");
-                World.getInstance().getAccessor().addLocalEvent(new RemoveGameObjectEvent(getID()));
-            }).start();
-        }
-    }*/
-
     public AIPlayer(String username, Vector2f position) {
         super(username, position);
         buildAttributes();
@@ -69,11 +50,10 @@ public class AIPlayer extends Player {
         buildAttributes();
     }
 
-    private void buildAttributes() {
+    public void buildAttributes() {
         sensors = new Sensors(getBoundingBox());
         accessor = World.getInstance().getAccessor();
         aiState = AIState.FOLLOW;
-        setTilesetFactory(ResourceSingleton.getInstance().getEnemies());
         setActive(true);
     }
 

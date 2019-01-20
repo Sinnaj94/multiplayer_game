@@ -1,5 +1,6 @@
-package com.game.gameworld;
+package com.game.gameworld.players;
 
+import com.game.gameworld.*;
 import com.game.tiles.PlayerTilesetFactory;
 import com.game.tiles.ResourceSingleton;
 import com.helper.BoundingBox;
@@ -36,7 +37,7 @@ public class Player extends PhysicsObject {
 
     public void reset() {
         isResetRequested = true;
-        setTilesetFactory(ResourceSingleton.getInstance().getDead());
+        currentTilesetFactory = ResourceSingleton.getInstance().getDead();
         setCurrentSpeed(new Vector2f(0f, 0f));
         accelerate(new Vector2f(0f, -1f));
         setGRAVITY(0f);
@@ -53,7 +54,7 @@ public class Player extends PhysicsObject {
 
     private void respawn() {
         setGRAVITY(World.GRAVITY);
-        setTilesetFactory(ResourceSingleton.getInstance().getPlayers());
+        currentTilesetFactory = tilesetFactory;
         isDead = false;
         setPosition(0, -World.TILE_SIZE * 2);
         setCurrentSpeed(new Vector2f(0f, 0f));
@@ -79,6 +80,7 @@ public class Player extends PhysicsObject {
     private String username;
     private int life;
     private PlayerTilesetFactory tilesetFactory;
+    private PlayerTilesetFactory currentTilesetFactory;
     private boolean facesLeft;
     private Vector2f shootDirection;
     private boolean shoot;
@@ -99,7 +101,7 @@ public class Player extends PhysicsObject {
 
     public void shot() {
         this.shoot = false;
-        cooldownTime = 10;
+        cooldownTime = reloadSpeed;
     }
 
     public boolean canShoot() {
@@ -149,6 +151,11 @@ public class Player extends PhysicsObject {
 
     public void setTilesetFactory(PlayerTilesetFactory tilesetFactory) {
         this.tilesetFactory = tilesetFactory;
+        currentTilesetFactory = tilesetFactory;
+    }
+
+    public void setReloadSpeed(int reloadSpeed) {
+        this.reloadSpeed = reloadSpeed;
     }
 
     private void buildAttributes(String username) {
@@ -157,7 +164,7 @@ public class Player extends PhysicsObject {
         inventory = new Inventory();
         jumpAcceleration = -5f;
         life = 5;
-        tilesetFactory = ResourceSingleton.getInstance().getPlayers();
+        setTilesetFactory(ResourceSingleton.getInstance().getPlayers());
         aiPlayer = false;
         walkingSpeed = 3f;
         shoot = false;
@@ -243,7 +250,7 @@ public class Player extends PhysicsObject {
         if (World.getInstance().DEBUG_DRAW) {
             super.paint(g);
         } else {
-            BufferedImage image = tilesetFactory.getAnimationFrame(getPlayerState(), isFacesLeft());
+            BufferedImage image = currentTilesetFactory.getAnimationFrame(getPlayerState(), isFacesLeft());
             g.drawImage(image, r.x -6, r.y -2 , r.width + 12, r.height + 5, null);
         }
         g.setColor(Color.black);
@@ -268,6 +275,17 @@ public class Player extends PhysicsObject {
             life-=damage;
             if(life == 0) {
                 isDead = true;
+            } else {
+                new Thread(() -> {
+                    currentTilesetFactory = ResourceSingleton.getInstance().getDamage();
+                    try {
+                        Thread.sleep(20);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    currentTilesetFactory = tilesetFactory;
+                }).start();
+
             }
         }
     }

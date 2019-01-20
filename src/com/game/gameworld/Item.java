@@ -1,5 +1,6 @@
 package com.game.gameworld;
 
+import com.game.gameworld.players.Player;
 import com.game.generics.Collectable;
 import com.game.tiles.ResourceSingleton;
 import com.helper.BoundingBox;

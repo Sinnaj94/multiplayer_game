@@ -11,7 +11,6 @@ public class RemoveGameObjectEvent extends GameObjectEvent {
 
     @Override
     public void execute(World w) {
-        System.out.println("Removing " + w.getAccessor().get(getID()));
         w.removeObject(getID());
     }
 

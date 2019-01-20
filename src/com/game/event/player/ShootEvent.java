@@ -1,8 +1,8 @@
 package com.game.event.player;
 
 import com.game.event.EventType;
-import com.game.event.gameobject.AddGameObjectEvent;
 import com.game.gameworld.*;
+import com.game.gameworld.players.Player;
 import com.helper.Vector2f;
 
 /**

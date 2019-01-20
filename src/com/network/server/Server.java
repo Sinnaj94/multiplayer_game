@@ -1,9 +1,8 @@
 package com.network.server;
 
-import com.game.event.Event;
 import com.game.event.gameobject.AddGameObjectEvent;
-import com.game.event.gameobject.GameObjectEvent;
 import com.game.gameworld.*;
+import com.game.gameworld.players.Player;
 import com.game.render.Renderer;
 import com.network.common.*;
 

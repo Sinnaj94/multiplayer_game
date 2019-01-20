@@ -13,12 +13,24 @@ public class ResourceSingleton implements Updateable {
         return players;
     }
 
-    public PlayerTilesetFactory getEnemies() {
-        return enemies;
+    public PlayerTilesetFactory getZombies() {
+        return zombies;
     }
 
     private PlayerTilesetFactory players;
-    private PlayerTilesetFactory enemies;
+    private PlayerTilesetFactory zombies;
+
+    public BufferedImage getTitleBackground() {
+        return titleBackground;
+    }
+
+    private BufferedImage titleBackground;
+
+    public PlayerTilesetFactory getNinjas() {
+        return ninjas;
+    }
+
+    private PlayerTilesetFactory ninjas;
 
     public PlayerTilesetFactory getDamage() {
         return damage;
@@ -45,11 +57,13 @@ public class ResourceSingleton implements Updateable {
 
     public ResourceSingleton() {
         players = new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/person_tiles.json"));
-        enemies = new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/enemy_tiles.json"));
+        zombies = new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/zombie_tiles.json"));
         dead = new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/dead_tiles.json"));
         damage = new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/damage_tiles.json"));
+        ninjas = new PlayerTilesetFactory(getClass().getClassLoader().getResourceAsStream("tilesets/ninja_tiles.json"));
         try {
             heart = ImageIO.read(getClass().getClassLoader().getResourceAsStream("images/heart.png"));
+            titleBackground = ImageIO.read(getClass().getClassLoader().getResourceAsStream("images/titlebackground.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,8 +71,9 @@ public class ResourceSingleton implements Updateable {
 
     public void update() {
         players.update();
-        enemies.update();
+        zombies.update();
         dead.update();
         damage.update();
+        ninjas.update();
     }
 }

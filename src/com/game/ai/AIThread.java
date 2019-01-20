@@ -1,10 +1,7 @@
 package com.game.ai;
 
-import com.game.event.player.JumpEvent;
-import com.game.event.player.MoveEvent;
 import com.game.gameworld.*;
-
-import java.util.List;
+import com.game.gameworld.players.AIPlayer;
 
 /**
  * Thread for the AI

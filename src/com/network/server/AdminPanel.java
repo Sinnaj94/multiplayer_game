@@ -2,22 +2,14 @@ package com.network.server;
 
 import com.game.ai.AIThread;
 import com.game.event.player.HitPlayerEvent;
-import com.game.factories.AIPlayerFactory;
-import com.game.factories.GameObjectFactory;
-import com.game.factories.ItemFactory;
-import com.game.factories.PlayerFactory;
-import com.game.gameworld.AIPlayer;
+import com.game.factories.*;
+import com.game.gameworld.players.AIPlayer;
 import com.game.gameworld.GameObject;
-import com.game.gameworld.Player;
 import com.game.gameworld.World;
 import com.helper.Vector2f;
 
 import javax.swing.*;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class AdminPanel extends JPanel {
     private World.Accessor accessor;
@@ -57,6 +49,8 @@ public class AdminPanel extends JPanel {
             selection.addItem(new ComboItem("Item", new ItemFactory()));
             selection.addItem(new ComboItem("Player", new PlayerFactory()));
             selection.addItem(new ComboItem("AI", new AIPlayerFactory()));
+            selection.addItem(new ComboItem("Zombie", new ZombieFactory()));
+            selection.addItem(new ComboItem("Ninja", new NinjaFactory()));
 
             button = new JButton("Spawn");
             xField.setPreferredSize(new Dimension(40, 20));

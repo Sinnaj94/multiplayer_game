@@ -3,11 +3,11 @@ package com.network.stream;
 import com.game.event.Event;
 import com.game.event.EventType;
 import com.game.event.gameobject.AddGameObjectEvent;
-import com.game.event.gameobject.GameObjectEvent;
 import com.game.event.gameobject.MoveGameObjectEvent;
 import com.game.event.player.*;
 import com.game.gameworld.*;
-import com.game.event.player.Command.CommandType;
+import com.game.gameworld.players.AIPlayer;
+import com.game.gameworld.players.Player;
 import com.helper.BoundingBox;
 import com.helper.Vector2f;
 
@@ -95,10 +95,13 @@ public class MyDataOutputStream extends DataOutputStream {
                         writeFloat(p.getJumpAcceleration());
                         break;
                     case AIPLAYER:
-                        AIPlayer ai = (AIPlayer)g.getGameObject();
-                        writeUTF(ai.getUsername());
-                        writeFloat(ai.getWalkingSpeed());
-                        writeFloat(ai.getJumpAcceleration());
+                        writeAddAIPlayer(g);
+                        break;
+                    case ZOMBIE:
+                        writeAddAIPlayer(g);
+                        break;
+                    case NINJA:
+                        writeAddAIPlayer(g);
                         break;
                     case BULLET:
                         Bullet bullet = (Bullet)g.getGameObject();
@@ -133,5 +136,10 @@ public class MyDataOutputStream extends DataOutputStream {
                 writeVector2f(((ShootEvent)event).getDirection());
                 break;
         }
+    }
+
+    private void writeAddAIPlayer(AddGameObjectEvent g) throws IOException {
+        AIPlayer ai = (AIPlayer)g.getGameObject();
+        writeUTF(ai.getUsername());
     }
 }

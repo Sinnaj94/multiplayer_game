@@ -1,14 +1,12 @@
 package com.network.server;
 
-import com.game.ai.AIThread;
 import com.game.event.Event;
 import com.game.event.player.HitPlayerEvent;
 import com.game.event.player.KillPlayerEvent;
 import com.game.gameworld.*;
+import com.game.gameworld.players.Player;
 import com.game.render.Renderer;
 import com.game.event.player.Command;
-import com.helper.BoundingBox;
-import com.helper.Vector2f;
 import com.network.common.EventMessage;
 import com.network.common.Manager;
 
@@ -17,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
 
 
 public class ServerGameLogic implements Runnable {

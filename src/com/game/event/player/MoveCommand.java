@@ -1,6 +1,5 @@
 package com.game.event.player;
 
-import com.game.gameworld.Player;
 import com.game.gameworld.World;
 
 /**

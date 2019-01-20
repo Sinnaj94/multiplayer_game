@@ -2,8 +2,9 @@ package com.game.render;
 
 import com.game.UI;
 import com.game.gameworld.*;
+import com.game.gameworld.players.Player;
 import com.game.generics.Renderable;
-import com.helper.Vector2f;
+import com.game.tiles.ResourceSingleton;
 import com.helper.Vector2i;
 
 import javax.swing.*;

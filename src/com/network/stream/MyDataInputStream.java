@@ -8,8 +8,11 @@ import com.game.event.gameobject.RemoveGameObjectEvent;
 import com.game.event.player.*;
 import com.game.gameworld.*;
 import com.game.event.player.Command.CommandType;
+import com.game.gameworld.players.AIPlayer;
+import com.game.gameworld.players.Ninja;
+import com.game.gameworld.players.Player;
+import com.game.gameworld.players.Zombie;
 import com.helper.BoundingBox;
-import com.helper.Vector2;
 import com.helper.Vector2f;
 
 import java.io.DataInputStream;
@@ -87,9 +90,15 @@ public class MyDataInputStream extends DataInputStream {
                     case AIPLAYER:
                         String name = readUTF();
                         AIPlayer aiPlayer = new AIPlayer(temp, gameObjectID, name);
-                        aiPlayer.setWalkingSpeed(readFloat());
-                        aiPlayer.setJumpAcceleration(readFloat());
                         return new AddGameObjectEvent(aiPlayer);
+                    case ZOMBIE:
+                        String name1 = readUTF();
+                        Zombie z = new Zombie(temp, gameObjectID, name1);
+                        return new AddGameObjectEvent(z);
+                    case NINJA:
+                        String name2 = readUTF();
+                        Ninja n = new Ninja(temp, gameObjectID, name2);
+                        return new AddGameObjectEvent(n);
                     case ITEM:
                         return new AddGameObjectEvent(new Item(temp, gameObjectID));
                     case BULLET:

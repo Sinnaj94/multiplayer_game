@@ -1,8 +1,7 @@
 package com.game.event.player;
 
 import com.game.event.EventType;
-import com.game.gameworld.Item;
-import com.game.gameworld.Player;
+import com.game.gameworld.players.Player;
 import com.game.gameworld.World;
 
 /**

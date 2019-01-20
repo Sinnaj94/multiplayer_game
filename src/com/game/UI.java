@@ -1,15 +1,10 @@
 package com.game;
 
-import com.game.gameworld.Player;
-import com.game.generics.Renderable;
+import com.game.gameworld.players.Player;
 import com.game.tiles.ResourceSingleton;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
 
 public class UI {
     private BufferedImage heart;
